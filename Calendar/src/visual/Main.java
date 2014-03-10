@@ -1,6 +1,7 @@
 package visual;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDesktopPane;
@@ -16,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
@@ -37,6 +39,7 @@ public class Main extends JPanel {
     private static JFrame mainFrame; 
 
     private JPanel leftPanel;
+    private JPanel checkPanel;
     private JTextField searchField;
 
     public static void main(String[] args) {
@@ -106,12 +109,10 @@ public class Main extends JPanel {
     	searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
     	searchField.addKeyListener(new Listener());
     	
-    	searchField.setPreferredSize(new Dimension(160, 30));
-    	
-    	
-    	Container contentPane = mainFrame.getContentPane();
+    	searchField.setPreferredSize(new Dimension(235, 30));
     	
     	JCheckBox cb1 = new JCheckBox();
+    	cb1.setSelected(true);
         JLabel cb1Description = new JLabel();
         cb1Description.setText("Andre kalendere");
         
@@ -120,25 +121,49 @@ public class Main extends JPanel {
         cb2Description.setText("TODO person.navn");
     	
         JButton nyAvtaleBtn = new JButton("Ny avtale");
+        nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
         
-        springLayout.putConstraint(SpringLayout.NORTH, nyAvtaleBtn, 5, SpringLayout.WEST, searchField);
-        springLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, leftPanel, 100, SpringLayout.WEST, cb1Description);
-        springLayout.putConstraint(SpringLayout.SOUTH, cb1, 100, SpringLayout.WEST, cb1Description);
-        springLayout.putConstraint(SpringLayout.NORTH, leftPanel, 100, SpringLayout.WEST, cb1Description);
-        springLayout.putConstraint(SpringLayout.NORTH, cb2, 100, SpringLayout.WEST, cb1Description);
-        springLayout.putConstraint(SpringLayout.NORTH, leftPanel, 100, SpringLayout.WEST, cb1Description);
+        ImageIcon concat = new ImageIcon(this.getClass().getResource("/concat.png"));
+        JButton searchDropDown = new JButton("Søk etter bruker");
+        searchDropDown.setActionCommand("Search button");
+        searchDropDown.addActionListener(new Listener());
+        searchDropDown.setIcon(concat);
+        searchDropDown.setHorizontalTextPosition(SwingConstants.LEFT);
+        leftPanel.add(searchDropDown);
+        
+        
+        springLayout.putConstraint(SpringLayout.NORTH, searchDropDown, 40, SpringLayout.SOUTH, nyAvtaleBtn); // OK
+        springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 10, SpringLayout.SOUTH, searchDropDown); // OK
+        springLayout.putConstraint(SpringLayout.EAST, cb1, 40, SpringLayout.WEST, cb1Description);
+
     	leftPanel.add(nyAvtaleBtn);
-
-        leftPanel.add(searchField, SpringLayout.EAST);
-
-        leftPanel.add(cb1Description);
-
-        leftPanel.add(cb1);
-
-        leftPanel.add(cb2Description);
+//
+//    	/**
+//    	 * Links edge e1 of component c1 to edge e2 of component c2, with a fixed distance between the edges.
+//    	  Parameters:
+//			e1 - the edge of the dependent
+//			c1 - the component of the dependent
+//			pad - the fixed distance between dependent and anchor
+//			e2 - the edge of the anchor
+//			c2 - the component of the anchor
+//    	 */
+//    	
+//        leftPanel.add(searchField);
+//        leftPanel.add(cb1Description);
+//        leftPanel.add(cb1);
         
-        leftPanel.add(cb2);
+        checkPanel = new JPanel();
+        checkPanel.setPreferredSize(new Dimension(235, 400));
+        checkPanel.add(cb2Description);
+        checkPanel.add(cb2);
+        checkPanel.setBackground(Color.white);
+        checkPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        checkPanel.setVisible(false);
+
+        springLayout.putConstraint(SpringLayout.NORTH, checkPanel, 50, SpringLayout.SOUTH, cb1Description);
         
+        leftPanel.add(checkPanel);
+     
         leftPanel.setPreferredSize(new Dimension(240, 800));
     	leftPanel.setVisible(true);
     	
@@ -151,12 +176,24 @@ public class Main extends JPanel {
     	
     }
     
+    public void createUserSearch() {
+    	JPanel searchPanel = new JPanel();
+    	searchPanel.setPreferredSize(new Dimension(235, 300));
+    	searchPanel.setBackground(Color.white);
+    	searchPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+    	searchPanel.setVisible(true);
+    	leftPanel.add(searchPanel);
+    }
+    
     public class Listener implements ActionListener, KeyListener {
     	
     	@Override
     	public void actionPerformed(ActionEvent e) { // pre requisite that the events comes accomodated with an action command!
     		System.out.println("Action performed");
     		switch(e.getActionCommand()) {
+    		case "Search button":
+    			createUserSearch();
+    			break;
     		case "New Appointment":
     			System.out.println("NEW APPOINTMENT CHOSEN");
     			break;
@@ -177,17 +214,7 @@ public class Main extends JPanel {
 			switch(e.getKeyCode()) {
 			case(KeyEvent.VK_ENTER):
 				if (searchField.isFocusOwner()) {
-					System.gc();
-					JPanel searchPane = new JPanel();
-					JScrollPane jsp = new JScrollPane();
-					searchPane.setPreferredSize(new Dimension(200,400));
-					searchPane.setVisible(true);
-					searchPane.setBackground(Color.white);
-					searchPane.setBorder(BorderFactory.createLineBorder(Color.black));
-					searchPane.add(jsp);
-					leftPanel.add(searchPane);
-					mainFrame.repaint();
-					
+					checkPanel.setVisible(!checkPanel.isVisible());
 				}
 				break;
 			}
