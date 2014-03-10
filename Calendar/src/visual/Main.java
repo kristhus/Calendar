@@ -62,6 +62,7 @@ public class Main extends JPanel {
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
+        /* DETTA E EN KOMMENTAR */
     }
 
     public Main() {
