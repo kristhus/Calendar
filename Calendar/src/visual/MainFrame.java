@@ -83,6 +83,7 @@ public class MainFrame extends JPanel {
     
     
     public JPanel createLeftWindow() {
+    	//
     	leftPanel = new JPanel();
     	leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
     	SpringLayout springLayout = new SpringLayout();
