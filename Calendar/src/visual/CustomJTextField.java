@@ -1,6 +1,7 @@
 package visual;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -8,6 +9,9 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -16,7 +20,7 @@ import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 
-public class CustomJTextField extends JTextField implements FocusListener{
+public class CustomJTextField extends JTextField implements FocusListener, MouseMotionListener, MouseListener {
 	
 	private JTextField textField;
 	private Icon searchIcon;
@@ -34,6 +38,7 @@ public class CustomJTextField extends JTextField implements FocusListener{
 		this.inset = border.getBorderInsets(textField);
 		
 		addFocusListener(this);
+		addMouseMotionListener(this);
 		
 	}
 
@@ -103,9 +108,70 @@ public class CustomJTextField extends JTextField implements FocusListener{
 	public void setIcon(String path) {
 		searchIcon = createIcon(path);
 	}
+	public void removeIcon() {
+		searchIcon = null;
+	}
 	
 	public void setHint(String hint) {
 		this.hint = hint;
 	}
+
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseMoved(MouseEvent m) {
+		// TODO Auto-generated method stub
+		if(m.getX() <= searchIcon.getIconWidth()+5) {
+			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		}
+		else{
+			setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		}
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent m) {
+		// TODO Auto-generated method stub
+		if(m.getX() <= searchIcon.getIconWidth()+5) {
+			// TODO: Do the search or w/e  This may not be needed, depending on if the search is automatic whenever you enter a letter
+		}
+	}
+
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	
 }
