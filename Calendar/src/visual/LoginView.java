@@ -5,16 +5,25 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 
 public class LoginView extends JPanel{
+	
+	private MainFrame mainFrame;
+	private JButton loginButton;
+	private JButton nyBrukerButton;
 
-	public LoginView(){
+	public LoginView(MainFrame mainFrame){
+		this.mainFrame = mainFrame;
 		//setPreferredSize(new Dimension(800, 600));
 		Color backgroundBlender = new Color (241,240,226);
 		setBackground(backgroundBlender);
@@ -42,12 +51,14 @@ public class LoginView extends JPanel{
 		add(passordField,c);
 		
 		c.gridy=2;
-		JButton loginButton = new JButton("Logg inn");
+		loginButton = new JButton("Logg inn");
+		loginButton.addActionListener(actionListener); loginButton.setName("loginButton");
 		loginButton.setPreferredSize(new Dimension(300, 30));
 		add(loginButton,c);
 		
 		c.gridy=3;
-		JButton nyBrukerButton = new JButton("Registrer ny bruker");
+		nyBrukerButton = new JButton("Registrer ny bruker");
+		nyBrukerButton.addActionListener(actionListener); nyBrukerButton.setName("nyBrukerButton");
 		nyBrukerButton.setPreferredSize(new Dimension(300, 30));
 		add(nyBrukerButton,c);
 		
@@ -56,4 +67,28 @@ public class LoginView extends JPanel{
 		emptySpaceMakingLabel.setPreferredSize(new Dimension(60,30));
 		add(emptySpaceMakingLabel,c); 
 	}
+	
+	private ActionListener actionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (e.getSource().equals(loginButton)){
+				//TODO: 1.GJØR HANDLINGER MED SERVER FOR Å SJEKKE OM LOGIN VAR SUCCSESSFULL.
+				//TODO: 2.SETTE BRUKER I MAIN
+				MainFrame.getLoginFrame().dispose();
+			}
+			else if (e.getSource() == nyBrukerButton){
+				RegistrationView registrationView = new RegistrationView(mainFrame);
+		    	JFrame registrationFrame = new JFrame();
+		        registrationFrame.setPreferredSize(new Dimension(550, 300));
+		        //loginFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
+		        registrationFrame.add(registrationView);
+		        registrationFrame.pack();
+		        registrationFrame.setLocationRelativeTo(null);
+		        registrationFrame.setAlwaysOnTop(true);
+		        registrationFrame.setVisible(true);
+		        MainFrame.getLoginFrame().dispose();
+			}
+			
+		}
+	};
 }
