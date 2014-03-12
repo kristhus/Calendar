@@ -25,14 +25,18 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class MainFrame extends JPanel {
 
@@ -44,7 +48,12 @@ public class MainFrame extends JPanel {
     private JTextField searchField;
     private JPanel searchPanel;
     private JScrollPane searchScrollPane;
-
+    
+    private final GridBagLayout searchResultGrid = new GridBagLayout();
+    private GridBagConstraints searchRC;
+    private Container searchResults;
+    private String[] testPersoner = {"KNUT", "KÅRE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", "Kristian", "Kerp", "Kevin", "Kjeks"};
+    
     public static void main(String[] args) {
     	
     	try {
@@ -62,16 +71,18 @@ public class MainFrame extends JPanel {
     	
     	
         mainFrame = new JFrame();
-        mainFrame.setPreferredSize(new Dimension(1200, 800));
+        //mainFrame.setPreferredSize(new Dimension(1200, 800)); //Default Size
+        mainFrame.setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));  //Dekker hele skjermen..blir merkverdig tomt da :(
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // TODO: Show confirmation dialogue about logging out!
         mainFrame.add(new MainFrame());
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
-        /* DETTA E EN KOMMENTAR */
+        /* TEST */
     }
 
     public MainFrame() {
+    	
     	addMouseListener(new Listener());
     	setPreferredSize(new Dimension(800, 600));
     	setBackground(Color.white);
@@ -91,7 +102,7 @@ public class MainFrame extends JPanel {
     	
     	searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
     	searchField.addKeyListener(new Listener());
-    	
+    	searchField.setActionCommand("search typer");
     	searchField.setPreferredSize(new Dimension(180, 30));
     	
     	Container container = new Container();
@@ -102,7 +113,7 @@ public class MainFrame extends JPanel {
     	JCheckBox cb1 = new JCheckBox();
     	cb1.addActionListener(new Listener());
     	cb1.setActionCommand("Andre kalendere");
-        HoverLabel cb1Description = new HoverLabel(new JLabel(), new Color(0, 148, 214), Color.white, Color.white, "/check.png");
+        JLabel cb1Description = new JLabel();
         cb1Description.setText("Andre kalendere");
         
         JButton nyAvtaleBtn = new JButton("Ny avtale");
@@ -139,6 +150,8 @@ public class MainFrame extends JPanel {
         leftPanel.setPreferredSize(new Dimension(240, 800));
     	leftPanel.setVisible(true);
     	
+    	searchResults = new Container();
+    	
     	return leftPanel;
     }
     
@@ -147,7 +160,6 @@ public class MainFrame extends JPanel {
         //checkPanel.setPreferredSize(new Dimension(230, 400));
         checkPanel.setBackground(Color.lightGray);
         checkPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
-        checkPanel.setLayout(new GridBagLayout());
         checkPanel.setVisible(true);
         
     	checkScrollPane = new JScrollPane(checkPanel);
@@ -158,12 +170,15 @@ public class MainFrame extends JPanel {
     
     public void createUserSearch() {
     	searchPanel = new JPanel();
-    	searchPanel.setPreferredSize(new Dimension(180, 300));
+    	searchPanel.setPreferredSize(new Dimension(180, 280));
     	searchPanel.setBackground(Color.white);
+    	searchPanel.setLayout(new FlowLayout());
     	searchPanel.setVisible(true);
+    	
     	searchScrollPane = new JScrollPane(searchPanel);
     	searchScrollPane.setBackground(Color.white);
     	searchScrollPane.setBorder(BorderFactory.createStrokeBorder(new BasicStroke()));
+    	searchScrollPane.setPreferredSize(new Dimension(200,300));
     	searchScrollPane.setVisible(false);
     	searchScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     }
@@ -172,7 +187,6 @@ public class MainFrame extends JPanel {
     	
     	@Override
     	public void actionPerformed(ActionEvent e) { // pre requisite that the events comes accomodated with an action command!
-    		System.out.println("Action performed");
     		switch(e.getActionCommand()) {
     		case "Search button":
     			searchScrollPane.setVisible(!searchScrollPane.isVisible());
@@ -198,6 +212,45 @@ public class MainFrame extends JPanel {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			// Can not press and hold. This avoids stressing the server unnecessarily
+
+			if(searchField.isFocusOwner() && !searchField.getText().equals("")) {
+				String typed = searchField.getText();
+				searchRC = new GridBagConstraints();
+				searchRC.gridx = 0; searchRC.gridy = 0; 
+			
+				Container ct = new Container();
+				ct.setLayout(searchResultGrid);
+				for(int p = 1; p<searchPanel.getComponentCount(); p++) {
+					searchPanel.remove(p);
+				}
+				for(int i = 0; i < testPersoner.length; i++) {
+					boolean found = true;
+					for(int j = 0; j < typed.length(); j++) {
+						System.out.print("FOR: " +j);
+						if(!(Character.toLowerCase(typed.charAt(j)) == Character.toLowerCase(testPersoner[i].charAt(j)))) {
+							found = false;
+							j=typed.length();
+						}
+					}
+					if(found) {
+						
+						JLabel lab = new JLabel(testPersoner[i]);
+						JCheckBox cb = new JCheckBox();
+						//int spacing = searchPanel.getWidth() - lab.getWidth() - cb.getWidth()-5;
+						searchRC.ipadx = 100; 
+						ct.add(lab, searchRC);
+						searchRC.ipadx = 0;
+						searchRC.gridx ++;
+						ct.add(cb, searchRC);
+						searchRC.gridy++;
+						searchRC.gridx = 0;
+					}
+				}
+				ct.setVisible(true);
+				searchPanel.add(ct);
+				searchPanel.revalidate();
+				searchPanel.repaint();
+			}
 		}
 
 		@Override

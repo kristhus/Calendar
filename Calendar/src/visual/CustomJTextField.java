@@ -38,6 +38,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 		this.inset = border.getBorderInsets(textField);
 		
 		addFocusListener(this);
+		addMouseListener(this);
 		addMouseMotionListener(this);
 		
 	}
@@ -127,11 +128,13 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	@Override
 	public void mouseMoved(MouseEvent m) {
 		// TODO Auto-generated method stub
-		if(m.getX() <= searchIcon.getIconWidth()+5) {
-			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		}
-		else{
-			setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		if (isFocusOwner()) {
+			if(m.getX() <= searchIcon.getIconWidth()+5) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			else{
+				setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+			}
 		}
 	}
 
@@ -139,8 +142,9 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	@Override
 	public void mouseClicked(MouseEvent m) {
 		// TODO Auto-generated method stub
-		if(m.getX() <= searchIcon.getIconWidth()+5) {
+		if(m.getX() <= searchIcon.getIconWidth()+5 && isFocusOwner()) {
 			// TODO: Do the search or w/e  This may not be needed, depending on if the search is automatic whenever you enter a letter
+			System.out.println("Clicked the searchIcon");
 		}
 	}
 
