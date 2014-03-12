@@ -16,7 +16,7 @@ public class LoginView extends JPanel{
 
 	public LoginView(){
 		//setPreferredSize(new Dimension(800, 600));
-		Color backgroundBlender = new Color (240,240,226);
+		Color backgroundBlender = new Color (241,240,226);
 		setBackground(backgroundBlender);
 		setBackground(Color.white);
 		setVisible(true);
