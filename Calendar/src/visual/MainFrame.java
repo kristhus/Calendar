@@ -36,7 +36,9 @@ import java.awt.event.MouseListener;
 
 public class MainFrame extends JPanel {
 
-    private static JFrame mainFrame; 
+    private static JFrame mainFrame;
+
+	private static JFrame loginFrame; 
 
     private JPanel leftPanel;
     private JPanel checkPanel;
@@ -44,6 +46,8 @@ public class MainFrame extends JPanel {
     private JTextField searchField;
     private JPanel searchPanel;
     private JScrollPane searchScrollPane;
+
+	private LoginView loginView;
 
     public static void main(String[] args) {
     	
@@ -61,6 +65,7 @@ public class MainFrame extends JPanel {
     	}
     	
     	
+    	
         mainFrame = new JFrame();
         mainFrame.setPreferredSize(new Dimension(1200, 800));
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // TODO: Show confirmation dialogue about logging out!
@@ -68,10 +73,28 @@ public class MainFrame extends JPanel {
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
+        
+        
+        
         /* DETTA E EN KOMMENTAR */
     }
+    
+    	
+	
 
-    public MainFrame() {
+    private void initLoginViewAndFrame() {
+    	loginView = new LoginView(this);
+    	loginFrame = new JFrame();
+        loginFrame.setPreferredSize(new Dimension(475, 200));
+        loginFrame.add(loginView);
+        loginFrame.pack();
+        loginFrame.setLocationRelativeTo(null);
+        loginFrame.setAlwaysOnTop(true);
+        loginFrame.setVisible(true);
+	}
+
+	public MainFrame() {
+		initLoginViewAndFrame();
     	addMouseListener(new Listener());
     	setPreferredSize(new Dimension(800, 600));
     	setBackground(Color.white);
@@ -110,7 +133,7 @@ public class MainFrame extends JPanel {
         nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
         
         ImageIcon caret = new ImageIcon(this.getClass().getResource("/concat.png"));
-        JButton searchDropDown = new JButton("Søk etter bruker");
+        JButton searchDropDown = new JButton("Sï¿½k etter bruker");
         searchDropDown.setActionCommand("Search button");
         searchDropDown.setPreferredSize(new Dimension(180, 30));
         searchDropDown.addActionListener(new Listener());
@@ -242,4 +265,14 @@ public class MainFrame extends JPanel {
     	
     }
 
+	public static JFrame getMainFrame() {
+		return mainFrame;
+	}
+
+	public static JFrame getLoginFrame() {
+		return loginFrame;
+	}
+
+    
+    
 }
