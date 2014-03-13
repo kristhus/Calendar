@@ -47,7 +47,7 @@ public class MainFrame extends JPanel {
 
 	private static JFrame loginFrame; 
 
-    private JPanel leftPanel;
+    private static JPanel leftPanel;
     private JPanel checkPanel;
     private JScrollPane checkScrollPane;
     private JTextField searchField;
@@ -118,6 +118,7 @@ public class MainFrame extends JPanel {
 		setLayout(new BorderLayout(0,1));
 		
 		add(createLeftWindow(), BorderLayout.WEST);
+		add(new CalendarView());
     }
     
     
@@ -201,7 +202,8 @@ public class MainFrame extends JPanel {
     	checkScrollPane.setPreferredSize(new Dimension(230,200));
     }
     
-    public void createUserSearch() {
+
+	public void createUserSearch() {
     	searchPanel = new JPanel();
     	searchPanel.setBackground(Color.white);
     	searchPanel.setVisible(true);
@@ -367,6 +369,9 @@ public class MainFrame extends JPanel {
 		return loginFrame;
 	}
 
-    
+    public static JPanel getLeftPanel() {
+		return leftPanel;
+	}
+
     
 }
