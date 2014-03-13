@@ -43,7 +43,9 @@ import java.util.ArrayList;
 
 public class MainFrame extends JPanel {
 
-    private static JFrame mainFrame; 
+    private static JFrame mainFrame;
+
+	private static JFrame loginFrame; 
 
     private JPanel leftPanel;
     private JPanel checkPanel;
@@ -61,6 +63,8 @@ public class MainFrame extends JPanel {
     private String[] testPersoner = {"KNUT", "KÅRE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
     		"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-kåre"};
     
+	private LoginView loginView;
+
     public static void main(String[] args) {
     	
     	try {
@@ -77,6 +81,7 @@ public class MainFrame extends JPanel {
     	}
     	
     	
+    	
         mainFrame = new JFrame();
         mainFrame.setPreferredSize(new Dimension(1200, 800)); //Default Size
         //mainFrame.setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));  //Dekker hele skjermen..blir merkverdig tomt da :(
@@ -85,10 +90,28 @@ public class MainFrame extends JPanel {
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
+        
+        
+        
         /* TEST */
     }
+    
+    	
+	
 
-    public MainFrame() {
+    private void initLoginViewAndFrame() {
+    	loginView = new LoginView(this);
+    	loginFrame = new JFrame();
+        loginFrame.setPreferredSize(new Dimension(475, 200));
+        loginFrame.add(loginView);
+        loginFrame.pack();
+        loginFrame.setLocationRelativeTo(null);
+        loginFrame.setAlwaysOnTop(true);
+        loginFrame.setVisible(true);
+	}
+
+	public MainFrame() {
+		initLoginViewAndFrame();
     	
     	addMouseListener(new Listener());
     	setPreferredSize(new Dimension(800, 600));
@@ -338,4 +361,14 @@ public class MainFrame extends JPanel {
     	
     }
 
+	public static JFrame getMainFrame() {
+		return mainFrame;
+	}
+
+	public static JFrame getLoginFrame() {
+		return loginFrame;
+	}
+
+    
+    
 }

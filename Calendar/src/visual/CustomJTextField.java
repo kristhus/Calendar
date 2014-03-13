@@ -15,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
@@ -26,16 +27,23 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	private Icon searchIcon;
 	private String hint;
 	private Insets inset;
+	private Boolean hasIcon;
+	private Boolean isPassword;
 	
 	public CustomJTextField(JTextField textField, String iconPath, String hint) {
 		this.textField = textField;
 		ImageIcon icon = createIcon(iconPath);
-		setIcon(icon);
+		isPassword = false;
+		if (hint.toLowerCase().contains("password") || hint.toLowerCase().contains("passord")) {
+			isPassword = true;
+		}
+		if(hasIcon) {
+			setIcon(icon);
+			MatteBorder mBorder = new MatteBorder(icon);
+			CompoundBorder border = new CompoundBorder(textField.getBorder(), mBorder);
+			this.inset = border.getBorderInsets(textField);
+		}
 		this.hint = hint;
-		
-		MatteBorder mBorder = new MatteBorder(icon);
-		CompoundBorder border = new CompoundBorder(textField.getBorder(), mBorder);
-		this.inset = border.getBorderInsets(textField);
 		
 		addFocusListener(this);
 		addMouseListener(this);
@@ -46,7 +54,10 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	    if(!isPassword){
+	    	super.paintComponent(g);
+	    }
+		
 		
 		int hintsX = 2;
 		
@@ -77,14 +88,29 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	        
 	        g.setFont(orgFont);
 	        }
+	    else if(isPassword) {
+	    	Graphics2D g2d = (Graphics2D) g;
+	    	int x = getInsets().left;
+	    	int y = (getHeight()-getFont().getSize())/2 + getFont().getSize();
+	    	if( searchIcon != null) {
+	    		x= inset.left - searchIcon.getIconWidth();
+	    		y = (y-searchIcon.getIconHeight())/2;
+	    	}
+	    	String secure = "";
+	    	for (int i = 0; i < getText().length(); i++) {
+	    		secure += "*";
+	    	}
+	    	g2d.drawString(secure, x, y);
+	    }
 	}
 	
 	public ImageIcon createIcon(String iconPath) {
 		try {
+			hasIcon = true;
 			return new ImageIcon(this.getClass().getResource(iconPath));
 		} catch(NullPointerException e) {
 			System.out.println("Could not find the image with filename " + iconPath);
-			e.printStackTrace();
+			hasIcon = false;
 			return null;
 		}
 	}
@@ -129,7 +155,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	public void mouseMoved(MouseEvent m) {
 		// TODO Auto-generated method stub
 		if (isFocusOwner()) {
-			if(m.getX() <= searchIcon.getIconWidth()+5) {
+			if(hasIcon && m.getX() <= searchIcon.getIconWidth()+5) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 			else{
@@ -142,7 +168,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	@Override
 	public void mouseClicked(MouseEvent m) {
 		// TODO Auto-generated method stub
-		if(m.getX() <= searchIcon.getIconWidth()+5 && isFocusOwner()) {
+		if(hasIcon && m.getX() <= searchIcon.getIconWidth()+5 && isFocusOwner()) {
 			// TODO: Do the search or w/e  This may not be needed, depending on if the search is automatic whenever you enter a letter
 			System.out.println("Clicked the searchIcon");
 		}
