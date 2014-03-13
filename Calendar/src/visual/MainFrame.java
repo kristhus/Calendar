@@ -53,18 +53,18 @@ public class MainFrame extends JPanel {
     private JTextField searchField;
     private JPanel searchPanel;
     private JScrollPane searchScrollPane;
-    
-    private SpringLayout searchLayout;
+
+	private LoginView loginView;
+	
+	private SpringLayout searchLayout;
     private final GridBagLayout searchResultGrid = new GridBagLayout();
     private GridBagConstraints searchRC;
     
     /* TEST */
-    private ArrayList andreKalendere;
+    private ArrayList<Person> andreKalendere;
     private String[] testPersoner = {"KNUT", "KÅRE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
     		"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-kåre"};
     
-	private LoginView loginView;
-
     public static void main(String[] args) {
     	
     	try {
@@ -83,8 +83,7 @@ public class MainFrame extends JPanel {
     	
     	
         mainFrame = new JFrame();
-        mainFrame.setPreferredSize(new Dimension(1200, 800)); //Default Size
-        //mainFrame.setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));  //Dekker hele skjermen..blir merkverdig tomt da :(
+        mainFrame.setPreferredSize(new Dimension(1200, 800));
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // TODO: Show confirmation dialogue about logging out!
         mainFrame.add(new MainFrame());
         mainFrame.pack();
@@ -93,7 +92,7 @@ public class MainFrame extends JPanel {
         
         
         
-        /* TEST */
+        /* DETTA E EN KOMMENTAR */
     }
     
     	
@@ -112,7 +111,6 @@ public class MainFrame extends JPanel {
 
 	public MainFrame() {
 		initLoginViewAndFrame();
-    	
     	addMouseListener(new Listener());
     	setPreferredSize(new Dimension(800, 600));
     	setBackground(Color.white);
@@ -120,11 +118,10 @@ public class MainFrame extends JPanel {
 		setLayout(new BorderLayout(0,1));
 		
 		add(createLeftWindow(), BorderLayout.WEST);
-		andreKalendere = new ArrayList();
     }
     
     
-    public JPanel createLeftWindow() {
+	public JPanel createLeftWindow() {
     	leftPanel = new JPanel();
     	leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
     	SpringLayout springLayout = new SpringLayout();
@@ -190,6 +187,7 @@ public class MainFrame extends JPanel {
     }
     
     public void createPersonCheckPanel() {
+    	andreKalendere = new ArrayList<Person>();
         checkPanel = new JPanel();
         checkPanel.setPreferredSize(new Dimension(220, 400));
         checkPanel.setLayout(new FlowLayout());
@@ -240,7 +238,7 @@ public class MainFrame extends JPanel {
     				JCheckBox cb = new JCheckBox();
     				checkPanel.add(cbDescription);
     				checkPanel.add(cb);
-    				andreKalendere.add(e.getSource());
+    				andreKalendere.add((Person) e.getSource());
     			}
     			else {
     				// FIND AND REMOVE THE SELECTED PERSON

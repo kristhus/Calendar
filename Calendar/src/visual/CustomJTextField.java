@@ -22,14 +22,14 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 
 public class CustomJTextField extends JTextField implements FocusListener, MouseMotionListener, MouseListener {
-	
+
 	private JTextField textField;
 	private Icon searchIcon;
 	private String hint;
 	private Insets inset;
 	private Boolean hasIcon;
 	private Boolean isPassword;
-	
+
 	public CustomJTextField(JTextField textField, String iconPath, String hint) {
 		this.textField = textField;
 		ImageIcon icon = createIcon(iconPath);
@@ -44,23 +44,23 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 			this.inset = border.getBorderInsets(textField);
 		}
 		this.hint = hint;
-		
+
 		addFocusListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		
+
 	}
 
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
 	    if(!isPassword){
 	    	super.paintComponent(g);
 	    }
-		
-		
+
+
 		int hintsX = 2;
-		
+
 		if(searchIcon!=null) {
 			int iconWidth = searchIcon.getIconWidth();
 			int iconHeight = searchIcon.getIconHeight();
@@ -69,7 +69,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 			int y = (this.getHeight()-iconHeight)/2;
 			searchIcon.paintIcon(this, g, x, y);
 		}
-			
+
 		setMargin(new Insets(2,hintsX,2,2));
 
 	    if ( this.getText().equals("")) {
@@ -85,7 +85,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	        RenderingHints renderHints = g2d.getRenderingHints();
 	        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	        g2d.setRenderingHints(renderHints);
-	        
+
 	        g.setFont(orgFont);
 	        }
 	    else if(isPassword) {
@@ -103,7 +103,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	    	g2d.drawString(secure, x, y);
 	    }
 	}
-	
+
 	public ImageIcon createIcon(String iconPath) {
 		try {
 			hasIcon = true;
@@ -114,19 +114,19 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 			return null;
 		}
 	}
-	
+
 	@Override
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
 		this.repaint();
-		
+
 	}
 
 	@Override
 	public void focusLost(FocusEvent arg0) {
 		// TODO Auto-generated method stub
 		this.repaint();
-		
+
 	}
 
 	public void setIcon(Icon icon) {
@@ -138,7 +138,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	public void removeIcon() {
 		searchIcon = null;
 	}
-	
+
 	public void setHint(String hint) {
 		this.hint = hint;
 	}
@@ -147,7 +147,7 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -178,30 +178,30 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
-	
+
 }
