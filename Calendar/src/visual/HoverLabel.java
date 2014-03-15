@@ -8,6 +8,9 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -17,8 +20,11 @@ import javax.swing.JTextPane;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 
-public class HoverLabel extends JLabel implements MouseListener{
+public class HoverLabel extends JLabel implements MouseListener {
 
+	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	
+	
 	private boolean hover;
 	private Color background;
 	private Color hoverFontColor;
@@ -27,14 +33,17 @@ public class HoverLabel extends JLabel implements MouseListener{
 	private JLabel label;
 	private Insets insets;
 	private Boolean selected = false;
+	private String actionCommand = "";
 	
 	public HoverLabel(JLabel label, Color background, Color hoverFontColor, Color defaultBackgroundColor, String iconPath) {
+		setText(label.getText());
 		setOpaque(true);
 		hover = false;
 		this.label = label;
 		this.background = background;
 		this.hoverFontColor = hoverFontColor;
 		this.oldBackground = defaultBackgroundColor;
+		actionCommand = "clicked";
 		
 		if(iconPath != "") {
 			ImageIcon icon = createIcon(iconPath);
@@ -56,23 +65,16 @@ public class HoverLabel extends JLabel implements MouseListener{
 		if(icon!=null && selected) {
 			int iconWidth = icon.getIconWidth();
 			int iconHeight = icon.getIconHeight();
-			System.out.println();
 			int x = (this.getWidth()-insets.right);
 			int y = (this.getHeight()-iconHeight)/2;
 			icon.paintIcon(this, g, x, y);
 		}
-		
-		
-		Graphics2D g2d = (Graphics2D) g;
 		if(hover) {
 			setBackground(background);
 		}
 		else {
 			setBackground(oldBackground);
 		}
-		
-		
-		
 	}
 	
 	
@@ -96,9 +98,12 @@ public class HoverLabel extends JLabel implements MouseListener{
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("HEI");
+		Boolean old = selected;
 		selected = !selected;
+		firePropertyChange(actionCommand, old, selected);
+		this.repaint();
+	}
+	public void testPaint() {
 		this.repaint();
 	}
 
@@ -106,7 +111,7 @@ public class HoverLabel extends JLabel implements MouseListener{
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 		hover = true;
-		setBackground(Color.blue);
+		setBackground(background);
 		setForeground(hoverFontColor);
 		this.repaint();
 	}
@@ -115,6 +120,7 @@ public class HoverLabel extends JLabel implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		hover = false;
+		setBackground(oldBackground);
 		setForeground(Color.black);
 		this.repaint();
 	}
@@ -131,5 +137,26 @@ public class HoverLabel extends JLabel implements MouseListener{
 		
 	}
 	
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		super.addPropertyChangeListener(listener);
+	}
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
+	}
 	
+	public void setActionCommand(String actionCommand) {
+		this.actionCommand = actionCommand;
+	}
+	
+	
+	public void setSelected(Boolean isSelected) {
+		selected = isSelected;
+	}
+	
+	public Boolean isSelected() {
+		return selected;
+	}
+
 }
