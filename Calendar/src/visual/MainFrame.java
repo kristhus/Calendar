@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -236,14 +237,18 @@ public class MainFrame extends JPanel {
     			break;
     		case "searchselection":
     			if( ((JCheckBox)e.getSource()).isSelected()) {
-    				JLabel cbDescription = new JLabel(((JLabel) ((Container) e.getSource()).getComponent(0)).getText());
-    				JCheckBox cb = new JCheckBox();
-    				checkPanel.add(cbDescription);
-    				checkPanel.add(cb);
-    				andreKalendere.add((Person) e.getSource());
+    				String dscrp = ((JLabel) ((Container) e.getSource()).getComponent(0)).getText();
+    				if(!andreKalendere.contains(dscrp)){
+    					JLabel cbDescription = new JLabel();
+    					JCheckBox cb = new JCheckBox();
+    					checkPanel.add(cbDescription);
+    					checkPanel.add(cb);
+    					andreKalendere.add((Person) e.getSource());
+    				}
+    				System.out.println(andreKalendere);
     			}
     			else {
-    				// FIND AND REMOVE THE SELECTED PERSON
+    				// TODO FIND AND REMOVE THE SELECTED PERSON
     			}
     			break;
     		}
@@ -286,6 +291,7 @@ public class MainFrame extends JPanel {
 						ct.add(hLab, searchRC);
 						searchRC.gridy++;
 						if(andreKalendere.contains(testPersoner[i])) {
+							System.out.println("INNEHOLDER");
 							hLab.setSelected(true);
 						}
 					}

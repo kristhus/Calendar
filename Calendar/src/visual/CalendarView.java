@@ -12,6 +12,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -20,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SpringLayout;
+
+import calculations.DateCalculations;
 
 public class CalendarView extends JPanel {
 	
@@ -42,6 +47,8 @@ public class CalendarView extends JPanel {
 	
 	private final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lørdag, Day.Søndag};
 	
+	private final Calendar cal = new GregorianCalendar();
+	
 	public CalendarView() {
 
 		
@@ -54,6 +61,21 @@ public class CalendarView extends JPanel {
 		
 		createHeader();
 		createWeek();
+		
+		createDates();
+		System.out.println(cal.getFirstDayOfWeek());
+//		DateCalculations dCalc = new DateCalculations(cal);
+	}
+
+	private void createDates() {
+		
+		ArrayList<ArrayList<Object>> test = new ArrayList<ArrayList<Object>>();
+		for (int i = 0; i < days.length; i++) {
+			ArrayList<Object> toAdd = new ArrayList<Object>();
+			toAdd.add( ((Day) days[i]).toString());
+			toAdd.add("HEI");
+			test.add(toAdd);
+		}
 		
 	}
 
@@ -68,13 +90,14 @@ public class CalendarView extends JPanel {
 		String iconPressed = "/buttons/left-down.png";
 		header.add(new CustomButton(iconDefault, iconPressed, iconHover), c);
 		c.ipadx = 10;
+		System.out.println();
 		for(int d = 0; d < 7; d++) {
 			c.gridx++;
 			JPanel headerDayPanel = new JPanel();
 			headerDayPanel.setPreferredSize(new Dimension(dayWidth/7-10, dayHeight/24));
 			headerDayPanel.setBackground(new Color(255,208,112));
 			headerDayPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-			JLabel dayDescription = new JLabel("<html>" + days[d].toString() + "<br>" + "'DATO'</html>", JLabel.CENTER);
+			JLabel dayDescription = new JLabel("<html>" + days[d].toString() + "<br>" + "'DATO'</html>", JLabel.CENTER); // TODO GET THIS DATE
 			headerDayPanel.add(dayDescription);
 			header.add(headerDayPanel, c);
 		}
@@ -216,6 +239,7 @@ public class CalendarView extends JPanel {
 		public void mouseExited(MouseEvent arg0) {
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			((JPanel) arg0.getSource()).setBorder(BorderFactory.createLineBorder(Color.gray));
+			
 		}
 
 		@Override
