@@ -153,6 +153,7 @@ public class HoverLabel extends JLabel implements MouseListener {
 	
 	public void setSelected(Boolean isSelected) {
 		selected = isSelected;
+		repaint();
 	}
 	
 	public Boolean isSelected() {

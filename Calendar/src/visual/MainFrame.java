@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -47,7 +48,7 @@ public class MainFrame extends JPanel {
 
 	private static JFrame loginFrame; 
 
-    private JPanel leftPanel;
+    private static JPanel leftPanel;
     private JPanel checkPanel;
     private JScrollPane checkScrollPane;
     private JTextField searchField;
@@ -118,6 +119,7 @@ public class MainFrame extends JPanel {
 		setLayout(new BorderLayout(0,1));
 		
 		add(createLeftWindow(), BorderLayout.WEST);
+		add(new CalendarView());
     }
     
     
@@ -176,7 +178,7 @@ public class MainFrame extends JPanel {
         searchPanel.setLayout(searchLayout);
         searchPanel.add(searchField);
         searchLayout.putConstraint(SpringLayout.NORTH, searchField, 10, SpringLayout.NORTH, searchPanel);
-        
+        /* kommentar*/
         createPersonCheckPanel();
         springLayout.putConstraint(SpringLayout.NORTH, checkScrollPane, 50, SpringLayout.SOUTH, container);        
         leftPanel.add(checkScrollPane);
@@ -201,7 +203,8 @@ public class MainFrame extends JPanel {
     	checkScrollPane.setPreferredSize(new Dimension(230,200));
     }
     
-    public void createUserSearch() {
+
+	public void createUserSearch() {
     	searchPanel = new JPanel();
     	searchPanel.setBackground(Color.white);
     	searchPanel.setVisible(true);
@@ -234,14 +237,18 @@ public class MainFrame extends JPanel {
     			break;
     		case "searchselection":
     			if( ((JCheckBox)e.getSource()).isSelected()) {
-    				JLabel cbDescription = new JLabel(((JLabel) ((Container) e.getSource()).getComponent(0)).getText());
-    				JCheckBox cb = new JCheckBox();
-    				checkPanel.add(cbDescription);
-    				checkPanel.add(cb);
-    				andreKalendere.add((Person) e.getSource());
+    				String dscrp = ((JLabel) ((Container) e.getSource()).getComponent(0)).getText();
+    				if(!andreKalendere.contains(dscrp)){
+    					JLabel cbDescription = new JLabel();
+    					JCheckBox cb = new JCheckBox();
+    					checkPanel.add(cbDescription);
+    					checkPanel.add(cb);
+    					andreKalendere.add((Person) e.getSource());
+    				}
+    				System.out.println(andreKalendere);
     			}
     			else {
-    				// FIND AND REMOVE THE SELECTED PERSON
+    				// TODO FIND AND REMOVE THE SELECTED PERSON
     			}
     			break;
     		}
@@ -284,6 +291,7 @@ public class MainFrame extends JPanel {
 						ct.add(hLab, searchRC);
 						searchRC.gridy++;
 						if(andreKalendere.contains(testPersoner[i])) {
+							System.out.println("INNEHOLDER");
 							hLab.setSelected(true);
 						}
 					}
@@ -367,6 +375,9 @@ public class MainFrame extends JPanel {
 		return loginFrame;
 	}
 
-    
+    public static JPanel getLeftPanel() {
+		return leftPanel;
+	}
+
     
 }
