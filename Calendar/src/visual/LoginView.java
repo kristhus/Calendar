@@ -15,6 +15,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+
+import objects.Person;
 
 public class LoginView extends JPanel{
 
@@ -74,21 +77,25 @@ public class LoginView extends JPanel{
 			if (e.getSource().equals(loginButton)){
 				//TODO: 1.GJØR HANDLINGER MED SERVER FOR Å SJEKKE OM LOGIN VAR SUCCSESSFULL.
 				//TODO: 2.SETTE BRUKER I MAIN
+				/////////////////////////////////////////TEST TEST TEST TEST TEST TEST /////////////////
+				Person thomas = new Person("Thomas Mathisen", "samoth1601@gmail.com", 90048601);
+				mainFrame.logInAndSetUser(thomas);
 				MainFrame.getLoginFrame().dispose();
 			}
 			else if (e.getSource() == nyBrukerButton){
-				RegistrationView registrationView = new RegistrationView(mainFrame);
-		    	JFrame registrationFrame = new JFrame();
-		        registrationFrame.setPreferredSize(new Dimension(550, 300));
-		        //loginFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
+				JFrame registrationFrame = new JFrame();
+				RegistrationView registrationView = new RegistrationView(mainFrame,registrationFrame);
+		        registrationFrame.setPreferredSize(new Dimension(550, 330));
+		        registrationFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
 		        registrationFrame.add(registrationView);
 		        registrationFrame.pack();
 		        registrationFrame.setLocationRelativeTo(null);
 		        registrationFrame.setAlwaysOnTop(true);
 		        registrationFrame.setVisible(true);
-		        MainFrame.getLoginFrame().dispose();
+		        MainFrame.getLoginFrame().setVisible(false);
 			}
 
 		}
 	};
+
 }

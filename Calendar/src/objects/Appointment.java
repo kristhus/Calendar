@@ -1,4 +1,4 @@
-package visual;
+package objects;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
