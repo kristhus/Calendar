@@ -45,7 +45,7 @@ public class CalendarView extends JPanel {
 	
 	private SpringLayout calenderLayout;
 	
-	private final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lørdag, Day.Søndag};
+	private final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lordag, Day.Sondag};
 	
 	private final Calendar cal = new GregorianCalendar();
 	
@@ -208,7 +208,7 @@ public class CalendarView extends JPanel {
 	}
 	
 	private enum Day {
-		Mandag, Tirsdag, Onsdag, Torsdag, Fredag, Lørdag, Søndag;
+		Mandag, Tirsdag, Onsdag, Torsdag, Fredag, Lordag, Sondag;
 	}
 
 	
