@@ -56,6 +56,7 @@ public class MainFrame extends JPanel {
     private JTextField searchField;
     private JPanel searchPanel;
     private JScrollPane searchScrollPane;
+    private Person currentUser;
 
 	private LoginView loginView;
 	
@@ -91,7 +92,7 @@ public class MainFrame extends JPanel {
         mainFrame.add(new MainFrame());
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
+        mainFrame.setVisible(false);
         
         
         
@@ -110,6 +111,7 @@ public class MainFrame extends JPanel {
         loginFrame.setLocationRelativeTo(null);
         loginFrame.setAlwaysOnTop(true);
         loginFrame.setVisible(true);
+        loginFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
 	public MainFrame() {
@@ -219,6 +221,21 @@ public class MainFrame extends JPanel {
     	searchScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     }
     
+	public void logInAndSetUser(Person user) {
+		this.currentUser=user;
+		mainFrame.setVisible(true);
+		System.out.println(currentUser.getNavn());
+	}
+	
+	public void createNewUserFromRegistrationView(Person user,String password){
+		this.currentUser=user;
+		mainFrame.setVisible(true);
+		System.out.println(currentUser.getNavn());
+		//TODO: KODE FOR Å LAGE NY BRUKER I DB OSV OSV OSV
+		
+		
+	}
+	
     public class Listener implements ActionListener, KeyListener, MouseListener, PropertyChangeListener {
     	
     	@Override
@@ -306,6 +323,9 @@ public class MainFrame extends JPanel {
 			searchScrollPane.revalidate();
 		}
 
+
+		
+		
 		@Override
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
@@ -380,6 +400,10 @@ public class MainFrame extends JPanel {
     public static JPanel getLeftPanel() {
 		return leftPanel;
 	}
+
+
+
+
 
     
 }

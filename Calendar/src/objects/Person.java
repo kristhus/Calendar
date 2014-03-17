@@ -18,5 +18,46 @@ public class Person {
 		andreKalendere = new ArrayList<Person>();
 		//TODO fiks personens kalender
 	}
+
+
+	public String getNavn() {
+		return navn;
+	}
+
+
+	public void setNavn(String navn) {
+		this.navn = navn;
+	}
+
+
+	public int getTlf() {
+		return tlf;
+	}
+
+
+	public void setTlf(int tlf) {
+		this.tlf = tlf;
+	}
+
+
+	public String getEpost() {
+		return epost;
+	}
+
+
+	public void setEpost(String epost) {
+		this.epost = epost;
+	}
+
+
+	public ArrayList<Person> getAndreKalendere() {
+		return andreKalendere;
+	}
+
+
+	public void setAndreKalendere(ArrayList<Person> andreKalendere) {
+		this.andreKalendere = andreKalendere;
+	}
+	
 	
 }
