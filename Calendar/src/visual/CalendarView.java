@@ -12,6 +12,8 @@ import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -22,9 +24,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.SpringLayout;
 
 import calculations.DateCalculations;
+import calculations.NorCalendar;
 
 public class CalendarView extends JPanel {
 	
@@ -45,13 +49,12 @@ public class CalendarView extends JPanel {
 	
 	private SpringLayout calenderLayout;
 	
-	private final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lørdag, Day.Søndag};
+	public static final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lørdag, Day.Søndag};
 	
-	private final Calendar cal = new GregorianCalendar();
+	private NorCalendar cal = new NorCalendar();
 	
 	public CalendarView() {
 
-		
 		dayWidth = 800;
 		dayHeight = 900;
 		
@@ -62,21 +65,14 @@ public class CalendarView extends JPanel {
 		createHeader();
 		createWeek();
 		
-		createDates();
 		System.out.println(cal.getFirstDayOfWeek());
 //		DateCalculations dCalc = new DateCalculations(cal);
 	}
 
-	private void createDates() {
-		
-		ArrayList<ArrayList<Object>> test = new ArrayList<ArrayList<Object>>();
-		for (int i = 0; i < days.length; i++) {
-			ArrayList<Object> toAdd = new ArrayList<Object>();
-			toAdd.add( ((Day) days[i]).toString());
-			toAdd.add("HEI");
-			test.add(toAdd);
+	private void updateHeaderDates() {
+		for(int i = 0; i < ((Container)header.getComponent(0)).getComponentCount(); i++) {
+			System.out.println(i);
 		}
-		
 	}
 
 	private void createHeader() {
@@ -88,7 +84,11 @@ public class CalendarView extends JPanel {
 		String iconDefault = "/buttons/left-up.png";
 		String iconHover = "/buttons/left-hover.png";
 		String iconPressed = "/buttons/left-down.png";
-		header.add(new CustomButton(iconDefault, iconPressed, iconHover), c);
+		
+		CustomButton back = new CustomButton(iconDefault, iconPressed, iconHover);
+		back.addPropertyChangeListener(new PanelListener());
+		back.setActionCommand("BACK");
+		header.add(back, c);
 		c.ipadx = 10;
 		System.out.println();
 		for(int d = 0; d < 7; d++) {
@@ -106,7 +106,10 @@ public class CalendarView extends JPanel {
 		iconDefault = "/buttons/right-up.png";
 		iconHover = "/buttons/right-hover.png";
 		iconPressed = "/buttons/right-down.png";
-		header.add(new CustomButton(iconDefault, iconPressed, iconHover), c);
+		CustomButton forward = new CustomButton(iconDefault, iconPressed, iconHover);
+		forward.addPropertyChangeListener(new PanelListener());
+		forward.setActionCommand("FORWARD");
+		header.add(forward, c);
 		calenderLayout.putConstraint(SpringLayout.NORTH, header, 50, SpringLayout.NORTH, this);
 		calenderLayout.putConstraint(SpringLayout.WEST, header, 0, SpringLayout.WEST, this);
 		add(header);
@@ -129,8 +132,6 @@ public class CalendarView extends JPanel {
 
 	private void createWeek() {
 		
-		JScrollPane jsp = new JScrollPane(this);
-		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		Container dayContainer = new Container();
 		dayContainer.setLayout(new GridBagLayout());
@@ -141,10 +142,17 @@ public class CalendarView extends JPanel {
 			dayContainer.add(dayPanel);
 		}
 		
+		JScrollPane jsp = new JScrollPane(dayContainer);
 		
-		calenderLayout.putConstraint(SpringLayout.NORTH, dayContainer, 0, SpringLayout.SOUTH, header);
-		calenderLayout.putConstraint(SpringLayout.WEST, dayContainer, 0 , SpringLayout.WEST, this);
-		add(dayContainer);
+//		jsp.setPreferredSize(new Dimension(900, 600));
+		jsp.setBorder(null);
+		jsp.setBackground(Color.white);
+		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//		jsp.setLayout(new ScrollPaneLayout());
+		
+		calenderLayout.putConstraint(SpringLayout.NORTH, jsp, 0, SpringLayout.SOUTH, header);
+		calenderLayout.putConstraint(SpringLayout.WEST, jsp, 0 , SpringLayout.WEST, this);
+		add(jsp);
 	}
 	
 	private JPanel createTimeSlots() {
@@ -207,12 +215,12 @@ public class CalendarView extends JPanel {
 		return dayPanel;
 	}
 	
-	private enum Day {
+	public enum Day {
 		Mandag, Tirsdag, Onsdag, Torsdag, Fredag, Lørdag, Søndag;
 	}
 
 	
-	public class PanelListener implements MouseListener, MouseMotionListener {
+	public class PanelListener implements MouseListener, MouseMotionListener, PropertyChangeListener {
 
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
@@ -257,7 +265,27 @@ public class CalendarView extends JPanel {
 			
 			//TODO CREATE NY AVTALE
 		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			System.out.println("Something happened");
+			if (evt.getPropertyName() == "BACK") {
+				cal.lastWeek();
+				MainFrame.setMiniCalendarDays(MainFrame.updateDaysOfMonth());
+				System.out.println("back - " + cal.get(cal.WEEK_OF_MONTH));
+			}
+			else if (evt.getPropertyName() == "FORWARD") {
+				cal.nextWeek();
+				MainFrame.setMiniCalendarDays(MainFrame.updateDaysOfMonth());
+				System.out.println("forward - " + cal.get(cal.WEEK_OF_MONTH));
+			}
+		}
 		
 	}
+	
+	public NorCalendar getCalendar() {
+		return this.cal;
+	}
+	
 	
 }

@@ -20,11 +20,15 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
 
+import calculations.NorCalendar;
+import visual.CalendarView.Day;
+
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -41,6 +45,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainFrame extends JPanel {
 
@@ -48,6 +53,14 @@ public class MainFrame extends JPanel {
 
 	private static JFrame loginFrame; 
 
+	private static CalendarView calendarView;
+	
+	private static Listener listener;
+	
+	private static JPanel miniCalendar;
+	private static JLabel miniCalendarMonth;
+	private static Container miniCalendarDays;
+	
     private static JPanel leftPanel;
     private JPanel checkPanel;
     private JScrollPane checkScrollPane;
@@ -91,7 +104,7 @@ public class MainFrame extends JPanel {
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
         
-        
+        mainFrame.revalidate();
         
         /* DETTA E EN KOMMENTAR */
     }
@@ -112,18 +125,21 @@ public class MainFrame extends JPanel {
 
 	public MainFrame() {
 		initLoginViewAndFrame();
-    	addMouseListener(new Listener());
+//    	addMouseListener(new Listener());
     	setPreferredSize(new Dimension(800, 600));
     	setBackground(Color.white);
 		setVisible(true);
 		setLayout(new BorderLayout(0,1));
 		
+		calendarView = new CalendarView();
 		add(createLeftWindow(), BorderLayout.WEST);
-		add(new CalendarView());
+		add(calendarView);
     }
     
     
 	public JPanel createLeftWindow() {
+		listener = new Listener();
+		
     	leftPanel = new JPanel();
     	leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
     	SpringLayout springLayout = new SpringLayout();
@@ -131,7 +147,7 @@ public class MainFrame extends JPanel {
     	leftPanel.setBackground(Color.white);
 
     	searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
-    	searchField.addKeyListener(new Listener());
+    	searchField.addKeyListener(listener);
     	searchField.setActionCommand("search typer");
     	searchField.setPreferredSize(new Dimension(180, 30));
     	
@@ -141,7 +157,7 @@ public class MainFrame extends JPanel {
     	c.gridx = 0; c.gridy = 0; c.ipadx = 20;
     	
     	JCheckBox cb1 = new JCheckBox();
-    	cb1.addActionListener(new Listener());
+    	cb1.addActionListener(listener);
     	cb1.setActionCommand("Andre kalendere");
         JLabel cb1Description = new JLabel();
         cb1Description.setText("Andre kalendere");
@@ -153,18 +169,22 @@ public class MainFrame extends JPanel {
         JButton searchDropDown = new JButton("Søk etter bruker");
         searchDropDown.setActionCommand("Search button");
         searchDropDown.setPreferredSize(new Dimension(180, 30));
-        searchDropDown.addActionListener(new Listener());
+        searchDropDown.addActionListener(listener);
         searchDropDown.setIcon(caret);
         searchDropDown.setHorizontalTextPosition(SwingConstants.LEFT);
         leftPanel.add(searchDropDown);
         
 
+        createMiniCalendar();
+        leftPanel.add(miniCalendar);
+        springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, nyAvtaleBtn);
+        springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
         
         createUserSearch();
         
-        springLayout.putConstraint(SpringLayout.NORTH, searchDropDown, 40, SpringLayout.SOUTH, nyAvtaleBtn); // OK
-        springLayout.putConstraint(SpringLayout.NORTH, container, 30, SpringLayout.SOUTH, searchDropDown); // OK
+        springLayout.putConstraint(SpringLayout.NORTH, searchDropDown, 40, SpringLayout.SOUTH, miniCalendar); // OK
         springLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
+        springLayout.putConstraint(SpringLayout.NORTH, container, 30, SpringLayout.SOUTH, searchDropDown); // OK
 
         container.add(cb1Description, c);
         c.gridx = 1;
@@ -178,7 +198,7 @@ public class MainFrame extends JPanel {
         searchPanel.setLayout(searchLayout);
         searchPanel.add(searchField);
         searchLayout.putConstraint(SpringLayout.NORTH, searchField, 10, SpringLayout.NORTH, searchPanel);
-        /* kommentar*/
+        
         createPersonCheckPanel();
         springLayout.putConstraint(SpringLayout.NORTH, checkScrollPane, 50, SpringLayout.SOUTH, container);        
         leftPanel.add(checkScrollPane);
@@ -187,6 +207,111 @@ public class MainFrame extends JPanel {
     	
     	return leftPanel;
     }
+	
+	public void createMiniCalendar() {
+		NorCalendar cal = calendarView.getCalendar();
+				
+		miniCalendar = new JPanel();
+		miniCalendar.setBackground(Color.white);
+		miniCalendar.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0; c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		
+		Container labels = new Container();
+		labels.setLayout(new BorderLayout());
+		
+		JLabel left = new JLabel("<");
+		left.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+		left.addMouseListener(listener);
+		labels.add(left, BorderLayout.WEST);
+		
+		miniCalendarMonth = new JLabel();
+		int curMonth = cal.MONTH;
+		miniCalendarMonth.setText(cal.month(curMonth) + " - " + Integer.toString(cal.YEAR) );
+		miniCalendarMonth.setHorizontalAlignment(JLabel.CENTER);
+		labels.add(miniCalendarMonth, BorderLayout.CENTER);
+		
+		JLabel right = new JLabel(">");
+		right.setBackground(Color.gray);
+		right.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+		right.addMouseListener(listener);
+		labels.add(right, BorderLayout.EAST);
+		miniCalendar.add(labels, c);
+		
+		c.gridx = 0;
+		c.gridy++;
+		Container header = createHeader();
+		miniCalendar.add(header, c);
+		
+		c.gridy++;
+		miniCalendarDays = new Container();
+		miniCalendar.add(updateDaysOfMonth(), c);
+	}
+	
+    public static Container updateDaysOfMonth() {
+    	NorCalendar cal = calendarView.getCalendar();
+    	GridBagConstraints c = new GridBagConstraints();
+    	c.gridx = 0; c.gridy = 0;
+    	
+    	miniCalendarMonth.setText(calendarView.getCalendar().month(calendarView.getCalendar().MONTH) + " - " + calendarView.getCalendar().YEAR);
+		miniCalendarDays.removeAll();
+		miniCalendarDays.setLayout(new GridBagLayout());
+		int firstDay = cal.getFirstDayOfMonth();
+		int lastDay = cal.getLastDayOfMonth();
+		System.out.println("Dager i " + cal.month(cal.MONTH) +" " + cal.YEAR +": "+lastDay);
+		int dayCounter = 0;
+		for (int i = 0; i < 6; i++) {
+			JPanel week = new JPanel();
+			week.setBackground(Color.white);
+			week.setLayout(new GridBagLayout());
+			week.addMouseListener(listener);
+			week.setName(Integer.toString(i));
+			for (int j = 0; j< 7; j++) {
+				JPanel day = new JPanel();
+				day.setBackground(Color.white);
+				day.setBorder(BorderFactory.createLineBorder(Color.black));
+				day.setVisible(true);
+				JLabel dateOfDay = new JLabel();
+				dateOfDay.setText(" ");
+				dateOfDay.setPreferredSize(new Dimension(14,14));
+				dateOfDay.setVisible(true);
+				if ( (i == 0 && j >= firstDay) || (i > 0 && dayCounter < lastDay) ) {
+					dayCounter++;
+					if(dayCounter < 10) { // #SJÅFINTUT
+						dateOfDay.setText("  " + Integer.toString(dayCounter));
+					}
+					else {
+						dateOfDay.setText(Integer.toString(dayCounter));
+					}
+				}
+				day.add(dateOfDay);
+				week.add(day);
+			}
+			miniCalendarDays.add(week, c);
+			c.gridy ++;		
+		}
+		miniCalendar.repaint();
+		return miniCalendarDays;
+    }
+	
+	private Container createHeader() {
+		Container header = new Container();
+		header.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0; c.gridy = 0;
+		for(int d = 0; d < 7; d++) {
+			c.gridx++;
+			JPanel headerDayPanel = new JPanel();
+			headerDayPanel.setBackground(new Color(255,208,112));
+			headerDayPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+			JLabel dayDescription = new JLabel( Character.toString(CalendarView.days[d].toString().charAt(0)) ); // TODO GET THIS DATE
+			dayDescription.setPreferredSize(new Dimension(14,14));
+			headerDayPanel.add(dayDescription);
+			header.add(headerDayPanel);
+		}
+		return header;
+	}
     
     public void createPersonCheckPanel() {
     	andreKalendere = new ArrayList<Person>();
@@ -283,7 +408,7 @@ public class MainFrame extends JPanel {
 					if(found) {
 						JLabel lab = new HoverLabel(new JLabel(testPersoner[i]), new Color(0,148,214), Color.white, Color.white, "/check.png");
 						HoverLabel hLab = (HoverLabel) lab;
-						hLab.addPropertyChangeListener(new Listener());
+						hLab.addPropertyChangeListener(listener);
 						hLab.setActionCommand("searchselection");
 						System.out.println(searchPanel.getWidth());
 						hLab.setPreferredSize(new Dimension(50, 16));
@@ -313,18 +438,53 @@ public class MainFrame extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
+			if (e.getSource() instanceof JLabel) {
+				if( ((JLabel) e.getSource()).getText() == "<") {
+//					calendarView.getCalendar().monthBack();
+					calendarView.getCalendar().monthBack();
+					miniCalendarDays = updateDaysOfMonth();
+				}
+				else {
+					calendarView.getCalendar().monthForward();
+					miniCalendarDays = updateDaysOfMonth();
+				}
+			}
+			if (e.getSource() instanceof JPanel) {
+				String name = ((JPanel) e.getSource()).getName();
+				int weekOfMonth = Integer.parseInt(name);
+//				calendarView.getCalendar().setWeek(weekOfMonth);
+			}
 			
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+			if (e.getSource() instanceof JLabel) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			if (e.getSource() instanceof JPanel) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				for (int i = 0; i < ((JPanel) e.getSource()).getComponentCount(); i++) {
+					((JPanel)((JPanel) e.getSource()).getComponent(i)).setBackground(new Color(0,200,255));
+					((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(i)).getComponent(0)).setForeground(Color.white);
+				}
+			}
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
+			if (e.getSource() instanceof JLabel) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+			if (e.getSource() instanceof JPanel) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				for (int i = 0; i < ((JPanel) e.getSource()).getComponentCount(); i++) {
+					((JPanel)((JPanel) e.getSource()).getComponent(i)).setBackground(Color.white);
+					((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(i)).getComponent(0)).setForeground(Color.black);
+				}
+			}
 			
 		}
 
@@ -379,5 +539,12 @@ public class MainFrame extends JPanel {
 		return leftPanel;
 	}
 
+    public static CalendarView getCalendarView() {
+    	return calendarView;
+    }
+    
+    public static void setMiniCalendarDays(Container cont) {
+    	miniCalendarDays = cont;
+    }
     
 }
