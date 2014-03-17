@@ -178,7 +178,7 @@ public class MainFrame extends JPanel {
         searchPanel.setLayout(searchLayout);
         searchPanel.add(searchField);
         searchLayout.putConstraint(SpringLayout.NORTH, searchField, 10, SpringLayout.NORTH, searchPanel);
-        
+        /* kommentar*/
         createPersonCheckPanel();
         springLayout.putConstraint(SpringLayout.NORTH, checkScrollPane, 50, SpringLayout.SOUTH, container);        
         leftPanel.add(checkScrollPane);
