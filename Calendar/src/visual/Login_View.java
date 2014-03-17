@@ -23,8 +23,6 @@ public class Login_View extends JPanel{
 	private JButton nyBrukerButton;
 
 	public Login_View(MainFrame mainFrame){
-		/* KOMMENTAR */
-		
 		this.mainFrame = mainFrame;
 		//setPreferredSize(new Dimension(800, 600));
 		Color backgroundBlender = new Color (241,240,226);

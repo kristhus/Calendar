@@ -55,7 +55,7 @@ public class MainFrame extends JPanel {
     private JPanel searchPanel;
     private JScrollPane searchScrollPane;
 
-	private LoginView loginView;
+	private Login_View loginView;
 	
 	private SpringLayout searchLayout;
     private final GridBagLayout searchResultGrid = new GridBagLayout();
@@ -100,7 +100,7 @@ public class MainFrame extends JPanel {
 	
 
     private void initLoginViewAndFrame() {
-    	loginView = new LoginView(this);
+    	loginView = new Login_View(this);
     	loginFrame = new JFrame();
         loginFrame.setPreferredSize(new Dimension(475, 200));
         loginFrame.add(loginView);
