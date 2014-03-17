@@ -20,6 +20,8 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
 
+import objects.Person;
+
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -63,8 +65,8 @@ public class MainFrame extends JPanel {
     
     /* TEST */
     private ArrayList<Person> andreKalendere;
-    private String[] testPersoner = {"KNUT", "KÅRE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
-    		"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-kåre"};
+    private String[] testPersoner = {"KNUT", "Kï¿½RE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
+    		"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-kï¿½re"};
     
     public static void main(String[] args) {
     	
@@ -150,7 +152,7 @@ public class MainFrame extends JPanel {
         nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
         
         ImageIcon caret = new ImageIcon(this.getClass().getResource("/concat.png"));
-        JButton searchDropDown = new JButton("Søk etter bruker");
+        JButton searchDropDown = new JButton("Sï¿½k etter bruker");
         searchDropDown.setActionCommand("Search button");
         searchDropDown.setPreferredSize(new Dimension(180, 30));
         searchDropDown.addActionListener(new Listener());
