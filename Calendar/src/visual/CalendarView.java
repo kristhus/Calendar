@@ -47,11 +47,13 @@ public class CalendarView extends JPanel {
 	
 	private Container header;
 	
-	private SpringLayout calenderLayout;
+	private SpringLayout calendarLayout;
 	
 	public static final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lørdag, Day.Søndag};
 	
 	private NorCalendar cal = new NorCalendar();
+	
+	private JLabel currentWeek;
 	
 	public CalendarView() {
 
@@ -59,14 +61,13 @@ public class CalendarView extends JPanel {
 		dayHeight = 900;
 		
 		setBackground(Color.white);
-		calenderLayout = new SpringLayout();
-		setLayout(calenderLayout);
+		calendarLayout = new SpringLayout();
+		setLayout(calendarLayout);
 		
 		createHeader();
 		createWeek();
 		
 		System.out.println(cal.getFirstDayOfWeek());
-//		DateCalculations dCalc = new DateCalculations(cal);
 	}
 
 	private void updateHeaderDates() {
@@ -110,26 +111,38 @@ public class CalendarView extends JPanel {
 		forward.addPropertyChangeListener(new PanelListener());
 		forward.setActionCommand("FORWARD");
 		header.add(forward, c);
-		calenderLayout.putConstraint(SpringLayout.NORTH, header, 50, SpringLayout.NORTH, this);
-		calenderLayout.putConstraint(SpringLayout.WEST, header, 0, SpringLayout.WEST, this);
+		calendarLayout.putConstraint(SpringLayout.NORTH, header, 50, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.WEST, header, 0, SpringLayout.WEST, this);
 		add(header);
 		
 		JLabel backWeek = new JLabel("LAST WEEK"); //TODO get the date one week of current calendar
 		Font weekFont = new Font(Font.SERIF,Font.BOLD , 20 );
 		backWeek.setFont(weekFont);
-		calenderLayout.putConstraint(SpringLayout.NORTH, backWeek, 20, SpringLayout.NORTH, this);
-		calenderLayout.putConstraint(SpringLayout.WEST, backWeek, 10, SpringLayout.WEST, this);
+		calendarLayout.putConstraint(SpringLayout.NORTH, backWeek, 20, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.WEST, backWeek, 10, SpringLayout.WEST, this);
 		add(backWeek);
+		
 		
 		JLabel forwardWeek = new JLabel("NEXT WEEK"); //TODO get the date one week of current calendar
 		forwardWeek.setFont(weekFont);
-		calenderLayout.putConstraint(SpringLayout.NORTH, forwardWeek, 20, SpringLayout.NORTH, this);
-		calenderLayout.putConstraint(SpringLayout.EAST, forwardWeek, -10, SpringLayout.EAST, this);
+		calendarLayout.putConstraint(SpringLayout.NORTH, forwardWeek, 20, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.EAST, forwardWeek, -10, SpringLayout.EAST, header);
 		add(forwardWeek);
 		
 		
+		currentWeek = new JLabel("Uke " + Integer.toString(cal.get(Calendar.WEEK_OF_YEAR)));
+//		curWeek.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		currentWeek.setFont(weekFont);
+		calendarLayout.putConstraint(SpringLayout.NORTH, currentWeek, 0, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.WEST, currentWeek, 400, SpringLayout.WEST, this);
+		add(currentWeek);
 	}
 
+	
+	public void updateHeader() {
+		currentWeek.setText("Uke " + Integer.toString(cal.get(Calendar.WEEK_OF_YEAR)));
+	}
+	
 	private void createWeek() {
 		
 		
@@ -150,8 +163,8 @@ public class CalendarView extends JPanel {
 		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 //		jsp.setLayout(new ScrollPaneLayout());
 		
-		calenderLayout.putConstraint(SpringLayout.NORTH, jsp, 0, SpringLayout.SOUTH, header);
-		calenderLayout.putConstraint(SpringLayout.WEST, jsp, 0 , SpringLayout.WEST, this);
+		calendarLayout.putConstraint(SpringLayout.NORTH, jsp, 0, SpringLayout.SOUTH, header);
+		calendarLayout.putConstraint(SpringLayout.WEST, jsp, 0 , SpringLayout.WEST, this);
 		add(jsp);
 	}
 	
@@ -268,16 +281,17 @@ public class CalendarView extends JPanel {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			System.out.println("Something happened");
 			if (evt.getPropertyName() == "BACK") {
 				cal.lastWeek();
 				MainFrame.setMiniCalendarDays(MainFrame.updateDaysOfMonth());
-				System.out.println("back - " + cal.get(cal.WEEK_OF_MONTH));
+				updateHeader();
+				System.out.println("back - " + cal.WEEK_OF_MONTH);
 			}
 			else if (evt.getPropertyName() == "FORWARD") {
 				cal.nextWeek();
 				MainFrame.setMiniCalendarDays(MainFrame.updateDaysOfMonth());
-				System.out.println("forward - " + cal.get(cal.WEEK_OF_MONTH));
+				updateHeader();
+//				System.out.println("forward - " + cal.WEEK_OF_MONTH);
 			}
 		}
 		

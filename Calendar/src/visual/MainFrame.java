@@ -58,6 +58,7 @@ public class MainFrame extends JPanel {
 	private static Listener listener;
 	
 	private static JPanel miniCalendar;
+	private static NorCalendar miniNorCalendar;
 	private static JLabel miniCalendarMonth;
 	private static Container miniCalendarDays;
 	
@@ -107,6 +108,7 @@ public class MainFrame extends JPanel {
         mainFrame.revalidate();
         
         /* DETTA E EN KOMMENTAR */
+        System.out.println("At init: " + calendarView.getCalendar().WEEK_OF_MONTH);
     }
     
     	
@@ -209,7 +211,7 @@ public class MainFrame extends JPanel {
     }
 	
 	public void createMiniCalendar() {
-		NorCalendar cal = calendarView.getCalendar();
+		miniNorCalendar = new NorCalendar();
 				
 		miniCalendar = new JPanel();
 		miniCalendar.setBackground(Color.white);
@@ -227,8 +229,8 @@ public class MainFrame extends JPanel {
 		labels.add(left, BorderLayout.WEST);
 		
 		miniCalendarMonth = new JLabel();
-		int curMonth = cal.MONTH;
-		miniCalendarMonth.setText(cal.month(curMonth) + " - " + Integer.toString(cal.YEAR) );
+		int curMonth = miniNorCalendar.MONTH;
+		miniCalendarMonth.setText(miniNorCalendar.month(curMonth) + " - " + Integer.toString(miniNorCalendar.YEAR) );
 		miniCalendarMonth.setHorizontalAlignment(JLabel.CENTER);
 		labels.add(miniCalendarMonth, BorderLayout.CENTER);
 		
@@ -250,16 +252,16 @@ public class MainFrame extends JPanel {
 	}
 	
     public static Container updateDaysOfMonth() {
-    	NorCalendar cal = calendarView.getCalendar();
     	GridBagConstraints c = new GridBagConstraints();
     	c.gridx = 0; c.gridy = 0;
     	
-    	miniCalendarMonth.setText(calendarView.getCalendar().month(calendarView.getCalendar().MONTH) + " - " + calendarView.getCalendar().YEAR);
+    	miniCalendarMonth.setText(miniNorCalendar.month(miniNorCalendar.MONTH) + " - " + miniNorCalendar.YEAR);
 		miniCalendarDays.removeAll();
 		miniCalendarDays.setLayout(new GridBagLayout());
-		int firstDay = cal.getFirstDayOfMonth();
-		int lastDay = cal.getLastDayOfMonth();
-		System.out.println("Dager i " + cal.month(cal.MONTH) +" " + cal.YEAR +": "+lastDay);
+		int firstDay = miniNorCalendar.getFirstDayOfMonth();
+		int lastDay = miniNorCalendar.getLastDayOfMonth();
+//		System.out.println("DAY OF MONTH: " + calendarView.getCalendar().DAY_OF_MONTH);
+//		System.out.println("Dager i " + cal.month(cal.MONTH) +" " + cal.YEAR +": "+lastDay);
 		int dayCounter = 0;
 		for (int i = 0; i < 6; i++) {
 			JPanel week = new JPanel();
@@ -286,12 +288,16 @@ public class MainFrame extends JPanel {
 					}
 				}
 				day.add(dateOfDay);
-				week.add(day);
+					week.add(day);
 			}
-			miniCalendarDays.add(week, c);
-			c.gridy ++;		
+			for(int empty = 0; empty < 7; empty++) {
+				if( ((JLabel) ((JPanel) week.getComponent(empty)).getComponent(0)).getText() != " " ) {
+					miniCalendarDays.add(week, c);
+					c.gridy ++;		
+				}
+			}
 		}
-		miniCalendar.repaint();
+		miniCalendar.revalidate();
 		return miniCalendarDays;
     }
 	
@@ -440,19 +446,17 @@ public class MainFrame extends JPanel {
 			// TODO Auto-generated method stub
 			if (e.getSource() instanceof JLabel) {
 				if( ((JLabel) e.getSource()).getText() == "<") {
-//					calendarView.getCalendar().monthBack();
-					calendarView.getCalendar().monthBack();
+					miniNorCalendar.monthBack();
 					miniCalendarDays = updateDaysOfMonth();
 				}
 				else {
-					calendarView.getCalendar().monthForward();
+					miniNorCalendar.monthForward();
 					miniCalendarDays = updateDaysOfMonth();
 				}
 			}
 			if (e.getSource() instanceof JPanel) {
 				String name = ((JPanel) e.getSource()).getName();
 				int weekOfMonth = Integer.parseInt(name);
-//				calendarView.getCalendar().setWeek(weekOfMonth);
 			}
 			
 		}
