@@ -2,9 +2,10 @@ package objects;
 
 import java.util.ArrayList;
 
-public class Person {
+public class Person implements Searchable {
 
 	public String navn;
+	public String name;
 	public int tlf;
 	public String epost;
 	public ArrayList<Person> andreKalendere;
@@ -12,6 +13,7 @@ public class Person {
 	
 	
 	public Person(String navn, String epost, int tlf) {
+		this.name = navn;
 		this.navn = navn;
 		this.epost = epost;
 		this.tlf = tlf;
@@ -27,6 +29,15 @@ public class Person {
 
 	public void setNavn(String navn) {
 		this.navn = navn;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String navn) {
+		this.name = navn;
 	}
 
 
