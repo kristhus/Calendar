@@ -107,8 +107,6 @@ public class MainFrame extends JPanel {
         
         mainFrame.revalidate();
         
-        /* DETTA E EN KOMMENTAR */
-        System.out.println("At init: " + calendarView.getCalendar().WEEK_OF_MONTH);
     }
     
     	
@@ -225,6 +223,9 @@ public class MainFrame extends JPanel {
 		
 		JLabel left = new JLabel("<");
 		left.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+		left.setPreferredSize(new Dimension(20,12));
+		left.setBackground(new Color(215,150,0));
+		left.setBorder(BorderFactory.createRaisedBevelBorder());
 		left.addMouseListener(listener);
 		labels.add(left, BorderLayout.WEST);
 		
@@ -234,8 +235,10 @@ public class MainFrame extends JPanel {
 		miniCalendarMonth.setHorizontalAlignment(JLabel.CENTER);
 		labels.add(miniCalendarMonth, BorderLayout.CENTER);
 		
-		JLabel right = new JLabel(">");
-		right.setBackground(Color.gray);
+		JLabel right = new JLabel(" >");
+		right.setBorder(BorderFactory.createRaisedBevelBorder());
+		right.setPreferredSize(new Dimension(20,12));
+		right.setBackground(new Color(215,150,0)); // TODO Velg en bra farge
 		right.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
 		right.addMouseListener(listener);
 		labels.add(right, BorderLayout.EAST);
@@ -260,8 +263,10 @@ public class MainFrame extends JPanel {
 		miniCalendarDays.setLayout(new GridBagLayout());
 		int firstDay = miniNorCalendar.getFirstDayOfMonth();
 		int lastDay = miniNorCalendar.getLastDayOfMonth();
-//		System.out.println("DAY OF MONTH: " + calendarView.getCalendar().DAY_OF_MONTH);
-//		System.out.println("Dager i " + cal.month(cal.MONTH) +" " + cal.YEAR +": "+lastDay);
+		
+		int lastDayLastWeekLastMonth = miniNorCalendar.getLastDayOfLastWeekInLastMonth();
+		
+		int nextMonthDayCounter = 1;
 		int dayCounter = 0;
 		for (int i = 0; i < 6; i++) {
 			JPanel week = new JPanel();
@@ -271,27 +276,39 @@ public class MainFrame extends JPanel {
 			week.setName(Integer.toString(i));
 			for (int j = 0; j< 7; j++) {
 				JPanel day = new JPanel();
+				
 				day.setBackground(Color.white);
 				day.setBorder(BorderFactory.createLineBorder(Color.black));
 				day.setVisible(true);
 				JLabel dateOfDay = new JLabel();
-				dateOfDay.setText(" ");
 				dateOfDay.setPreferredSize(new Dimension(14,14));
+				dateOfDay.setName("black");
 				dateOfDay.setVisible(true);
 				if ( (i == 0 && j >= firstDay) || (i > 0 && dayCounter < lastDay) ) {
 					dayCounter++;
 					if(dayCounter < 10) { // #SJÅFINTUT
-						dateOfDay.setText("  " + Integer.toString(dayCounter));
+						dateOfDay.setText(Integer.toString(dayCounter));
 					}
 					else {
 						dateOfDay.setText(Integer.toString(dayCounter));
 					}
 				}
+				else if (j < firstDay && i < 2) {
+					dateOfDay.setText(Integer.toString(lastDayLastWeekLastMonth-firstDay+j+1));
+					dateOfDay.setName("gray");
+					dateOfDay.setForeground(Color.gray);
+				}
+				else {
+					dateOfDay.setText(" " + Integer.toString(nextMonthDayCounter));
+					dateOfDay.setName("gray");
+					dateOfDay.setForeground(Color.gray);
+					nextMonthDayCounter++;
+				}
 				day.add(dateOfDay);
 					week.add(day);
 			}
 			for(int empty = 0; empty < 7; empty++) {
-				if( ((JLabel) ((JPanel) week.getComponent(empty)).getComponent(0)).getText() != " " ) {
+				if( ((JLabel) ((JPanel) week.getComponent(empty)).getComponent(0)).getText() != " " && nextMonthDayCounter < 8) {
 					miniCalendarDays.add(week, c);
 					c.gridy ++;		
 				}
@@ -457,6 +474,31 @@ public class MainFrame extends JPanel {
 			if (e.getSource() instanceof JPanel) {
 				String name = ((JPanel) e.getSource()).getName();
 				int weekOfMonth = Integer.parseInt(name);
+				System.out.println(name);
+				calendarView.getCalendar().setTime(miniNorCalendar.getTime());
+				calendarView.getCalendar().setWeek(weekOfMonth);
+				updateDaysOfMonth();
+				calendarView.updateWeekDates();
+				System.out.println("weekdays: " + calendarView.getCalendar().getWeekDates()[0]);
+				System.out.println("source char: " + ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText());
+				try {
+				if(calendarView.getCalendar().getWeekDates()[0].charAt(0) != ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().charAt(0)
+						|| (calendarView.getCalendar().getWeekDates()[0].charAt(1) != ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().charAt(1) 
+							&& ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().length() < 3 )) {
+					calendarView.getCalendar().nextWeek();
+					updateDaysOfMonth();
+					calendarView.updateWeekDates();
+				}
+				}
+				catch(IndexOutOfBoundsException exc) {
+					System.out.println("sum ting wong");
+				}
+//				if (weekOfMonth == 0) { // For whatever reason, this must be done twice. I suspect it is because of the Calendar interprets 0 as the last week in last month, instead of first this month
+//					updateDaysOfMonth();
+//					calendarView.updateWeekDates();
+//				}
+				calendarView.getCurrentWeek().setText("Uke " + calendarView.getCalendar().get(Calendar.WEEK_OF_YEAR));
+				
 			}
 			
 		}
@@ -486,7 +528,12 @@ public class MainFrame extends JPanel {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				for (int i = 0; i < ((JPanel) e.getSource()).getComponentCount(); i++) {
 					((JPanel)((JPanel) e.getSource()).getComponent(i)).setBackground(Color.white);
-					((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(i)).getComponent(0)).setForeground(Color.black);
+					if(	((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(i)).getComponent(0)).getName() == "black") {
+						((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(i)).getComponent(0)).setForeground(Color.black);
+					}
+					else {
+						((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(i)).getComponent(0)).setForeground(Color.gray);
+					}
 				}
 			}
 			
@@ -498,12 +545,17 @@ public class MainFrame extends JPanel {
 			if(!searchScrollPane.isFocusOwner() && searchScrollPane.isVisible()) {
 				searchScrollPane.setVisible(false);
 			}
+			if (e.getSource() instanceof JLabel) {
+				((JLabel) e.getSource()).setBorder(BorderFactory.createLoweredBevelBorder());
+			}
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+			if (e.getSource() instanceof JLabel) {
+				((JLabel) e.getSource()).setBorder(BorderFactory.createRaisedBevelBorder());
+			}
 		}
 
 		@Override

@@ -22,7 +22,6 @@ public class NorCalendar extends GregorianCalendar {
 	public NorCalendar() {
 		update();
 		TODAY = Calendar.getInstance().getTime();
-		System.out.println(getTime());
 	}
 	
 	public void monthBack() {
@@ -74,7 +73,6 @@ public class NorCalendar extends GregorianCalendar {
 	
 	public void setWeek(int week) {
 		set(Calendar.WEEK_OF_MONTH, week);
-		MainFrame.getCalendarView(); // Ej e lat å gidd ikkje lage fleire propertysupports, derav static -.-
 	}
 	
 	public String month(int i) {
@@ -92,16 +90,28 @@ public class NorCalendar extends GregorianCalendar {
 	
 	public void lastWeek() {
 		add(Calendar.WEEK_OF_MONTH, -1);
-		System.out.println(getTime() + "       HER");
 		update();
 	}
 	public void nextWeek() {
 		add(Calendar.WEEK_OF_MONTH, 1);
-		System.out.println(getTime());
 		update();
 	}
 	
 	public String[] getWeekDates() {
-		return null;
+		String[] weekDays = {null,null,null,null,null,null,null};
+		SimpleDateFormat sdf = new SimpleDateFormat("d.MM.yyyy");
+		for(int i = 0; i < 7; i++) {
+			set(Calendar.DAY_OF_WEEK, i+2);
+			weekDays[i] = sdf.format(getTime());
+		}
+		return weekDays;
+	}
+	
+	public int getLastDayOfLastWeekInLastMonth() {
+		monthBack();
+		int lastDay = getLastDayOfMonth();
+		monthForward();
+		return lastDay;
+		
 	}
 }
