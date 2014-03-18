@@ -34,12 +34,14 @@ public class HoverLabel extends JLabel implements MouseListener {
 	private Insets insets;
 	private Boolean selected = false;
 	private String actionCommand = "";
+	private Searchable object;
 	
-	public HoverLabel(JLabel label, Color background, Color hoverFontColor, Color defaultBackgroundColor, String iconPath) {
+	public HoverLabel(Searchable object, Color background, Color hoverFontColor, Color defaultBackgroundColor, String iconPath) {
+		this.object = object;
+		label = new JLabel(object.getName());
 		setText(label.getText());
 		setOpaque(true);
 		hover = false;
-		this.label = label;
 		this.background = background;
 		this.hoverFontColor = hoverFontColor;
 		this.oldBackground = defaultBackgroundColor;
@@ -158,5 +160,12 @@ public class HoverLabel extends JLabel implements MouseListener {
 	public Boolean isSelected() {
 		return selected;
 	}
-
+	
+	public Searchable getObject() {
+		return object;
+	}
+	
+	public void setObject(Searchable object) {
+		this.object = object;
+	}
 }
