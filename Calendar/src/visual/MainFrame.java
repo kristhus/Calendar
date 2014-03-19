@@ -165,7 +165,7 @@ public class MainFrame extends JPanel {
         cb1Description.setText("Andre kalendere");
         
         JButton nyAvtaleBtn = new JButton("Ny avtale");
-        nyAvtaleBtn.setActionCommand("New appointment");
+        nyAvtaleBtn.setActionCommand("New Appointment");
         nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
         nyAvtaleBtn.addActionListener(listener);
         
