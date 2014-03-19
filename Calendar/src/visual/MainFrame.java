@@ -106,7 +106,7 @@ public class MainFrame extends JPanel {
 		mainFrame.add(new MainFrame());
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null);
-		mainFrame.setResizable(false);
+//		mainFrame.setResizable(false);
 
 		mainFrame.revalidate();
 
@@ -165,7 +165,9 @@ public class MainFrame extends JPanel {
         cb1Description.setText("Andre kalendere");
         
         JButton nyAvtaleBtn = new JButton("Ny avtale");
+        nyAvtaleBtn.setActionCommand("New appointment");
         nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
+        nyAvtaleBtn.addActionListener(listener);
         
         ImageIcon caret = new ImageIcon(this.getClass().getResource("/concat.png"));
         JButton searchDropDown = new JButton("Søk etter bruker");

@@ -306,11 +306,14 @@ public class CalendarView extends JPanel {
 
 	public void updateWeekDates() {
 		String[] weekDates = cal.getWeekDates();
+		System.out.println("TEST START");
 		for(int i = 0; i < 7; i++) {
 			weekDays[i].setText("<html>" + days[i].toString() + "<br>" + weekDates[i] + "</html>");
 			weekDays[i].revalidate();
 			weekDays[i].repaint();
+			System.out.println(weekDays[i].getText());
 		}
+		System.out.println("TEST SLUTT");
 	}
 	
 	public NorCalendar getCalendar() {
