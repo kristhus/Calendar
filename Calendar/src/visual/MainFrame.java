@@ -287,7 +287,7 @@ public class MainFrame extends JPanel {
 				day.setBorder(BorderFactory.createLineBorder(Color.black));
 				day.setVisible(true);
 				JLabel dateOfDay = new JLabel();
-				dateOfDay.setPreferredSize(new Dimension(14,14));
+				dateOfDay.setPreferredSize(new Dimension(16,14));
 				dateOfDay.setName("black");
 				dateOfDay.setVisible(true);
 				if ( (i == 0 && j >= firstDay) || (i > 0 && dayCounter < lastDay) ) {
@@ -335,7 +335,7 @@ public class MainFrame extends JPanel {
 			headerDayPanel.setBackground(new Color(255,208,112));
 			headerDayPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 			JLabel dayDescription = new JLabel( Character.toString(CalendarView.days[d].toString().charAt(0)) ); // TODO GET THIS DATE
-			dayDescription.setPreferredSize(new Dimension(14,14));
+			dayDescription.setPreferredSize(new Dimension(16,14));
 			headerDayPanel.add(dayDescription);
 			header.add(headerDayPanel);
 		}
