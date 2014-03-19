@@ -114,6 +114,32 @@ public class Appointment {
 
 		return false;
 	}
+	
+	
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public void setAppointmentOwner(Person appointmentOwner) {
+		this.appointmentOwner = appointmentOwner;
+	}
+
+	public MeetingRoom getMeetingRoom() {
+		return meetingRoom;
+	}
+
+	public void setMeetingRoom(MeetingRoom meetingRoom) {
+		this.meetingRoom = meetingRoom;
+	}
+
+	public Person getAppointmentOwner() {
+		return appointmentOwner;
+	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		pcs.addPropertyChangeListener(listener);
