@@ -136,7 +136,7 @@ public class MainFrame extends JPanel {
 
 		calendarView = new CalendarView();
 		add(createLeftWindow(), BorderLayout.WEST);
-		add(new CalendarView());
+		add(calendarView);
 	}
 
 	public JPanel createLeftWindow() {
