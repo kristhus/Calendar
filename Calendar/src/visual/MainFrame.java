@@ -22,6 +22,7 @@ import javax.swing.WindowConstants;
 
 import calculations.NorCalendar;
 import objects.Appointment;
+import objects.MeetingRoom;
 import objects.Person;
 
 import java.awt.BasicStroke;
@@ -47,6 +48,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MainFrame extends JPanel {
 
@@ -135,6 +137,19 @@ public class MainFrame extends JPanel {
 		setLayout(new BorderLayout(0,1));
 
 		calendarView = new CalendarView();
+		Appointment app = new Appointment();
+		///////////TEST TEST TEST////////////START
+		app.setDescription("yolo");
+		app.setStartTime(new Date(2014,11,16,16,30));
+		app.setEndTime(new Date(2014,11,16,18,00));
+		app.setDescription("blablabla");
+		app.setName("TacoKveld med pepsiMax");
+		MeetingRoom torehus = new MeetingRoom("Huset til Tore", 5);
+		app.setMeetingRoom(torehus);
+		Person toreeee = new Person("Tore Shølsagt", " ", 666 );
+		app.setAppointmentOwner(toreeee);
+		NotificationView notV = new NotificationView(this, app);
+		///////////TEST TEST TEST////////////END
 		add(createLeftWindow(), BorderLayout.WEST);
 		add(calendarView);
 	}
