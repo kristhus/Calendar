@@ -117,7 +117,7 @@ public class CalendarView extends JPanel {
 		forward.setActionCommand("FORWARD");
 		header.add(forward, c);
 		calendarLayout.putConstraint(SpringLayout.NORTH, header, 50, SpringLayout.NORTH, this);
-		calendarLayout.putConstraint(SpringLayout.WEST, header, 0, SpringLayout.WEST, this);
+		calendarLayout.putConstraint(SpringLayout.WEST, header, 3, SpringLayout.WEST, this);
 		add(header);
 		
 		JLabel backWeek = new JLabel("LAST WEEK"); //TODO get the date one week of current calendar
@@ -158,11 +158,11 @@ public class CalendarView extends JPanel {
 		
 		JScrollPane jsp = new JScrollPane(dayContainer);
 		
-//		jsp.setPreferredSize(new Dimension(900, 600));
-		jsp.setBorder(null);
+		jsp.setPreferredSize(new Dimension(854, 650));
+//		jsp.setBorder(null);
 		jsp.setBackground(Color.white);
 		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//		jsp.setLayout(new ScrollPaneLayout());
+		jsp.setLayout(new ScrollPaneLayout());
 		
 		calendarLayout.putConstraint(SpringLayout.NORTH, jsp, 0, SpringLayout.SOUTH, header);
 		calendarLayout.putConstraint(SpringLayout.WEST, jsp, 0 , SpringLayout.WEST, this);

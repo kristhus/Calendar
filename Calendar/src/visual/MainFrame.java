@@ -104,6 +104,7 @@ public class MainFrame extends JPanel {
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
+        mainFrame.setResizable(false);
         
         mainFrame.revalidate();
         
