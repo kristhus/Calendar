@@ -401,7 +401,7 @@ public class MainFrame extends JPanel {
 
 	public void createUserSearch() {
 		searchPanel = new JPanel();
-		searchPanel.setBackground(Color.white);
+		searchPanel.setBackground(Color.WHITE);
 		searchPanel.setVisible(true);
 
 		searchScrollPane = new JScrollPane(searchPanel);
