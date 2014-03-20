@@ -120,7 +120,7 @@ public class MainFrame extends JPanel {
 	private void initLoginViewAndFrame() {
 		loginView = new LoginView(this);
 		loginFrame = new JFrame();
-		loginFrame.setPreferredSize(new Dimension(475, 200));
+		loginFrame.setPreferredSize(new Dimension(550, 200));
 		loginFrame.add(loginView);
 		loginFrame.pack();
 		loginFrame.setLocationRelativeTo(null);
