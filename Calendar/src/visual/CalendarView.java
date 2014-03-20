@@ -138,7 +138,7 @@ public class CalendarView extends JPanel {
 		currentWeek = new JLabel("Uke " + Integer.toString(cal.get(Calendar.WEEK_OF_YEAR)));
 //		curWeek.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		currentWeek.setFont(weekFont);
-		calendarLayout.putConstraint(SpringLayout.NORTH, currentWeek, 0, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.NORTH, currentWeek, 20, SpringLayout.NORTH, this);
 		calendarLayout.putConstraint(SpringLayout.WEST, currentWeek, 400, SpringLayout.WEST, this);
 		add(currentWeek);
 	}
