@@ -118,7 +118,7 @@ public class MainFrame extends JPanel {
 	}
 
 	public MainFrame() {
-		client = new Client();
+		// client = new Client();
 		initSplashScreen();
 		initLoginViewAndFrame();
 		setPreferredSize(new Dimension(800, 600));
@@ -127,15 +127,13 @@ public class MainFrame extends JPanel {
 		setLayout(new BorderLayout(0,1));
 
 		calendarView = new CalendarView();
-		Appointment app = new Appointment();
+		Appointment app = new Appointment(currentUser);
 		///////////TEST TEST TEST////////////START
 		app.setStartTime(new Date(2014,11,16,16,30));
 		app.setEndTime(new Date(2014,11,16,18,00));
 		app.setName("TacoKveld med pepsiMax");
 		MeetingRoom torehus = new MeetingRoom("Huset til Tore", 5);
 		app.setMeetingRoom(torehus);
-		Person toreeee = new Person("Tore Shølsagt", " ", 666 );
-		app.setAppointmentOwner(toreeee);
 		//NotificationView notV = new NotificationView(this, app);
 		///////////TEST TEST TEST////////////END
 		add(createLeftWindow(), BorderLayout.WEST);
@@ -413,7 +411,7 @@ public class MainFrame extends JPanel {
 	public void createNewUserFromRegistrationView(Person user,String password){
 		this.currentUser=user;
 		mainFrame.setVisible(true);
-		System.out.println(currentUser.getNavn());
+		System.out.println(currentUser.getName());
 		//TODO: KODE FOR Å LAGE NY BRUKER I DB OSV OSV OSV
 
 
@@ -430,7 +428,7 @@ public class MainFrame extends JPanel {
 				break;
 			case "New Appointment":
 				System.out.println("NEW APPOINTMENT CHOSEN");
-				AppointmentView appointmentView = new AppointmentView(MainFrame.this);
+				AppointmentView appointmentView = new AppointmentView(currentUser);
 				JFrame appointmentFrame = new JFrame();
 				appointmentFrame.setPreferredSize(new Dimension(800,600));
 				appointmentFrame.add(appointmentView);
