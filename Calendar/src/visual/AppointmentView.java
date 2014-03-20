@@ -124,7 +124,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 		layout.putConstraint(SpringLayout.NORTH, endDatePC, 0, SpringLayout.NORTH, endDate);
 		add(endDatePC);
 
-		description = new JLabel("Deskripsjon: ");
+		description = new JLabel("Beskrivelse: ");
 		layout.putConstraint(SpringLayout.WEST, description, 5, SpringLayout.WEST, this);
 		layout.putConstraint(SpringLayout.NORTH, description, 20, SpringLayout.SOUTH, endDate);
 		add(description);
