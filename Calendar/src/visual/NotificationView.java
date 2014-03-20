@@ -1,6 +1,8 @@
 package visual;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -11,40 +13,61 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-
 import objects.Appointment;
-import objects.Person;
 
 public class NotificationView extends JFrame{
 
 	private JButton seAvtaleButton;
 	private JFrame thisFrame;
+	private JButton godtaButton;
+	private JButton avslaButton;
 
 	public NotificationView (MainFrame mainFrame, Appointment appointment){
-		super("Nytt Varsel");
+		super("Du er invitert til en ny avtale");
 		thisFrame = this;
 		JPanel notificationPanel = new JPanel();
-		
-		//notificationPanel.setPreferredSize(new Dimension(800, 600));
+		notificationPanel.setPreferredSize(new Dimension(500, 150));
+		notificationPanel.setBackground(Color.white);
 		notificationPanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0; c.gridy=0;
-		c.ipadx = 10; c.ipady = 3;
-		notificationPanel.add(new JLabel("Du har en ny invitasjon!"),c);
-		c.gridy++;
-		notificationPanel.add(new JLabel(appointment.getAppointmentOwner().getName() + " har invitert deg til en avtalen: " + appointment.getName() + "."),c);
+		c.ipadx = 75; c.ipady = 3;
+		Font fatFont = new Font(Font.SANS_SERIF, Font.BOLD, new JLabel().getFont().getSize());
+		c.fill = GridBagConstraints.HORIZONTAL;
+
+		notificationPanel.add(new JLabel("Avtaleoppretter:"),c); 
+		JLabel appointmentOwnerLabel = new JLabel(appointment.getAppointmentOwner().getName()); appointmentOwnerLabel.setFont(fatFont); c.gridx++;
+		notificationPanel.add(appointmentOwnerLabel,c); c.gridx--; c.gridy++;
+		
+		notificationPanel.add(new JLabel("AvtaleNavn:"),c);
+		JLabel appointmentNameLabel = new JLabel(appointment.getName()); appointmentNameLabel.setFont(fatFont); c.gridx++;
+		notificationPanel.add(appointmentNameLabel,c);c.gridx--;c.gridy++;
+		
+		notificationPanel.add(new JLabel("Dato:"),c);
+		JLabel datoLabel = new JLabel(appointment.getStartTime().getDate() + "." + appointment.getStartTime().getMonth()+"."+appointment.getStartTime().getYear()); datoLabel.setFont(fatFont); c.gridx++;
+		notificationPanel.add(datoLabel,c);c.gridx--;c.gridy++;
+		
+		notificationPanel.add(new JLabel("Tid:"),c);
+		JLabel klokkeLabel = new JLabel(appointment.getStartTime().getHours()+":"+appointment.getStartTime().getMinutes() + " - " + appointment.getEndTime().getHours() + ":" + appointment.getEndTime().getMinutes()); klokkeLabel.setFont(fatFont); c.gridx++;
+		notificationPanel.add(klokkeLabel,c);c.gridx--;c.gridy++;
 		
 		c.gridy++;
-		notificationPanel.add(new JLabel("Dato:\t" + appointment.getStartTime().getDate() + "." + appointment.getStartTime().getMonth()+"."+appointment.getStartTime().getYear()),c);
 		
-		c.gridy++;
-		notificationPanel.add(new JLabel("Tid:\t" + "Fra: " + appointment.getStartTime().getHours()+":"+appointment.getStartTime().getMinutes() + "\t Til " + appointment.getEndTime().getHours() + ":" + appointment.getEndTime().getMinutes()),c);
-		
-		c.gridy++;
+		c.gridwidth = 2;
 		seAvtaleButton = new JButton("Se avtale");
-		seAvtaleButton.setPreferredSize(new Dimension(300, 30));
 		seAvtaleButton.addActionListener(actionListener); seAvtaleButton.setName("seAvtaleButton");
 		notificationPanel.add(seAvtaleButton,c);
+		c.gridwidth = 1;
+		c.gridy++;
+		
+		avslaButton = new JButton("Avslå");
+		avslaButton.addActionListener(actionListener); avslaButton.setName("avslaButton");
+		notificationPanel.add(avslaButton,c);
+		c.gridx++;
+		
+		godtaButton = new JButton("Godta");
+		godtaButton.addActionListener(actionListener); godtaButton.setName("godtaButton");
+		notificationPanel.add(godtaButton,c);
 		
 		add(notificationPanel);
 		
