@@ -28,14 +28,12 @@ public class LoginView extends JPanel{
 	public LoginView(MainFrame mainFrame){
 		this.mainFrame = mainFrame;
 		//setPreferredSize(new Dimension(800, 600));
-		Color backgroundBlender = new Color (241,240,226);
-		setBackground(backgroundBlender);
 		setBackground(Color.white);
 		setVisible(true);
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0; c.gridy=0;
-		c.ipadx = 10; c.ipady = 10;
+		c.ipadx = 25; c.ipady = 10;
 
 
 		JLabel brukernavnLabel = new JLabel("Brukernavn");
@@ -85,7 +83,7 @@ public class LoginView extends JPanel{
 			else if (e.getSource() == nyBrukerButton){
 				JFrame registrationFrame = new JFrame();
 				RegistrationView registrationView = new RegistrationView(mainFrame,registrationFrame);
-		        registrationFrame.setPreferredSize(new Dimension(550, 330));
+		        registrationFrame.setPreferredSize(new Dimension(650, 330));
 		        registrationFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
 		        registrationFrame.add(registrationView);
 		        registrationFrame.pack();

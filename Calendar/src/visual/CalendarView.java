@@ -12,6 +12,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -22,9 +25,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.SpringLayout;
 
 import calculations.DateCalculations;
+import calculations.NorCalendar;
 
 public class CalendarView extends JPanel {
 	
@@ -43,43 +48,39 @@ public class CalendarView extends JPanel {
 	
 	private Container header;
 	
-	private SpringLayout calenderLayout;
+	private SpringLayout calendarLayout;
 	
-	private final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lordag, Day.Sondag};
+	public static final Day[] days = {Day.Mandag, Day.Tirsdag, Day.Onsdag, Day.Torsdag, Day.Fredag, Day.Lørdag, Day.Søndag};
 	
-	private final Calendar cal = new GregorianCalendar();
+	private NorCalendar cal = new NorCalendar();
 	
+	private JLabel currentWeek;
+	private JLabel[] weekDays = {null, null, null, null, null, null, null};
+	
+	public JLabel[] getWeekDays() {
+		return weekDays;
+	}
+
 	public CalendarView() {
 
-		
 		dayWidth = 800;
 		dayHeight = 900;
 		
 		setBackground(Color.white);
-		calenderLayout = new SpringLayout();
-		setLayout(calenderLayout);
+		calendarLayout = new SpringLayout();
+		setLayout(calendarLayout);
+		
+		for (int i = 0; i < 7; i++) {
+			weekDays[i] = new JLabel("", JLabel.CENTER);
+		}
 		
 		createHeader();
 		createWeek();
 		
-		createDates();
-		System.out.println(cal.getFirstDayOfWeek());
-//		DateCalculations dCalc = new DateCalculations(cal);
-	}
-
-	private void createDates() {
-		
-		ArrayList<ArrayList<Object>> test = new ArrayList<ArrayList<Object>>();
-		for (int i = 0; i < days.length; i++) {
-			ArrayList<Object> toAdd = new ArrayList<Object>();
-			toAdd.add( ((Day) days[i]).toString());
-			toAdd.add("HEI");
-			test.add(toAdd);
-		}
-		
 	}
 
 	private void createHeader() {
+		String[] weekDates = cal.getWeekDates();
 		header = new Container();
 		header.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -88,7 +89,11 @@ public class CalendarView extends JPanel {
 		String iconDefault = "/buttons/left-up.png";
 		String iconHover = "/buttons/left-hover.png";
 		String iconPressed = "/buttons/left-down.png";
-		header.add(new CustomButton(iconDefault, iconPressed, iconHover), c);
+		
+		CustomButton back = new CustomButton(iconDefault, iconPressed, iconHover);
+		back.addPropertyChangeListener(new PanelListener());
+		back.setActionCommand("BACK");
+		header.add(back, c);
 		c.ipadx = 10;
 		System.out.println();
 		for(int d = 0; d < 7; d++) {
@@ -97,8 +102,9 @@ public class CalendarView extends JPanel {
 			headerDayPanel.setPreferredSize(new Dimension(dayWidth/7-10, dayHeight/24));
 			headerDayPanel.setBackground(new Color(255,208,112));
 			headerDayPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-			JLabel dayDescription = new JLabel("<html>" + days[d].toString() + "<br>" + "'DATO'</html>", JLabel.CENTER); // TODO GET THIS DATE
-			headerDayPanel.add(dayDescription);
+//			System.out.println(weekDates[d]);
+			weekDays[d].setText("<html>" + days[d].toString() + "<br>" + weekDates[d].toString() + "</html>"); // TODO GET THIS DATE
+			headerDayPanel.add(weekDays[d]);
 			header.add(headerDayPanel, c);
 		}
 		c.ipadx = 0;
@@ -106,31 +112,40 @@ public class CalendarView extends JPanel {
 		iconDefault = "/buttons/right-up.png";
 		iconHover = "/buttons/right-hover.png";
 		iconPressed = "/buttons/right-down.png";
-		header.add(new CustomButton(iconDefault, iconPressed, iconHover), c);
-		calenderLayout.putConstraint(SpringLayout.NORTH, header, 50, SpringLayout.NORTH, this);
-		calenderLayout.putConstraint(SpringLayout.WEST, header, 0, SpringLayout.WEST, this);
+		CustomButton forward = new CustomButton(iconDefault, iconPressed, iconHover);
+		forward.addPropertyChangeListener(new PanelListener());
+		forward.setActionCommand("FORWARD");
+		header.add(forward, c);
+		calendarLayout.putConstraint(SpringLayout.NORTH, header, 50, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.WEST, header, 3, SpringLayout.WEST, this);
 		add(header);
 		
 		JLabel backWeek = new JLabel("LAST WEEK"); //TODO get the date one week of current calendar
 		Font weekFont = new Font(Font.SERIF,Font.BOLD , 20 );
 		backWeek.setFont(weekFont);
-		calenderLayout.putConstraint(SpringLayout.NORTH, backWeek, 20, SpringLayout.NORTH, this);
-		calenderLayout.putConstraint(SpringLayout.WEST, backWeek, 10, SpringLayout.WEST, this);
+		calendarLayout.putConstraint(SpringLayout.NORTH, backWeek, 20, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.WEST, backWeek, 10, SpringLayout.WEST, this);
 		add(backWeek);
+		
 		
 		JLabel forwardWeek = new JLabel("NEXT WEEK"); //TODO get the date one week of current calendar
 		forwardWeek.setFont(weekFont);
-		calenderLayout.putConstraint(SpringLayout.NORTH, forwardWeek, 20, SpringLayout.NORTH, this);
-		calenderLayout.putConstraint(SpringLayout.EAST, forwardWeek, -10, SpringLayout.EAST, this);
+		calendarLayout.putConstraint(SpringLayout.NORTH, forwardWeek, 20, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.EAST, forwardWeek, -10, SpringLayout.EAST, header);
 		add(forwardWeek);
 		
 		
+		currentWeek = new JLabel("Uke " + Integer.toString(cal.get(Calendar.WEEK_OF_YEAR)));
+//		curWeek.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		currentWeek.setFont(weekFont);
+		calendarLayout.putConstraint(SpringLayout.NORTH, currentWeek, 20, SpringLayout.NORTH, this);
+		calendarLayout.putConstraint(SpringLayout.WEST, currentWeek, 400, SpringLayout.WEST, this);
+		add(currentWeek);
 	}
 
+	
 	private void createWeek() {
 		
-		JScrollPane jsp = new JScrollPane(this);
-		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		Container dayContainer = new Container();
 		dayContainer.setLayout(new GridBagLayout());
@@ -141,10 +156,17 @@ public class CalendarView extends JPanel {
 			dayContainer.add(dayPanel);
 		}
 		
+		JScrollPane jsp = new JScrollPane(dayContainer);
 		
-		calenderLayout.putConstraint(SpringLayout.NORTH, dayContainer, 0, SpringLayout.SOUTH, header);
-		calenderLayout.putConstraint(SpringLayout.WEST, dayContainer, 0 , SpringLayout.WEST, this);
-		add(dayContainer);
+		jsp.setPreferredSize(new Dimension(854, 650));
+//		jsp.setBorder(null);
+		jsp.setBackground(Color.white);
+		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		jsp.setLayout(new ScrollPaneLayout());
+		
+		calendarLayout.putConstraint(SpringLayout.NORTH, jsp, 0, SpringLayout.SOUTH, header);
+		calendarLayout.putConstraint(SpringLayout.WEST, jsp, 0 , SpringLayout.WEST, this);
+		add(jsp);
 	}
 	
 	private JPanel createTimeSlots() {
@@ -207,12 +229,12 @@ public class CalendarView extends JPanel {
 		return dayPanel;
 	}
 	
-	private enum Day {
-		Mandag, Tirsdag, Onsdag, Torsdag, Fredag, Lordag, Sondag;
+	public enum Day {
+		Mandag, Tirsdag, Onsdag, Torsdag, Fredag, Lørdag, Søndag;
 	}
 
 	
-	public class PanelListener implements MouseListener, MouseMotionListener {
+	public class PanelListener implements MouseListener, MouseMotionListener, PropertyChangeListener {
 
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
@@ -257,7 +279,46 @@ public class CalendarView extends JPanel {
 			
 			//TODO CREATE NY AVTALE
 		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName() == "BACK") {
+				cal.lastWeek();
+				currentWeek.setText("Uke " + cal.get(Calendar.WEEK_OF_YEAR));
+				updateWeekDates();
+			}
+			else if (evt.getPropertyName() == "FORWARD") {
+				cal.nextWeek();
+				currentWeek.setText("Uke " + cal.get(Calendar.WEEK_OF_YEAR));
+				updateWeekDates();
+			}
+		}
 		
 	}
+	
+	public JLabel getCurrentWeek() {
+		return currentWeek;
+	}
+
+	public void setCurrentWeek(JLabel currentWeek) {
+		this.currentWeek = currentWeek;
+	}
+
+	public void updateWeekDates() {
+		String[] weekDates = cal.getWeekDates();
+		System.out.println("TEST START");
+		for(int i = 0; i < 7; i++) {
+			weekDays[i].setText("<html>" + days[i].toString() + "<br>" + weekDates[i] + "</html>");
+			weekDays[i].revalidate();
+			weekDays[i].repaint();
+			System.out.println(weekDays[i].getText());
+		}
+		System.out.println("TEST SLUTT");
+	}
+	
+	public NorCalendar getCalendar() {
+		return this.cal;
+	}
+	
 	
 }
