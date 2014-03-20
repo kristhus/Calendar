@@ -11,9 +11,16 @@ public class MeetingRoom implements Searchable {
 		this.name = name;
 		this.capacity = capacity;
 	}
+	
+	public MeetingRoom(MeetingRoom meetingRoom) {
+		if (name != null) {
+			this.name = meetingRoom.getName();
+		}
+		this.capacity = meetingRoom.getCapacity();
+	}
 
 	public String getName() {
-		return name;
+		return name + " (" + capacity + ")";
 	}
 
 	public void setName(String name) {

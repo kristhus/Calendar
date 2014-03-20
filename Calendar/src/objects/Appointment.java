@@ -4,20 +4,31 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Appointment {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
+	private Person appointmentOwner;
 	private String name;
 	private Date startTime;
 	private Date endTime;
 	private String description;
-	private Person appointmentOwner;
-	private ArrayList<Person> participants = new ArrayList<Person>();
+	private TreeMap<Participant, Boolean> participants = new TreeMap<Participant, Boolean>();
 
-	// the location of the meeting is either chosen from a list of MeetinRroom objects or entered as a string
-	private String place;
+	// the location of the meeting is either chosen from a list of MeetingRoom objects or entered as a string
+	private String location;
 	private MeetingRoom meetingRoom;
+	private int minCapacity; // lagres ikke i databasen, bare midlertidig
+	
+	public Appointment(Person appointmentOwner) {
+		this.appointmentOwner = appointmentOwner;
+	}
+	
+	public Person getAppointmentOwner() {
+		return appointmentOwner;
+	}
 
 	public String getName() {
 		return name;
@@ -48,6 +59,7 @@ public class Appointment {
 	public void setEndTime(Date endTime) {
 		Date oldEndTime = this.endTime;
 		this.endTime = endTime;
+		System.out.println(startTime.toString());
 		System.out.println(endTime.toString());
 		pcs.firePropertyChange("endTime", oldEndTime, endTime);
 	}
@@ -63,41 +75,36 @@ public class Appointment {
 		pcs.firePropertyChange("description", oldDescription, description);
 	}
 
-	public void addParticipant(Person participant) {
-		ArrayList<Person> oldParticipants = new ArrayList<Person>();
-		for (int i = 0; i < participants.size(); i++) {
-			oldParticipants.add(participants.get(i));
-		}
-		participants.add(participant);
+	public void addParticipant(Participant participant) {
+		TreeMap<Participant, Boolean> oldParticipants = (TreeMap<Participant, Boolean>) this.participants.clone();
+		this.participants.put(participant, null);
 		System.out.println(participants.size());
-		pcs.firePropertyChange("person added", oldParticipants, participants);
+		pcs.firePropertyChange("participants", oldParticipants, participants);
 	}
 
-	public void removeParticipant(Person participant) {
-		ArrayList<Person> oldParticipants = new ArrayList<Person>();
-		for (int i = 0; i < participants.size(); i++) {
-			oldParticipants.add(participants.get(i));
-		}
-		participants.remove(participant);
+	public void removeParticipant(Participant participant) {
+		TreeMap<Participant, Boolean> oldParticipants = (TreeMap<Participant, Boolean>) this.participants.clone();
+		this.participants.remove(participant);
 		System.out.println(participants.size());
-		pcs.firePropertyChange("person removed", oldParticipants, participants);
+		pcs.firePropertyChange("participants", oldParticipants, participants);
 	}
 
 	public void removeParticipant(int i) {
-		removeParticipant(participants.get(i));
+		removeParticipant(getParticipant(i));
 	}
 
-	public Person getParticipant(int i) {
-		if (i < participants.size()) {
-			return participants.get(i);
+	public Participant getParticipant(int i) {
+		int c = 0;
+		for (Map.Entry<Participant, Boolean> entry : participants.entrySet()) {
+			if (c == i) {
+				return entry.getKey();
+			}
+			c++;
 		}
-		else {
-			System.out.println("There aren't that many participants");
-			return null;
-		}
+		return null;
 	}
 
-	public ArrayList<Person> getParticipants() {
+	public TreeMap<Participant, Boolean> getParticipants() {
 		return participants;
 	}
 
@@ -105,17 +112,91 @@ public class Appointment {
 		return participants.size();
 	}
 
-	public boolean isParticipating(Person person) {
+	public boolean isParticipating(Participant participant) {
 		for (int i = 0; i < participants.size(); i++) {
-			if (person.equals(participants.get(i))) {
+			if (participant.equals(getParticipant(i))) {
 				return true;
 			}
 		}
 
 		return false;
 	}
+	
+	public Boolean getStatus(Participant participant) {
+		return participants.get(participant);
+	}
+	
+	public Boolean getStatus(int i) {
+		return participants.get(getParticipant(i));
+	}
+	
+	public void setStatus(Participant participant, Boolean status) {
+		participants.put(participant, status);
+	}
+	
+	public void setStatus(int i, Boolean status) {
+		participants.put(getParticipant(i), status);
+	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		pcs.addPropertyChangeListener(listener);
+	}
+	
+	public String getLocation() {
+		return location;
+	}
+	
+	public void setLocation(String location) {
+		String oldLocation;
+		if (location == null) {
+			oldLocation = null;
+		}
+		else {
+			oldLocation = this.location;
+		}
+		this.location = location;
+		System.out.println(location);
+		pcs.firePropertyChange("location", oldLocation, location);
+	}
+	
+	public MeetingRoom getMeetingRoom() {
+		return meetingRoom;
+	}
+	
+	public void setMeetingRoom(MeetingRoom meetingRoom) {
+		MeetingRoom oldMeetingRoom;
+		if (this.meetingRoom == null) {
+			oldMeetingRoom = null;
+		}
+		else {
+			oldMeetingRoom = new MeetingRoom(this.meetingRoom);
+		}
+		this.meetingRoom = meetingRoom;
+		pcs.firePropertyChange("meetingroom", oldMeetingRoom, meetingRoom);
+	}
+	
+	// return the String "valid" if valid, an error message otherwise
+	public String validityStatus() {
+		if (name == null || name.length() < 3) {
+			return "Avtalenavnet må inneholde minst tre bokstaver";
+		}
+		else if (endTime.before(startTime)) {
+			return "Sluttid kan ikke være før starttid";
+		}
+		else if (description == null || description.length() < 3) {
+			return "Beskrivelsen må inneholde minst tre bokstaver";
+		}
+		
+		return "valid";
+	}
+	
+	public void setMinCapacity(int minCapacity) {
+		int oldMinCapacity = this.minCapacity;
+		this.minCapacity = minCapacity;
+		pcs.firePropertyChange("min capacity", oldMinCapacity, minCapacity);
+	}
+	
+	public int getMinCapacity() {
+		return minCapacity;
 	}
 }
