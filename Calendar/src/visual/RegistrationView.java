@@ -16,10 +16,9 @@ import javax.swing.WindowConstants;
 
 import objects.Person;
 
-public class RegistrationView extends JPanel{
+public class RegistrationView extends JFrame{
 	
 	private MainFrame mainFrame;
-	private LoginView loginView;
 	private JButton nyBrukerButton;
 	private CustomJTextField etternavnField;
 	private CustomJTextField fornavnField;
@@ -29,17 +28,26 @@ public class RegistrationView extends JPanel{
 	private RegistrationView thisView;
 	private JFrame thisFrame;
 	private JButton tilbakeTilLoginButton;
+	private LoginView loginFrame;
 
 	
-	public RegistrationView(MainFrame mainFrame, JFrame thisRegistrationFrame){
+	public RegistrationView(MainFrame mainFrame, LoginView loginFrame){
+		super("CalTwenty - Registrer ny bruker");
+		this.loginFrame = loginFrame;
 		this.mainFrame = mainFrame;
-		thisFrame = thisRegistrationFrame;
-		//setPreferredSize(new Dimension(800, 600));
+		thisFrame = this;
+        setPreferredSize(new Dimension(650, 330));
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
+        setAlwaysOnTop(true);
+        
+        
+        JPanel registrationPanel = new JPanel();
 		Color backgroundBlender = new Color (241,240,226);
-		setBackground(backgroundBlender);
-		setBackground(Color.white);
-		setVisible(true);
-		setLayout(new GridBagLayout());
+		registrationPanel.setBackground(backgroundBlender);
+		registrationPanel.setBackground(Color.white);
+		registrationPanel.setVisible(true);
+		registrationPanel.setLayout(new GridBagLayout());
+		add(registrationPanel);
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0; c.gridy=0;
 		c.ipadx = 25; c.ipady = 10;
@@ -47,64 +55,68 @@ public class RegistrationView extends JPanel{
 		int labelSizeX = 100;
 		JLabel fornavnLabel = new JLabel("Fornavn");
 		fornavnLabel.setPreferredSize(new Dimension(labelSizeX,30));
-		add(fornavnLabel,c); c.gridx = 1;
+		registrationPanel.add(fornavnLabel,c); c.gridx = 1;
 		fornavnField = new CustomJTextField(new JTextField(), null, "Fornavn...");
 		fornavnField.setPreferredSize(new Dimension(300, 30));
 		fornavnField.setName("Fornavn-felt");
-		add(fornavnField,c);
+		registrationPanel.add(fornavnField,c);
 		
 		c.gridy++; c.gridx=0;
 		JLabel etternavnLabel = new JLabel("Etternavn");
 		etternavnLabel.setPreferredSize(new Dimension(labelSizeX,30));
-		add(etternavnLabel,c); c.gridx = 1;
+		registrationPanel.add(etternavnLabel,c); c.gridx = 1;
 		etternavnField = new CustomJTextField(new JTextField(), null, "Etternavn...");
 		etternavnField.setPreferredSize(new Dimension(300, 30));
 		etternavnField.setName("Etternavn-felt");
-		add(etternavnField,c);
+		registrationPanel.add(etternavnField,c);
 		
 		c.gridx = 0; c.gridy++;
 		JLabel emailLabel = new JLabel("E-mail");
 		emailLabel.setPreferredSize(new Dimension(labelSizeX,30));
-		add(emailLabel,c); c.gridx = 1;
+		registrationPanel.add(emailLabel,c); c.gridx = 1;
 		emailField = new CustomJTextField(new JTextField(), null, "E-mail address");
 		emailField.setPreferredSize(new Dimension(300, 30));
 		emailField.setName("Email-felt");
-		add(emailField,c);
+		registrationPanel.add(emailField,c);
 		
 		c.gridx = 0; c.gridy++;
 		JLabel telefonnummerLabel = new JLabel("Telefonnummer");
 		telefonnummerLabel.setPreferredSize(new Dimension(labelSizeX,30));
-		add(telefonnummerLabel,c); c.gridx = 1;
+		registrationPanel.add(telefonnummerLabel,c); c.gridx = 1;
 		telefonnummerField = new CustomJTextField(new JTextField(), null, "Telefonnummer...");
 		telefonnummerField.setPreferredSize(new Dimension(300, 30));
 		telefonnummerField.setName("Telfonnummer-felt");
-		add(telefonnummerField,c);
+		registrationPanel.add(telefonnummerField,c);
 		
 		c.gridx = 0; c.gridy++;
 		JLabel passordLabel = new JLabel("Passord");
 		passordLabel.setPreferredSize(new Dimension(labelSizeX,30));
-		add(passordLabel,c); c.gridx = 1;
+		registrationPanel.add(passordLabel,c); c.gridx = 1;
 		passordField = new CustomJTextField(new JTextField(), null, "Passord...");
 		passordField.setPreferredSize(new Dimension(300, 30));
 		passordField.setName("Passord-felt");
-		add(passordField,c);
+		registrationPanel.add(passordField,c);
 		
 		c.gridy++;
 		nyBrukerButton = new JButton("Registrer ny bruker");
 		nyBrukerButton.setPreferredSize(new Dimension(300, 30));
 		nyBrukerButton.addActionListener(actionListener); nyBrukerButton.setName("nyBrukerButton");
-		add(nyBrukerButton,c);
+		registrationPanel.add(nyBrukerButton,c);
 		
 		c.gridy++;
 		tilbakeTilLoginButton = new JButton("Tilbake til innlogging");
 		tilbakeTilLoginButton.setPreferredSize(new Dimension(300, 30));
 		tilbakeTilLoginButton.addActionListener(actionListener); tilbakeTilLoginButton.setName("tilbakeTilLoginButton");
-		add(tilbakeTilLoginButton,c);
+		registrationPanel.add(tilbakeTilLoginButton,c);
 		
 		c.gridx = 2;
 		JLabel emptySpaceMakingLabel = new JLabel("");
 		emptySpaceMakingLabel.setPreferredSize(new Dimension(labelSizeX,20));
-		add(emptySpaceMakingLabel,c); 
+		registrationPanel.add(emptySpaceMakingLabel,c); 
+
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 	
 	private String checkInput(){
@@ -141,12 +153,12 @@ public class RegistrationView extends JPanel{
 					Person newUser = new Person((fornavnField.getText() + " " + etternavnField.getText()), emailField.getText(), Integer.parseInt(telefonnummerField.getText()));
 					//TODO: KODE FOR Å LAGE NY BRUKER I DB, LOGGE INN OG SETTE BRUKER I MAIN
 					mainFrame.createNewUserFromRegistrationView(newUser, passordField.getText());
-					MainFrame.getLoginFrame().dispose();
+					loginFrame.dispose();
 					thisFrame.dispose();
 				}
 			}
 			if (e.getSource() == tilbakeTilLoginButton){
-				MainFrame.getLoginFrame().setVisible(true);
+				loginFrame.setVisible(true);
 				thisFrame.dispose();
 			}
 			
@@ -180,10 +192,9 @@ public class RegistrationView extends JPanel{
 		warningFrame = new JFrame("Feil med inntastet data");
 		warningFrame.setPreferredSize(new Dimension(400, 125));
 		warningFrame.add(warningPanel);
-		warningFrame.setLocationRelativeTo(mainFrame);
-		warningFrame.setLocation(warningFrame.getX()-(warningFrame.getWidth()/2), warningFrame.getY());
         warningFrame.setAlwaysOnTop(true);
 		warningFrame.pack();
+		warningFrame.setLocationRelativeTo(null);
 		warningFrame.setVisible(true);
 		warningFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
