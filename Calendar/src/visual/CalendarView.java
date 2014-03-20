@@ -41,8 +41,8 @@ public class CalendarView extends JPanel {
 	private int dayWidth;
 	private int dayHeight;
 	
-	private final Color dayPanelColor = new Color(255, 219, 158);
-	private final Color dayPanelColorAlt = new Color (255, 236, 204);
+	private final Color dayPanelColor = new Color(74,176,207);
+	private final Color dayPanelColorAlt = new Color (177,223,230);
 	
 	private Color orgColor;
 	
@@ -158,7 +158,7 @@ public class CalendarView extends JPanel {
 		
 		JScrollPane jsp = new JScrollPane(dayContainer);
 		
-		jsp.setPreferredSize(new Dimension(854, 650));
+		jsp.setPreferredSize(new Dimension(854, 600));
 //		jsp.setBorder(null);
 		jsp.setBackground(Color.white);
 		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -218,7 +218,7 @@ public class CalendarView extends JPanel {
 				hour.setBackground(Color.white);
 			}
 			else {
-				hour.setBackground(new Color(255, 219, 158));
+				hour.setBackground(new Color(52, 190, 218));
 			}
 			hour.addMouseListener(panelListener);
 			hour.addMouseMotionListener(panelListener);

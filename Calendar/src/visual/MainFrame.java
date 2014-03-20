@@ -66,8 +66,6 @@ public class MainFrame extends JPanel {
 	private JScrollPane searchScrollPane;
 	private Person currentUser;
 
-	private LoginView loginView;
-
 	private SpringLayout searchLayout;
 	private final GridBagLayout searchResultGrid = new GridBagLayout();
 	private GridBagConstraints searchRC;
@@ -97,7 +95,7 @@ public class MainFrame extends JPanel {
 
 
 
-		mainFrame = new JFrame();
+		mainFrame = new JFrame("CalTwenty - Kalendervisning");
 		mainFrame.setPreferredSize(new Dimension(1200, 800));
 		mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // TODO: Show confirmation dialogue about logging out!
 		mainFrame.add(new MainFrame());
@@ -113,7 +111,7 @@ public class MainFrame extends JPanel {
 
 
 	private void initLoginViewAndFrame() {
-		loginView = new LoginView(this);
+		LoginView loginView = new LoginView(this);
 	}
 
 	public MainFrame() {
@@ -198,7 +196,7 @@ public class MainFrame extends JPanel {
 		nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
 		nyAvtaleBtn.addActionListener(listener);
 
-		ImageIcon caret = new ImageIcon(this.getClass().getResource("/concat.png"));
+		ImageIcon caret = new ImageIcon(this.getClass().getResource("/caret.png"));
 		JButton searchDropDown = new JButton("Søk etter bruker");
 		searchDropDown.setActionCommand("Search button");
 		searchDropDown.setPreferredSize(new Dimension(180, 30));
