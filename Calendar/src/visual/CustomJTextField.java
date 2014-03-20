@@ -52,6 +52,22 @@ public class CustomJTextField extends JTextField implements FocusListener, Mouse
 	}
 
 
+	public CustomJTextField(JTextField textField, String hint) {
+		this.textField = textField;
+		isPassword = false;
+		if (hint.toLowerCase().contains("password") || hint.toLowerCase().contains("passord")) {
+			isPassword = true;
+		}
+		this.hint = hint;
+		hasIcon = false;
+
+		addFocusListener(this);
+		addMouseListener(this);
+		addMouseMotionListener(this);
+
+	}
+
+
 	@Override
 	protected void paintComponent(Graphics g) {
 	    if(!isPassword){

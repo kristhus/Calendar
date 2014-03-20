@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import objects.Person;
+import serverConnection.Client;
 
 public class RegistrationView extends JFrame{
 	
@@ -152,6 +153,12 @@ public class RegistrationView extends JFrame{
 				}else{
 					Person newUser = new Person((fornavnField.getText() + " " + etternavnField.getText()), emailField.getText(), Integer.parseInt(telefonnummerField.getText()));
 					//TODO: KODE FOR Å LAGE NY BRUKER I DB, LOGGE INN OG SETTE BRUKER I MAIN
+					
+					Client client = new Client();
+					Object[] objectCredentials = {emailField.getText(), passordField.getText(), fornavnField.getText() + " " + etternavnField.getText(), Integer.parseInt(telefonnummerField.getText())}; 
+					Object[] toSend = {"store", "register", objectCredentials};
+					System.out.println(client.sendMsg(toSend));
+					
 					mainFrame.createNewUserFromRegistrationView(newUser, passordField.getText());
 					loginFrame.dispose();
 					thisFrame.dispose();
