@@ -62,7 +62,7 @@ public class DropDownSearch extends JPanel {
     	// participantListView.add(searchField);
     	
     	
-        ImageIcon caret = new ImageIcon(this.getClass().getResource("/concat.png"));
+        ImageIcon caret = new ImageIcon(this.getClass().getResource("/caret.png"));
         searchDropDown = new JButton(buttonName);
         searchDropDown.setActionCommand("Search button");
         searchDropDown.setPreferredSize(new Dimension(180, 30));
