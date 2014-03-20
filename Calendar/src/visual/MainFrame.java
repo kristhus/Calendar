@@ -103,7 +103,7 @@ public class MainFrame extends JPanel {
 		mainFrame.add(new MainFrame());
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null);
-		//		mainFrame.setResizable(false);
+		//		mainFrame.setResizable(false);;
 
 		mainFrame.revalidate();
 
