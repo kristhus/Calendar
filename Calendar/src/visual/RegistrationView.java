@@ -42,7 +42,7 @@ public class RegistrationView extends JPanel{
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0; c.gridy=0;
-		c.ipadx = 10; c.ipady = 10;
+		c.ipadx = 25; c.ipady = 10;
 		
 		int labelSizeX = 100;
 		JLabel fornavnLabel = new JLabel("Fornavn");
@@ -50,6 +50,7 @@ public class RegistrationView extends JPanel{
 		add(fornavnLabel,c); c.gridx = 1;
 		fornavnField = new CustomJTextField(new JTextField(), null, "Fornavn...");
 		fornavnField.setPreferredSize(new Dimension(300, 30));
+		fornavnField.setName("Fornavn-felt");
 		add(fornavnField,c);
 		
 		c.gridy++; c.gridx=0;
@@ -58,6 +59,7 @@ public class RegistrationView extends JPanel{
 		add(etternavnLabel,c); c.gridx = 1;
 		etternavnField = new CustomJTextField(new JTextField(), null, "Etternavn...");
 		etternavnField.setPreferredSize(new Dimension(300, 30));
+		etternavnField.setName("Etternavn-felt");
 		add(etternavnField,c);
 		
 		c.gridx = 0; c.gridy++;
@@ -66,6 +68,7 @@ public class RegistrationView extends JPanel{
 		add(emailLabel,c); c.gridx = 1;
 		emailField = new CustomJTextField(new JTextField(), null, "E-mail address");
 		emailField.setPreferredSize(new Dimension(300, 30));
+		emailField.setName("Email-felt");
 		add(emailField,c);
 		
 		c.gridx = 0; c.gridy++;
@@ -74,6 +77,7 @@ public class RegistrationView extends JPanel{
 		add(telefonnummerLabel,c); c.gridx = 1;
 		telefonnummerField = new CustomJTextField(new JTextField(), null, "Telefonnummer...");
 		telefonnummerField.setPreferredSize(new Dimension(300, 30));
+		telefonnummerField.setName("Telfonnummer-felt");
 		add(telefonnummerField,c);
 		
 		c.gridx = 0; c.gridy++;
@@ -82,6 +86,7 @@ public class RegistrationView extends JPanel{
 		add(passordLabel,c); c.gridx = 1;
 		passordField = new CustomJTextField(new JTextField(), null, "Passord...");
 		passordField.setPreferredSize(new Dimension(300, 30));
+		passordField.setName("Passord-felt");
 		add(passordField,c);
 		
 		c.gridy++;
@@ -98,35 +103,40 @@ public class RegistrationView extends JPanel{
 		
 		c.gridx = 2;
 		JLabel emptySpaceMakingLabel = new JLabel("");
-		emptySpaceMakingLabel.setPreferredSize(new Dimension(labelSizeX,30));
+		emptySpaceMakingLabel.setPreferredSize(new Dimension(labelSizeX,20));
 		add(emptySpaceMakingLabel,c); 
 	}
 	
-	private boolean checkInput(){
+	private String checkInput(){
 		if (fornavnField.getText().equals("")){
-			return false;
+			return fornavnField.getName();
 		}
 		if (etternavnField.getText().equals("")){
-			return false;
+			return etternavnField.getName();
 		}
-		if (emailField.getText().equals("")){
-			return false;
+		if (!emailField.getText().contains("@")){
+			return emailField.getName();
 		}
-		if (telefonnummerField.getText().equals("")){
-			return false;
+		try {
+		     Integer.parseInt(telefonnummerField.getText());
+		}
+		catch (NumberFormatException e) {
+		     return telefonnummerField.getName();
 		}
 		if (passordField.getText().equals("")){
-			return false;
+			return passordField.getName();
+		}else{
+			return "OK";
 		}
-		return true;
 	}
 	
 	private ActionListener actionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == nyBrukerButton){
-				if (!checkInput()){
-					createWarningFrame();
+				String errorField = checkInput();
+				if (!errorField.equals("OK")){
+					createWarningFrame(errorField);
 				}else{
 					Person newUser = new Person((fornavnField.getText() + " " + etternavnField.getText()), emailField.getText(), Integer.parseInt(telefonnummerField.getText()));
 					//TODO: KODE FOR Å LAGE NY BRUKER I DB, LOGGE INN OG SETTE BRUKER I MAIN
@@ -152,28 +162,30 @@ public class RegistrationView extends JPanel{
 	private JButton warningOkButton;
 	private JFrame warningFrame;
 	
-	private void createWarningFrame(){
+	private void createWarningFrame(String errorField){
 		JPanel warningPanel = new JPanel();
-		setLayout(new GridBagLayout());
+		warningPanel.setLayout(new GridBagLayout());
+		warningPanel.setBackground(Color.white);
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0; c.gridy=0;
+		c.gridx = 0; c.gridy=1;
 		c.ipadx = 10; c.ipady = 10;
 		warningPanel.add(new JLabel("Vennligst skriv inn korrekt data i alle feltene."),c);
+		c.gridy++;
+		warningPanel.add(new JLabel("Det er en feil i feltet: " + errorField),c);
 		c.gridy++;
 		warningOkButton = new JButton("Ok");
 		warningOkButton.setPreferredSize(new Dimension(300, 30));
 		warningOkButton.addActionListener(actionListener); warningOkButton.setName("warningOkButton");
 		warningPanel.add(warningOkButton,c);
 		warningFrame = new JFrame("Feil med inntastet data");
-		warningFrame.setPreferredSize(new Dimension(550, 100));
+		warningFrame.setPreferredSize(new Dimension(400, 125));
 		warningFrame.add(warningPanel);
-		warningFrame.setLocationRelativeTo(null);
-		warningFrame.setLocation(warningFrame.getX()-(thisFrame.getWidth()/2), warningFrame.getY());
+		warningFrame.setLocationRelativeTo(mainFrame);
+		warningFrame.setLocation(warningFrame.getX()-(warningFrame.getWidth()/2), warningFrame.getY());
         warningFrame.setAlwaysOnTop(true);
 		warningFrame.pack();
 		warningFrame.setVisible(true);
 		warningFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
-
 }
 
