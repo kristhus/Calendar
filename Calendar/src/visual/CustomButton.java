@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +23,7 @@ import javax.swing.JPanel;
 
 public class CustomButton extends JPanel implements MouseMotionListener, MouseListener {
 	
+	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	
 	private ImageIcon iconDefault;
 	private ImageIcon iconPressed;
@@ -31,6 +34,8 @@ public class CustomButton extends JPanel implements MouseMotionListener, MouseLi
 	private Boolean outside = true;
 	
 	private Image currentIcon;
+	
+	private String actionCommand = "DEFAULT";
 	
 	public CustomButton(String iconDefault, String iconPressed, String iconHover) {
 		this.iconDefault = createIcon(iconDefault);
@@ -75,7 +80,7 @@ public class CustomButton extends JPanel implements MouseMotionListener, MouseLi
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		// NOTIFY ON CLICK
-		System.out.println("Clicked button");
+		firePropertyChange(actionCommand, null, null); // If this was meant to have buttonestates, it would need changes, but this is only to notify another class that the buttons where pressed
 	}
 
 	@Override
@@ -124,9 +129,23 @@ public class CustomButton extends JPanel implements MouseMotionListener, MouseLi
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void setActionCommand(String actionCommand) {
+		this.actionCommand = actionCommand;
+	}
 	
 	public Image getImage() {
 		return this.currentIcon;
 	}
+	
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		super.addPropertyChangeListener(listener);
+	}
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
+	}
+	
 	
 }
