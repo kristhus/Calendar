@@ -21,10 +21,14 @@ public class NotificationView extends JFrame{
 	private JFrame thisFrame;
 	private JButton godtaButton;
 	private JButton avslaButton;
+	private MainFrame mainFrame;
+	private Appointment appointment;
 
 	public NotificationView (MainFrame mainFrame, Appointment appointment){
 		super("Du er invitert til en ny avtale");
 		thisFrame = this;
+		this.appointment = appointment;
+		this.mainFrame = mainFrame;
 		JPanel notificationPanel = new JPanel();
 		notificationPanel.setPreferredSize(new Dimension(500, 150));
 		notificationPanel.setBackground(Color.white);
@@ -75,6 +79,7 @@ public class NotificationView extends JFrame{
 		setLocation(this.getX()-(this.getWidth()/2), this.getY());
 		setAlwaysOnTop(true);
 		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
@@ -85,6 +90,9 @@ public class NotificationView extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == seAvtaleButton){
+				mainFrame.showAppointmentView(appointment);
+				//nåverende bruker , appointment
+				
 				//TODO: skriv noe kode her for å vise avtale.
 				thisFrame.removeAll();
 				thisFrame.dispose();
