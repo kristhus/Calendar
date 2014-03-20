@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
@@ -34,9 +35,11 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,6 +47,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -57,14 +62,14 @@ public class MainFrame extends JPanel {
 	private static JFrame loginFrame; 
 
 	private static CalendarView calendarView;
-	
+
 	private static Listener listener;
-	
+
 	private static JPanel miniCalendar;
 	private static NorCalendar miniNorCalendar;
 	private static JLabel miniCalendarMonth;
 	private static Container miniCalendarDays;
-	
+
 	private static JPanel leftPanel;
 	private JPanel checkPanel;
 	private JScrollPane checkScrollPane;
@@ -84,6 +89,8 @@ public class MainFrame extends JPanel {
 	private String[] testPersoner = {"KNUT", "K�RE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
 			"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-k�re"};
 	private ArrayList<Person> testPersons = new ArrayList<Person>();
+
+	protected JFrame splashScreen;
 
 	public static void main(String[] args) {
 
@@ -108,7 +115,7 @@ public class MainFrame extends JPanel {
 		mainFrame.add(new MainFrame());
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null);
-//		mainFrame.setResizable(false);
+		//		mainFrame.setResizable(false);
 
 		mainFrame.revalidate();
 
@@ -119,17 +126,10 @@ public class MainFrame extends JPanel {
 
 	private void initLoginViewAndFrame() {
 		loginView = new LoginView(this);
-		loginFrame = new JFrame();
-		loginFrame.setPreferredSize(new Dimension(550, 200));
-		loginFrame.add(loginView);
-		loginFrame.pack();
-		loginFrame.setLocationRelativeTo(null);
-		loginFrame.setAlwaysOnTop(true);
-		loginFrame.setVisible(true);
-		loginFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 
 	public MainFrame() {
+		initSplashScreen();
 		initLoginViewAndFrame();
 		setPreferredSize(new Dimension(800, 600));
 		setBackground(Color.white);
@@ -139,108 +139,134 @@ public class MainFrame extends JPanel {
 		calendarView = new CalendarView();
 		Appointment app = new Appointment();
 		///////////TEST TEST TEST////////////START
-		app.setDescription("yolo");
 		app.setStartTime(new Date(2014,11,16,16,30));
 		app.setEndTime(new Date(2014,11,16,18,00));
-		app.setDescription("blablabla");
 		app.setName("TacoKveld med pepsiMax");
 		MeetingRoom torehus = new MeetingRoom("Huset til Tore", 5);
 		app.setMeetingRoom(torehus);
 		Person toreeee = new Person("Tore Shølsagt", " ", 666 );
 		app.setAppointmentOwner(toreeee);
-		NotificationView notV = new NotificationView(this, app);
+		//NotificationView notV = new NotificationView(this, app);
 		///////////TEST TEST TEST////////////END
 		add(createLeftWindow(), BorderLayout.WEST);
 		add(calendarView);
 	}
 
+	private void initSplashScreen() {
+
+		splashScreen = new JFrame();
+		ImageIcon splashImage = new ImageIcon(this.getClass().getResource("/caltwenty.png"));
+		splashScreen.getContentPane().add(new JLabel(splashImage));
+		splashScreen.setUndecorated(true);
+		splashScreen.pack();
+		splashScreen.setLocationRelativeTo(null);
+		splashScreen.setVisible(true);
+		Timer timer = new Timer(1000, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				splashScreen.setVisible(false);
+				splashScreen.dispose();
+				//I want to place my code here so then this class will close, and then the other class will open
+
+				//SplashScreen screen = new SplashScreen();
+				//screen.showGUI();
+			}
+		});
+		timer.setRepeats(false);
+	    timer.start();
+		// TODO Auto-generated method stub
+
+	}
+
+
+
+
 	public JPanel createLeftWindow() {
 		listener = new Listener();
-		
-    	leftPanel = new JPanel();
-    	leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
-    	SpringLayout springLayout = new SpringLayout();
-    	leftPanel.setLayout(springLayout);
-    	leftPanel.setBackground(Color.white);
 
-    	searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
-    	searchField.addKeyListener(listener);
-    	searchField.setActionCommand("search typer");
-    	searchField.setPreferredSize(new Dimension(180, 30));
-    	
-    	Container container = new Container();
-    	container.setLayout(new GridBagLayout());
-    	GridBagConstraints c = new GridBagConstraints();
-    	c.gridx = 0; c.gridy = 0; c.ipadx = 20;
-    	
-    	JCheckBox cb1 = new JCheckBox();
-    	cb1.addActionListener(listener);
-    	cb1.setActionCommand("Andre kalendere");
-        JLabel cb1Description = new JLabel();
-        cb1Description.setText("Andre kalendere");
-        
-        JButton nyAvtaleBtn = new JButton("Ny avtale");
-        nyAvtaleBtn.setActionCommand("New Appointment");
-        nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
-        nyAvtaleBtn.addActionListener(listener);
-        
-        ImageIcon caret = new ImageIcon(this.getClass().getResource("/concat.png"));
-        JButton searchDropDown = new JButton("Søk etter bruker");
-        searchDropDown.setActionCommand("Search button");
-        searchDropDown.setPreferredSize(new Dimension(180, 30));
-        searchDropDown.addActionListener(listener);
-        searchDropDown.setIcon(caret);
-        searchDropDown.setHorizontalTextPosition(SwingConstants.LEFT);
-        leftPanel.add(searchDropDown);
-        
+		leftPanel = new JPanel();
+		leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
+		SpringLayout springLayout = new SpringLayout();
+		leftPanel.setLayout(springLayout);
+		leftPanel.setBackground(Color.white);
 
-        createMiniCalendar();
-        leftPanel.add(miniCalendar);
-        springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, nyAvtaleBtn);
-        springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
-        
-        createUserSearch();
-        
-        springLayout.putConstraint(SpringLayout.NORTH, searchDropDown, 40, SpringLayout.SOUTH, miniCalendar); // OK
-        springLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
-        springLayout.putConstraint(SpringLayout.NORTH, container, 30, SpringLayout.SOUTH, searchDropDown); // OK
+		searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
+		searchField.addKeyListener(listener);
+		searchField.setActionCommand("search typer");
+		searchField.setPreferredSize(new Dimension(180, 30));
 
-        container.add(cb1Description, c);
-        c.gridx = 1;
-        container.add(cb1, c);
+		Container container = new Container();
+		container.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0; c.gridy = 0; c.ipadx = 20;
 
-    	leftPanel.add(nyAvtaleBtn);
-    	leftPanel.add(searchScrollPane);
-        leftPanel.add(container, SpringLayout.EAST);
+		JCheckBox cb1 = new JCheckBox();
+		cb1.addActionListener(listener);
+		cb1.setActionCommand("Andre kalendere");
+		JLabel cb1Description = new JLabel();
+		cb1Description.setText("Andre kalendere");
 
-        searchLayout = new SpringLayout();
-        searchPanel.setLayout(searchLayout);
-        searchPanel.add(searchField);
-        searchLayout.putConstraint(SpringLayout.NORTH, searchField, 10, SpringLayout.NORTH, searchPanel);
-        
-        createPersonCheckPanel();
-        springLayout.putConstraint(SpringLayout.NORTH, checkScrollPane, 50, SpringLayout.SOUTH, container);        
-        leftPanel.add(checkScrollPane);
-        leftPanel.setPreferredSize(new Dimension(240, 800));
-    	leftPanel.setVisible(true);
-    	
-    	return leftPanel;
-    }
+		JButton nyAvtaleBtn = new JButton("Ny avtale");
+		nyAvtaleBtn.setActionCommand("New Appointment");
+		nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
+		nyAvtaleBtn.addActionListener(listener);
 
-	
+		ImageIcon caret = new ImageIcon(this.getClass().getResource("/concat.png"));
+		JButton searchDropDown = new JButton("Søk etter bruker");
+		searchDropDown.setActionCommand("Search button");
+		searchDropDown.setPreferredSize(new Dimension(180, 30));
+		searchDropDown.addActionListener(listener);
+		searchDropDown.setIcon(caret);
+		searchDropDown.setHorizontalTextPosition(SwingConstants.LEFT);
+		leftPanel.add(searchDropDown);
+
+
+		createMiniCalendar();
+		leftPanel.add(miniCalendar);
+		springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, nyAvtaleBtn);
+		springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
+
+		createUserSearch();
+
+		springLayout.putConstraint(SpringLayout.NORTH, searchDropDown, 40, SpringLayout.SOUTH, miniCalendar); // OK
+		springLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
+		springLayout.putConstraint(SpringLayout.NORTH, container, 30, SpringLayout.SOUTH, searchDropDown); // OK
+
+		container.add(cb1Description, c);
+		c.gridx = 1;
+		container.add(cb1, c);
+
+		leftPanel.add(nyAvtaleBtn);
+		leftPanel.add(searchScrollPane);
+		leftPanel.add(container, SpringLayout.EAST);
+
+		searchLayout = new SpringLayout();
+		searchPanel.setLayout(searchLayout);
+		searchPanel.add(searchField);
+		searchLayout.putConstraint(SpringLayout.NORTH, searchField, 10, SpringLayout.NORTH, searchPanel);
+
+		createPersonCheckPanel();
+		springLayout.putConstraint(SpringLayout.NORTH, checkScrollPane, 50, SpringLayout.SOUTH, container);        
+		leftPanel.add(checkScrollPane);
+		leftPanel.setPreferredSize(new Dimension(240, 800));
+		leftPanel.setVisible(true);
+
+		return leftPanel;
+	}
+
+
 	public void createMiniCalendar() {
 		miniNorCalendar = new NorCalendar();
-				
+
 		miniCalendar = new JPanel();
 		miniCalendar.setBackground(Color.white);
 		miniCalendar.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0; c.gridy = 0;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		
+
 		Container labels = new Container();
 		labels.setLayout(new BorderLayout());
-		
+
 		JLabel left = new JLabel("<");
 		left.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
 		left.setPreferredSize(new Dimension(20,12));
@@ -248,13 +274,13 @@ public class MainFrame extends JPanel {
 		left.setBorder(BorderFactory.createRaisedBevelBorder());
 		left.addMouseListener(listener);
 		labels.add(left, BorderLayout.WEST);
-		
+
 		miniCalendarMonth = new JLabel();
 		int curMonth = miniNorCalendar.MONTH;
 		miniCalendarMonth.setText(miniNorCalendar.month(curMonth) + " - " + Integer.toString(miniNorCalendar.YEAR) );
 		miniCalendarMonth.setHorizontalAlignment(JLabel.CENTER);
 		labels.add(miniCalendarMonth, BorderLayout.CENTER);
-		
+
 		JLabel right = new JLabel(" >");
 		right.setBorder(BorderFactory.createRaisedBevelBorder());
 		right.setPreferredSize(new Dimension(20,12));
@@ -263,30 +289,30 @@ public class MainFrame extends JPanel {
 		right.addMouseListener(listener);
 		labels.add(right, BorderLayout.EAST);
 		miniCalendar.add(labels, c);
-		
+
 		c.gridx = 0;
 		c.gridy++;
 		Container header = createHeader();
 		miniCalendar.add(header, c);
-		
+
 		c.gridy++;
 		miniCalendarDays = new Container();
 		miniCalendar.add(updateDaysOfMonth(), c);
 	}
-	
-	
-    public static Container updateDaysOfMonth() {
-    	GridBagConstraints c = new GridBagConstraints();
-    	c.gridx = 0; c.gridy = 0;
-    	
-    	miniCalendarMonth.setText(miniNorCalendar.month(miniNorCalendar.MONTH) + " - " + miniNorCalendar.YEAR);
+
+
+	public static Container updateDaysOfMonth() {
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0; c.gridy = 0;
+
+		miniCalendarMonth.setText(miniNorCalendar.month(miniNorCalendar.MONTH) + " - " + miniNorCalendar.YEAR);
 		miniCalendarDays.removeAll();
 		miniCalendarDays.setLayout(new GridBagLayout());
 		int firstDay = miniNorCalendar.getFirstDayOfMonth();
 		int lastDay = miniNorCalendar.getLastDayOfMonth();
-		
+
 		int lastDayLastWeekLastMonth = miniNorCalendar.getLastDayOfLastWeekInLastMonth();
-		
+
 		int nextMonthDayCounter = 1;
 		int dayCounter = 0;
 		for (int i = 0; i < 6; i++) {
@@ -297,7 +323,7 @@ public class MainFrame extends JPanel {
 			week.setName(Integer.toString(i));
 			for (int j = 0; j< 7; j++) {
 				JPanel day = new JPanel();
-				
+
 				day.setBackground(Color.white);
 				day.setBorder(BorderFactory.createLineBorder(Color.black));
 				day.setVisible(true);
@@ -326,7 +352,7 @@ public class MainFrame extends JPanel {
 					nextMonthDayCounter++;
 				}
 				day.add(dateOfDay);
-					week.add(day);
+				week.add(day);
 			}
 			for(int empty = 0; empty < 7; empty++) {
 				if( ((JLabel) ((JPanel) week.getComponent(empty)).getComponent(0)).getText() != " " && nextMonthDayCounter < 8) {
@@ -337,8 +363,8 @@ public class MainFrame extends JPanel {
 		}
 		miniCalendar.revalidate();
 		return miniCalendarDays;
-    }
-	
+	}
+
 	private Container createHeader() {
 		Container header = new Container();
 		header.setLayout(new GridBagLayout());
@@ -530,25 +556,25 @@ public class MainFrame extends JPanel {
 				System.out.println("weekdays: " + calendarView.getCalendar().getWeekDates()[0]);
 				System.out.println("source char: " + ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText());
 				try {
-				if(calendarView.getCalendar().getWeekDates()[0].charAt(0) != ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().charAt(0)
-						|| (calendarView.getCalendar().getWeekDates()[0].charAt(1) != ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().charAt(1) 
+					if(calendarView.getCalendar().getWeekDates()[0].charAt(0) != ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().charAt(0)
+							|| (calendarView.getCalendar().getWeekDates()[0].charAt(1) != ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().charAt(1) 
 							&& ((JLabel)((JPanel)((JPanel) e.getSource()).getComponent(0)).getComponent(0)).getText().length() < 3 )) {
-					calendarView.getCalendar().nextWeek();
-					updateDaysOfMonth();
-					calendarView.updateWeekDates();
-				}
+						calendarView.getCalendar().nextWeek();
+						updateDaysOfMonth();
+						calendarView.updateWeekDates();
+					}
 				}
 				catch(IndexOutOfBoundsException exc) {
 					System.out.println("sum ting wong");
 				}
-//				if (weekOfMonth == 0) { // For whatever reason, this must be done twice. I suspect it is because of the Calendar interprets 0 as the last week in last month, instead of first this month
-//					updateDaysOfMonth();
-//					calendarView.updateWeekDates();
-//				}
+				//				if (weekOfMonth == 0) { // For whatever reason, this must be done twice. I suspect it is because of the Calendar interprets 0 as the last week in last month, instead of first this month
+				//					updateDaysOfMonth();
+				//					calendarView.updateWeekDates();
+				//				}
 				calendarView.getCurrentWeek().setText("Uke " + calendarView.getCalendar().get(Calendar.WEEK_OF_YEAR));
-				
+
 			}
-			
+
 		}
 
 		@Override
@@ -583,7 +609,7 @@ public class MainFrame extends JPanel {
 					}
 				}
 			}
-			
+
 		}
 
 		@Override
@@ -643,13 +669,19 @@ public class MainFrame extends JPanel {
 	}
 
 
-    public static CalendarView getCalendarView() {
-    	return calendarView;
-    }
-    
-    public static void setMiniCalendarDays(Container cont) {
-    	miniCalendarDays = cont;
-    }
+	public static CalendarView getCalendarView() {
+		return calendarView;
+	}
+
+	public static void setMiniCalendarDays(Container cont) {
+		miniCalendarDays = cont;
+	}
+
+
+	public void showAppointmentView(Appointment appointment) {
+		// TODO Auto-generated method stub
+
+	}
 
 
 
