@@ -98,7 +98,6 @@ public class LoginView extends JFrame{
 				Object[] toSend = {"fetch", "login", objectCredentials};
 				try {
 					Object[] personArray = (Object[]) (client.sendMsg(toSend));
-					System.out.println(personArray[0]);
 					Person user = new Person((String)personArray[1], (String)personArray[0], (Integer)personArray[2]);
 					mainFrame.logInAndSetUser(user);
 					thisFrame.dispose();

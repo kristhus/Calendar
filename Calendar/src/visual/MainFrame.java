@@ -73,11 +73,13 @@ public class MainFrame extends JPanel {
 
 	/* TEST */
 	private ArrayList<Person> andreKalendere;
-	private String[] testPersoner = {"KNUT", "K�RE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
-			"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-k�re"};
-	private ArrayList<Person> testPersons = new ArrayList<Person>();
+	/*private String[] personsInSystem = {"KNUT", "K�RE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
+			"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-k�re"};*/
+	private ArrayList<Person> personsInSystem = new ArrayList<Person>();
 
 	protected JFrame splashScreen;
+
+	private ArrayList<Person> personArray;
 
 	private static Client client;
 
@@ -118,6 +120,7 @@ public class MainFrame extends JPanel {
 	}
 
 	public MainFrame() {
+		personArray = new ArrayList<Person>();
 		client = new Client();
 		initSplashScreen();
 		initLoginViewAndFrame();
@@ -211,7 +214,7 @@ public class MainFrame extends JPanel {
 		createMiniCalendar();
 		leftPanel.add(miniCalendar);
 		springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, nyAvtaleBtn);
-		springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
+		springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 20, SpringLayout.WEST, leftPanel);
 
 		createUserSearch();
 
@@ -403,18 +406,26 @@ public class MainFrame extends JPanel {
 	public void logInAndSetUser(Person user) {
 		this.currentUser=user;
 		mainFrame.setVisible(true);
-		Object[] toSend = {"fetch", "alle", null};
-		System.out.println("yoooooooooo " + client.sendMsg(toSend));
+		Object[] toSend = {"fetch", "alle", };
+		//Object[] userList = (Object[]) client.sendMsg(toSend);
+		ArrayList userList = (ArrayList) client.sendMsg(toSend);
+		
+		System.out.println(userList.toString());
 		System.out.println("current user is: " + currentUser.getName());
+		for (int i = 0; i < userList.size(); i++) {
+			ArrayList tempUser = (ArrayList) userList.get(i);
+			String navn = (String) tempUser.get(0);
+			String mail = (String) tempUser.get(1);
+			
+			personArray.add(new Person(navn, mail));
+			
+		}
+		
 	}
 
 	public void createNewUserFromRegistrationView(Person user,String password){
 		this.currentUser=user;
 		mainFrame.setVisible(true);
-		System.out.println(currentUser.getName());
-		//TODO: KODE FOR Å LAGE NY BRUKER I DB OSV OSV OSV
-
-
 	}
 
 	public class Listener implements ActionListener, KeyListener, MouseListener, PropertyChangeListener {
@@ -470,6 +481,7 @@ public class MainFrame extends JPanel {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
+			/*
 			// Can not press and hold. This avoids stressing the server unnecessarily
 			for(int p = 1; p<searchPanel.getComponentCount(); p++) {
 				searchPanel.remove(p);
@@ -481,16 +493,16 @@ public class MainFrame extends JPanel {
 
 				Container ct = new Container();
 				ct.setLayout(searchResultGrid);
-				for(int i = 0; i < testPersoner.length; i++) {
+				for(int i = 0; i < personsInSystem.size(); i++) {
 					boolean found = true;
 					for(int j = 0; j < typed.length(); j++) {
-						if(j > testPersoner[i].length()-1 || !(Character.toLowerCase(typed.charAt(j)) == Character.toLowerCase(testPersoner[i].charAt(j)))) {
+						if(j > personsInSystem.get(i).getName().length()-1 || !(Character.toLowerCase(typed.charAt(j)) == Character.toLowerCase(personsInSystem.get(i).getName().charAt(j)))) {
 							found = false;
 							j=typed.length();
 						}
 					}
 					if(found) {
-						JLabel lab = new HoverLabel(testPersons.get(i), new Color(0,148,214), Color.white, Color.white, "/check.png");
+						JLabel lab = new HoverLabel(personsInSystem.get(i), new Color(0,148,214), Color.white, Color.white, "/check.png");
 						HoverLabel hLab = (HoverLabel) lab;
 						hLab.addPropertyChangeListener(new Listener());
 						hLab.setActionCommand("searchselection");
@@ -499,7 +511,7 @@ public class MainFrame extends JPanel {
 						searchRC.ipadx = searchPanel.getWidth()-50; 
 						ct.add(hLab, searchRC);
 						searchRC.gridy++;
-						if(andreKalendere.contains(testPersoner[i])) {
+						if(andreKalendere.contains(personsInSystem[i])) {
 							System.out.println("INNEHOLDER");
 							hLab.setSelected(true);
 						}
@@ -511,6 +523,7 @@ public class MainFrame extends JPanel {
 			searchPanel.revalidate();
 			searchPanel.repaint();
 			searchScrollPane.revalidate();
+			*/
 		}
 
 
@@ -519,7 +532,6 @@ public class MainFrame extends JPanel {
 		@Override
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
