@@ -172,7 +172,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     	layout.putConstraint(SpringLayout.NORTH, participantTablePane, 0, SpringLayout.NORTH, name);
     	add(participantTablePane);
     	
-		participantSearch = new DropDownSearch("Legg til deltager", appointment, testPersons);
+		participantSearch = new DropDownSearch("Legg til deltager", appointment, testPersons,false);
     	layout.putConstraint(SpringLayout.WEST, participantSearch, 0, SpringLayout.WEST, participantTablePane);
     	layout.putConstraint(SpringLayout.NORTH, participantSearch, 20, SpringLayout.SOUTH, participantTablePane);
 		add(participantSearch);
@@ -225,7 +225,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     	
     	initializeTestRooms();
     	
-    	meetingRoomSearch = new DropDownSearch("Velg møterom", appointment, testRooms);
+    	meetingRoomSearch = new DropDownSearch("Velg møterom", appointment, testRooms,false);
     	meetingRoomSearch.setEnabled(false);
     	layout.putConstraint(SpringLayout.WEST, meetingRoomSearch, 0, SpringLayout.WEST, chooseFromList);
     	layout.putConstraint(SpringLayout.NORTH, meetingRoomSearch, 20, SpringLayout.SOUTH, chooseFromList);
