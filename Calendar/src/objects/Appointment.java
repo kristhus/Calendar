@@ -59,8 +59,6 @@ public class Appointment {
 	public void setEndTime(Date endTime) {
 		Date oldEndTime = this.endTime;
 		this.endTime = endTime;
-		System.out.println(startTime.toString());
-		System.out.println(endTime.toString());
 		pcs.firePropertyChange("endTime", oldEndTime, endTime);
 	}
 
@@ -131,7 +129,12 @@ public class Appointment {
 	}
 	
 	public void setStatus(Participant participant, Boolean status) {
+		Boolean oldStatus = participants.get(participant);
+		Object[] oldStatusPair = {participant, oldStatus};
+		System.out.println(status);
 		participants.put(participant, status);
+		Object[] newStatusPair = {participant, status};
+		pcs.firePropertyChange("Status changed", oldStatusPair, newStatusPair);
 	}
 	
 	public void setStatus(int i, Boolean status) {
