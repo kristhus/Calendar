@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -31,7 +32,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.SpringLayout;
+import javax.swing.WindowConstants;
 
+import objects.Appointment;
+import objects.MeetingRoom;
+import objects.Person;
 import calculations.DateCalculations;
 import calculations.NorCalendar;
 
@@ -71,6 +76,9 @@ public class CalendarView extends JLayeredPane {
 	}
 
 	public CalendarView() {
+
+		
+		
 		dayWidth = 800;
 		dayHeight = 700;
 		
@@ -84,6 +92,7 @@ public class CalendarView extends JLayeredPane {
 		
 		createHeader();
 		createWeek();
+		
 	}
 
 	private void createHeader() {
@@ -377,10 +386,12 @@ public class CalendarView extends JLayeredPane {
 		private int locationEndX;
 		private int locationEndY;
 		
+		private int AVTALEID;
+		
 		public TransparentPanel(ArrayList<Object> avtale, int day, int time) {
 			int timeWidth = 35;
 			int height = dayHeight/24;
-			
+			this.avtale = avtale;
 			Date firstDayInWeek = cal.getTheFirstDayOfWeek();
 			((Container) dayContainer.getComponent(day)).getComponent(time).getX();
 			int startX = (int) (dayContainer.getLocation().getX() + timeWidth);
@@ -419,6 +430,36 @@ public class CalendarView extends JLayeredPane {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			// TODO ÅPNE AVTALEVINDUE MED VALGT AVTALE
+			System.out.println(avtale.get(7));
+			Object[] msg = {"fetch", "specificappointment", Integer.parseInt((String) avtale.get(7))};
+			ArrayList<Object> stuff = (ArrayList<Object>) MainFrame.getClient().sendMsg(msg);
+			System.out.println("SJÅ HER____" + stuff);
+			System.out.println(stuff.get(0)+ " MEJ E HER I DAG");
+			Object[] msgGetPerson = {"fetch", "user", stuff.get(0)};
+			Object[] rcv = (Object[]) MainFrame.getClient().sendMsg(msgGetPerson);
+			String mottatNavn = (String) rcv[1];
+			Appointment appointment = new Appointment(new Person((String) stuff.get(0), mottatNavn));
+			appointment.setDescription((String) stuff.get(5));
+			appointment.setStartTime((Date) stuff.get(3));
+			appointment.setEndTime((Date) stuff.get(4));
+			appointment.setLocation((String) stuff.get(6));
+			try {
+				MeetingRoom selMeeting = new MeetingRoom((String) stuff.get(9), (Integer) stuff.get(10));
+				appointment.setMeetingRoom(selMeeting);
+			} catch(IndexOutOfBoundsException e) {
+				System.err.println("No meeting rooms available");
+			}
+//			appointment.addParticipants(stuff.get(7));
+			AppointmentView chosenApp = new AppointmentView(MainFrame.getCurrentUser(), appointment);
+			AppointmentView appointmentView = new AppointmentView(MainFrame.getCurrentUser());
+			JFrame appointmentFrame = new JFrame("CalTwenty - Avtalevisning");
+			appointmentFrame.setPreferredSize(new Dimension(800,600));
+			appointmentFrame.add(appointmentView);
+			appointmentFrame.pack();
+			appointmentFrame.setLocationRelativeTo(null);
+			appointmentFrame.setAlwaysOnTop(true);
+			appointmentFrame.setVisible(true);
+			appointmentFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			
 			
 		}
