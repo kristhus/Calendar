@@ -96,7 +96,7 @@ public class MainFrame extends JPanel {
 
 
 		mainFrame = new JFrame("CalTwenty - Kalendervisning");
-		mainFrame.setPreferredSize(new Dimension(1200, 800));
+		mainFrame.setPreferredSize(mainFrame.getToolkit().getDefaultToolkit().getScreenSize());
 		mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // TODO: Show confirmation dialogue about logging out!
 		mainFrame.add(new MainFrame());
 		mainFrame.pack();

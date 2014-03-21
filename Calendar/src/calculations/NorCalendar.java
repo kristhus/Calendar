@@ -114,4 +114,28 @@ public class NorCalendar extends GregorianCalendar {
 		return lastDay;
 		
 	}
+	
+	public Date getTheFirstDayOfWeek() {
+		Calendar c = this;
+		
+		c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek());
+		System.out.println(c.getTime() + " - FØRSTE DAGEN I UKEN");
+		return getTime();
+	}
+	public Date getTheLastDayOfWeek() {
+		Calendar c = this;
+		c.add(WEEK_OF_YEAR, 1);
+		c.add(DAY_OF_YEAR, -1);
+		System.out.println(c.getTime() + " - SISTE DAGEN I UKEN");
+		Date toReturn = getTime();
+		
+		return toReturn;
+	}
+	
+	public int getDayOfWeek(Date date) {
+		setTime(date);	
+//		System.out.println(getTime());
+//		System.out.println("DAY OF WEEK: " + get(DAY_OF_WEEK));
+		return get(Calendar.DAY_OF_WEEK) -1;
+	}
 }
