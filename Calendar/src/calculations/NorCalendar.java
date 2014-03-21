@@ -119,14 +119,12 @@ public class NorCalendar extends GregorianCalendar {
 		Calendar c = this;
 		
 		c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek());
-		System.out.println(c.getTime() + " - FØRSTE DAGEN I UKEN");
 		return getTime();
 	}
 	public Date getTheLastDayOfWeek() {
 		Calendar c = this;
 		c.add(WEEK_OF_YEAR, 1);
 		c.add(DAY_OF_YEAR, -1);
-		System.out.println(c.getTime() + " - SISTE DAGEN I UKEN");
 		Date toReturn = getTime();
 		
 		return toReturn;

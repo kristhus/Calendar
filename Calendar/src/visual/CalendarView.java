@@ -75,7 +75,7 @@ public class CalendarView extends JLayeredPane {
 		
 		
 		dayWidth = 800;
-		dayHeight = 900;
+		dayHeight = 700;
 		
 		setBackground(Color.white);
 		calendarLayout = new SpringLayout();
@@ -110,7 +110,7 @@ public class CalendarView extends JLayeredPane {
 		for(int d = 0; d < 7; d++) {
 			c.gridx++;
 			JPanel headerDayPanel = new JPanel();
-			headerDayPanel.setPreferredSize(new Dimension(dayWidth/7-10, dayHeight/24));
+			headerDayPanel.setPreferredSize(new Dimension(dayWidth/7-10, 1000/24));
 			headerDayPanel.setBackground(new Color(255,208,112));
 			headerDayPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 //			System.out.println(weekDates[d]);
@@ -389,29 +389,23 @@ public class CalendarView extends JLayeredPane {
 			((Container) dayContainer.getComponent(day)).getComponent(time).getX();
 			int startX = (int) (dayContainer.getLocation().getX() + timeWidth);
 			
-			System.out.println("AVTALES STARTTIME: " + time);
 			locationStartX = startX + 114*(day-1);
 			int startY = (int) dayContainer.getLocation().getY();
-			System.out.println("STARTY: " + startY);
-			locationStartY = startY + time * height;
+			locationStartY = startY + (time) * height;
 			this.avtale = avtale;
 	    	setBackground(dRed);
 	        setOpaque(false);
 	        addMouseListener(this);
 	        Date startDate = (Date) avtale.get(3);
-	        System.out.println(startDate.getHours());
-	        locationStartY = (startDate.getHours() + startDate.getMinutes()/60)*height;
 	        int calStartX = dayContainer.getX();
-	        System.out.println("X: " + locationStartX + "  --  " + "Y: " + locationStartY);
 	        calendarLayout.putConstraint(SpringLayout.WEST, this, locationStartX, SpringLayout.WEST, MainFrame.getCalendarView());
 	        calendarLayout.putConstraint(SpringLayout.NORTH, this, locationStartY, SpringLayout.NORTH, MainFrame.getCalendarView());
-	        Date endTime = (Date) avtale.get(4);
 	        JLabel description = new JLabel();
 	        description.setText((String) avtale.get(6));
 	        add(description);
-	        setPreferredSize(new Dimension(115, dayHeight/24));
+	        setPreferredSize(new Dimension(115/2, dayHeight/24));
 	        if (((Date) avtale.get(4)).getHours() > time || ((Date) avtale.get(4)).getDay() > day) {
-	        	setPreferredSize(new Dimension(115, height*(26-time)));
+	        	setPreferredSize(new Dimension(115/2, height*(24-time)));
 	        }
 	        
 	        
