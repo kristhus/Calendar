@@ -27,6 +27,8 @@ public class LoginView extends JFrame{
 	private JButton nyBrukerButton;
 	private JPanel loginPanel;
 	private LoginView thisFrame;
+	private CustomJTextField brukernavnField;
+	private CustomJTextField passordField;
 
 	public LoginView(MainFrame mainFrame){
 		thisFrame = this;
@@ -51,7 +53,7 @@ public class LoginView extends JFrame{
 		JLabel brukernavnLabel = new JLabel("Brukernavn");
 		brukernavnLabel.setPreferredSize(new Dimension(60,30));
 		loginPanel.add(brukernavnLabel,c); c.gridx = 1;
-		CustomJTextField brukernavnField = new CustomJTextField(new JTextField(), null, "Brukernavn...");
+		brukernavnField = new CustomJTextField(new JTextField(), null, "Brukernavn...");
 		brukernavnField.setPreferredSize(new Dimension(300, 30));
 		loginPanel.add(brukernavnField,c);
 
@@ -59,7 +61,7 @@ public class LoginView extends JFrame{
 		JLabel passordLabel = new JLabel("Passord");
 		passordLabel.setPreferredSize(new Dimension(60,30));
 		loginPanel.add(passordLabel,c); c.gridx = 1;
-		CustomJTextField passordField = new CustomJTextField(new JTextField(), null, "Passord...");
+		passordField = new CustomJTextField(new JTextField(), null, "Passord...");
 		passordField.setPreferredSize(new Dimension(300, 30));
 		loginPanel.add(passordField,c);
 
@@ -92,6 +94,9 @@ public class LoginView extends JFrame{
 				//TODO: 2.SETTE BRUKER I MAIN
 				/////////////////////////////////////////TEST TEST TEST TEST TEST TEST /////////////////
 				Person thomas = new Person("Thomas Mathisen", "samoth1601@gmail.com", 90048601);
+				Object[] obj = {brukernavnField.getText(), passordField.getText()};
+				Object[] toSend = {"fetch", "login", obj};
+				mainFrame.getClient().sendMsg(toSend);
 				mainFrame.logInAndSetUser(thomas);
 				thisFrame.dispose();
 			}

@@ -2,6 +2,8 @@ package serverConnection;
 
 import java.io.*;
 import java.net.*;
+
+import visual.MainFrame;
  
 public class Client {
 	
@@ -11,7 +13,15 @@ public class Client {
 	private static Socket clientSocket;
 	
         
+	
+	
     public Client() {    
+    	MainFrame.setClient(this);
+    	connect();
+    }
+    
+    public void connect() {
+    	System.out.println("connect");
         try {
         	clientSocket = new Socket(hostName, portNumber);
         } catch (UnknownHostException e) {
@@ -28,6 +38,7 @@ public class Client {
     }
     
     public Object sendMsg(Object[] obj) {
+    	connect();
     	try {
     		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 			ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -42,11 +53,14 @@ public class Client {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+			closeConnection();
 			return toReturn;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	finally { }
+    	finally {
+    	}
+    	closeConnection();
     	Object[] toReturn = {};
     	return toReturn;
     }

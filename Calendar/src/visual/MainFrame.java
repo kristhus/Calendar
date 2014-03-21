@@ -79,7 +79,7 @@ public class MainFrame extends JPanel {
 
 	protected JFrame splashScreen;
 
-	private Client client;
+	private static Client client;
 
 	public static void main(String[] args) {
 
@@ -675,6 +675,12 @@ public class MainFrame extends JPanel {
 
 	}
 
-
+	public static Client getClient() {
+		return client;
+	}
+	
+	public static void setClient(Client cl) {
+		client = cl;
+	}
 
 }
