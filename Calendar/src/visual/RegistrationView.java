@@ -148,20 +148,25 @@ public class RegistrationView extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == nyBrukerButton){
 				String errorField = checkInput();
-				if (!errorField.equals("OK")){
-					createWarningFrame(errorField);
-				}else{
+				if (errorField.equals("OK")){
 					Person newUser = new Person((fornavnField.getText() + " " + etternavnField.getText()), emailField.getText(), Integer.parseInt(telefonnummerField.getText()));
 					//TODO: KODE FOR Å LAGE NY BRUKER I DB, LOGGE INN OG SETTE BRUKER I MAIN
 					
 					Client client = new Client();
 					Object[] objectCredentials = {emailField.getText(), passordField.getText(), fornavnField.getText() + " " + etternavnField.getText(), Integer.parseInt(telefonnummerField.getText())}; 
 					Object[] toSend = {"store", "register", objectCredentials};
-					System.out.println(client.sendMsg(toSend));
-					
+					String result = (String) (client.sendMsg(toSend));
+					if (!result.equals("OK")){
+						createWarningFrame("",true);
+					}else{
 					mainFrame.createNewUserFromRegistrationView(newUser, passordField.getText());
 					loginFrame.dispose();
 					thisFrame.dispose();
+					}
+					
+					
+				}else{
+					createWarningFrame(errorField,false);
 				}
 			}
 			if (e.getSource() == tilbakeTilLoginButton){
@@ -181,17 +186,24 @@ public class RegistrationView extends JFrame{
 	private JButton warningOkButton;
 	private JFrame warningFrame;
 	
-	private void createWarningFrame(String errorField){
+	private void createWarningFrame(String errorField,Boolean endreTekstTilTekstForBrukerEksisterer){
 		JPanel warningPanel = new JPanel();
 		warningPanel.setLayout(new GridBagLayout());
 		warningPanel.setBackground(Color.white);
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0; c.gridy=1;
 		c.ipadx = 10; c.ipady = 10;
-		warningPanel.add(new JLabel("Vennligst skriv inn korrekt data i alle feltene."),c);
-		c.gridy++;
-		warningPanel.add(new JLabel("Det er en feil i feltet: " + errorField),c);
-		c.gridy++;
+		if (endreTekstTilTekstForBrukerEksisterer){
+			warningPanel.add(new JLabel("Det finnes allerede en bruker registrert på denne mailen."),c);
+			c.gridy++;
+			warningPanel.add(new JLabel("Vennligst prøv en annen mailadresse."),c);
+			c.gridy++;
+		}else{
+			warningPanel.add(new JLabel("Vennligst skriv inn korrekt data i alle feltene."),c);
+			c.gridy++;
+			warningPanel.add(new JLabel("Det er en feil i feltet: " + errorField),c);
+			c.gridy++;
+		}
 		warningOkButton = new JButton("Ok");
 		warningOkButton.setPreferredSize(new Dimension(300, 30));
 		warningOkButton.addActionListener(actionListener); warningOkButton.setName("warningOkButton");

@@ -64,6 +64,7 @@ public class Client {
     	}
     	closeConnection();
     	Object[] toReturn = {};
+    	
     	return toReturn;
     }
     
@@ -79,7 +80,6 @@ public class Client {
 	}
 	
 	public void reconnect() {
-		
 	}
     
 }
