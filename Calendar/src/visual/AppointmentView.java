@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -71,7 +72,13 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     
     private JButton saveButton;
     
+    public ArrayList<Object> getMeetingRooms() {
+    	Object[] msg = {"fetch", "ressurs", null};
+    	return (ArrayList<Object>) MainFrame.getClient().sendMsg(msg);
+    }
+    
 	public AppointmentView(Person user) {
+		System.out.println(getMeetingRooms());
 		appointment = new Appointment(user);
 		appointment.addPropertyChangeListener(this);
 		
@@ -406,6 +413,12 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 			if (! validityStatus.equals("valid")) {
 				JOptionPane.showMessageDialog(saveButton, validityStatus, "Feil oppstod", JOptionPane.ERROR_MESSAGE);
 			}
+			
+			// rekkefølge: startTid, sluttTid, beskrivelse, sted, avtaleeier
+			
+			Object[] felter = {new Timestamp(appointment.getStartTime().getTime()), new Timestamp(appointment.getEndTime().getTime()), appointment.getDescription(), appointment.getLocation(), appointment.getAppointmentOwner().getEmail()};
+			Object[] msg = {"store", "appointment", felter};
+			MainFrame.getClient().sendMsg(msg);
 		}
 	}
 

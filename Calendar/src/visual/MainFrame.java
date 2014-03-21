@@ -682,7 +682,4 @@ public class MainFrame extends JPanel {
 		client = client2;
 		
 	}
-
-
-
 }

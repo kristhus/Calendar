@@ -3,6 +3,7 @@ package objects;
 import java.sql.Date;
 
 public class MeetingRoom implements Searchable {
+	private int roomID;
 	private String name;
 	private int capacity;
 	// hvert møterom skal ha en kalender som viser når det er booket
@@ -10,6 +11,11 @@ public class MeetingRoom implements Searchable {
 	public MeetingRoom(String name, int capacity) {
 		this.name = name;
 		this.capacity = capacity;
+	}
+	
+	public MeetingRoom(String name, int capacity, int roomID) {
+		this(name, capacity);
+		this.roomID = roomID;
 	}
 	
 	public MeetingRoom(MeetingRoom meetingRoom) {
