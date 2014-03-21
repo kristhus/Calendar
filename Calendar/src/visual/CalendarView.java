@@ -327,7 +327,8 @@ public class CalendarView extends JPanel {
 	public void getUserCalFromServer() {
 		Object[] msg = {"fetch", "kalender", MainFrame.getCurrentUser().getEmail()};
 		Object rec = MainFrame.getClient().sendMsg(msg);
-		System.out.println(rec);
+		userCal = (ArrayList<Object>) rec;
+		System.out.println(rec + " HER E MOTTAT KALENDER");
 		
 	}
 	
