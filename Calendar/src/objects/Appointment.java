@@ -179,6 +179,7 @@ public class Appointment {
 	}
 	
 	
+	// helvettes jævla negerkuk i samefitte
 	// return the String "valid" if valid, an error message otherwise
 	public String validityStatus() {
 		if (name == null || name.length() < 3) {
