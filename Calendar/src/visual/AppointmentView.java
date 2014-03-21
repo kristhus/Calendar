@@ -164,7 +164,6 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 		add(descriptionPC);
     	
 		participantTableModel = new ParticipantTableModel(appointment.numberOfParticipants());
-		System.out.println("Antall deltagere: " + appointment.numberOfParticipants());
 		participantTable = new JTable(participantTableModel);
 		participantTablePane = new JScrollPane(participantTable);
 		participantTablePane.setPreferredSize(new Dimension(400, 300));
@@ -424,7 +423,6 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 
 	public void propertyChange(PropertyChangeEvent e) {
 		if (appointment.getName() != null) {
-			System.out.println(appointment.getName());
 			namePC.setText(appointment.getName());
 		}
 		if (appointment.getStartTime() != null) {
@@ -434,11 +432,9 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 			endDatePC.setValue(appointment.getEndTime());
 		}
 		if (appointment.getDescription() != null) {
-			System.out.println("fiskebolle");
 			descriptionPC.setText(appointment.getDescription());
 		}
 		
-		System.out.println("I'm listening");
 		if (chooseFromListPC.isSelected()) {
 			if (appointment.getMeetingRoom() != null && appointment.getMeetingRoom().getName() != null) {
 				placePC.setText(appointment.getMeetingRoom().getName());
