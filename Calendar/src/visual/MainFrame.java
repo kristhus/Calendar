@@ -60,21 +60,8 @@ public class MainFrame extends JPanel {
 	private static Container miniCalendarDays;
 
 	private static JPanel leftPanel;
-	private JPanel checkPanel;
-	private JScrollPane checkScrollPane;
-	private JTextField searchField;
-	private JPanel searchPanel;
-	private JScrollPane searchScrollPane;
 	private Person currentUser;
-
-	private SpringLayout searchLayout;
-	private final GridBagLayout searchResultGrid = new GridBagLayout();
-	private GridBagConstraints searchRC;
-
-	/* TEST */
-	private ArrayList<Person> andreKalendere;
-	/*private String[] personsInSystem = {"KNUT", "K�RE", "KYRRE", "AMANDA", "PedrO", "Jalapeno", "Trygvasson", "Kalle", "Kine", 
-			"Kristian", "Kerp", "Kevin", "Kjeks", "Kristina", "Kristine", "Kniseline", "Klars", "Kfryseboks","Kunstverk", "Kris", "Knut-k�re"};*/
+	
 	private ArrayList<Person> personsInSystem = new ArrayList<Person>();
 
 	protected JFrame splashScreen;
