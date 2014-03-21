@@ -61,7 +61,7 @@ public class MainFrame extends JPanel {
 
 	private static JPanel leftPanel;
 	private JButton newAppointmentButton;
-	private Person currentUser;
+	private static Person currentUser;
 	private Appointment otherCalendarsHack; // gir ikke mening logisk at dette er en appointment, men det funker, så derfor
 	private DropDownSearch personSearch;
 	
@@ -519,7 +519,7 @@ public class MainFrame extends JPanel {
 		
 	}
 	
-	public Person getCurrentUser() {
+	public static Person getCurrentUser() {
 		return currentUser;
 	}
 }
