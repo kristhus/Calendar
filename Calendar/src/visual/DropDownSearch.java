@@ -91,7 +91,7 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
     	add(searchScrollPane);
     	
         searchLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
-        
+        /*
         checkPanel = new JPanel();
         checkPanel.setPreferredSize(new Dimension(220, 400));
         checkPanel.setLayout(new FlowLayout());
@@ -105,6 +105,7 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
     	checkScrollPane.setVisible(false);
     	checkScrollPane.setPreferredSize(new Dimension(230,200));
     	add(checkScrollPane);
+    	*/
     	setPreferredSize(new Dimension(240, 600));
     	setVisible(true);
     }
@@ -199,9 +200,9 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 				if( (Boolean) e.getNewValue()) {
 					JLabel cbDescription = new JLabel(( (JLabel) e.getSource()).getText());
 					JCheckBox cb = new JCheckBox();
-					checkPanel.add(cbDescription);
-					checkPanel.add(cb);
-					checkPanel.revalidate();
+					// checkPanel.add(cbDescription);
+					// checkPanel.add(cb);
+					// checkPanel.revalidate();
 					searchPanel.revalidate();
 
 					HoverLabel label = (HoverLabel) e.getSource();

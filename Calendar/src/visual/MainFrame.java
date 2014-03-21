@@ -63,7 +63,7 @@ public class MainFrame extends JPanel {
 	private static JPanel leftPanel;
 	private JButton newAppointmentButton;
 	private static Person currentUser;
-	private Appointment otherCalendarsHack; // gir ikke mening logisk at dette er en appointment, men det funker, så derfor
+	private Appointment otherCalendars; // gir ikke mening logisk at dette er en appointment, men det funker, så derfor
 	private DropDownSearch personSearch;
 	
 	private ArrayList<Participant> personsInSystem = new ArrayList<Participant>();
@@ -179,24 +179,21 @@ public class MainFrame extends JPanel {
         springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, newAppointmentButton);
         springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
         
-        otherCalendarsHack = new Appointment(currentUser);
-        otherCalendarsHack.addParticipant(new Person("Knut", "stuff", 123));
-        // otherCalendarsHack.addPropertyChangeListener(new UpdateOtherCalendarsList());
-    	personSearch = new DropDownSearch("Søk etter bruker", otherCalendarsHack, personsInSystem);
+        otherCalendars = new Appointment(currentUser);
+    	personSearch = new DropDownSearch("Søk etter bruker", otherCalendars, personsInSystem);
     	personSearch.setBackground(Color.white);
-    	springLayout.putConstraint(SpringLayout.NORTH, personSearch, 20, SpringLayout.SOUTH, miniCalendar);
+    	springLayout.putConstraint(SpringLayout.NORTH, personSearch, 100, SpringLayout.SOUTH, miniCalendar);
     	springLayout.putConstraint(SpringLayout.WEST, personSearch, 10, SpringLayout.WEST, leftPanel);
     	leftPanel.add(personSearch);
     	
-    	
         JLabel cb1Description = new JLabel();
         cb1Description.setText("Andre kalendere");
-        springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 200, SpringLayout.SOUTH, personSearch);
+        springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 10, SpringLayout.SOUTH, miniCalendar);
         springLayout.putConstraint(SpringLayout.WEST, cb1Description, 10, SpringLayout.WEST, leftPanel);
         leftPanel.add(cb1Description);
     	JCheckBox cb1 = new JCheckBox();
     	cb1.addActionListener(listener);
-    	cb1.setActionCommand("Andre kalendere");
+    	cb1.setActionCommand("Show other ");
         springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
         springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
     	leftPanel.add(cb1);
