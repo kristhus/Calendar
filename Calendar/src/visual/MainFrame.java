@@ -70,7 +70,7 @@ public class MainFrame extends JPanel {
 	private JPanel checkPanel;
 	private JScrollPane checkScrollPane;
 	
-	private ArrayList<Participant> personsInSystem = new ArrayList<Participant>();
+	private static ArrayList<Participant> personsInSystem = new ArrayList<Participant>();
 
 	protected JFrame splashScreen;
 
@@ -124,15 +124,6 @@ public class MainFrame extends JPanel {
 		setLayout(new BorderLayout(0,1));
 
 		calendarView = new CalendarView();
-		Appointment app = new Appointment(currentUser);
-		///////////TEST TEST TEST////////////START
-		app.setStartTime(new Date(2014,11,16,16,30));
-		app.setEndTime(new Date(2014,11,16,18,00));
-		app.setName("TacoKveld med pepsiMax");
-		MeetingRoom torehus = new MeetingRoom("Huset til Tore", 5);
-		app.setMeetingRoom(torehus);
-		//NotificationView notV = new NotificationView(this, app);
-		///////////TEST TEST TEST////////////END
 		add(createLeftWindow(), BorderLayout.WEST);
 		add(calendarView);
 	}
@@ -543,12 +534,12 @@ public class MainFrame extends JPanel {
 	public static Person getCurrentUser() {
 		return currentUser;
 	}
-
-
-
+	
+	public static ArrayList<Participant> getPersonsInSystem() {
+		return personsInSystem;
+	}
 
 	public static void updateOtherCalendarsToShow(ArrayList<Participant> markedUsers) {
 		otherCalendarsToShow = markedUsers;
-		
 	}
 }

@@ -37,8 +37,8 @@ import objects.Person;
 
 public class AppointmentView extends JPanel implements PropertyChangeListener {
 	private Appointment appointment;
-	private ArrayList<Participant> testPersons = new ArrayList<Participant>();
-	private ArrayList<MeetingRoom> testRooms = new ArrayList<MeetingRoom>();
+	private ArrayList<Participant> personsInSystem;
+	private ArrayList<MeetingRoom> meetingRooms = new ArrayList<MeetingRoom>();
 
 	private JLabel name;
 	private JLabel startDate;
@@ -53,7 +53,6 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 	private SpringLayout layout;
     
     private DropDownSearch participantSearch;
-    private ParticipantList participantList;
     private JButton removeSelectedParticipants;
     
 	private ParticipantTableModel participantTableModel;
@@ -72,13 +71,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     
     private JButton saveButton;
     
-    public ArrayList<Object> getMeetingRooms() {
-    	Object[] msg = {"fetch", "ressurs", null};
-    	return (ArrayList<Object>) MainFrame.getClient().sendMsg(msg);
-    }
-    
 	public AppointmentView(Person user) {
-		System.out.println(getMeetingRooms());
 		appointment = new Appointment(user);
 		appointment.addPropertyChangeListener(this);
 		
@@ -101,7 +94,24 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 		initializeAppointmentView(user);
 	}
 	
+    public void getMeetingRooms() {
+    	// rekkefølge: startTid, sluttTid, beskrivelse, sted, avtaleeier
+    	Object[] msg = {"fetch", "ressurs", null};
+    	ArrayList meetingRoomList = (ArrayList) MainFrame.getClient().sendMsg(msg);
+    	
+    	for (int i = 0; i < meetingRoomList.size(); i++) {
+    		ArrayList tempMeetingRoom = (ArrayList) meetingRoomList.get(i);
+    		String name = (String) tempMeetingRoom.get(0);
+    		int capacity = (int) tempMeetingRoom.get(1);
+    		meetingRooms.add(new MeetingRoom(name, capacity));
+    	}
+    }
+	
 	public void initializeAppointmentView(Person user) {
+		personsInSystem = MainFrame.getPersonsInSystem();
+		System.out.println(personsInSystem);
+		getMeetingRooms();
+		
     	layout = new SpringLayout();
     	setLayout(layout);
 
@@ -171,7 +181,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     	layout.putConstraint(SpringLayout.NORTH, participantTablePane, 0, SpringLayout.NORTH, name);
     	add(participantTablePane);
     	
-		participantSearch = new DropDownSearch("Legg til deltager", appointment, testPersons,false);
+		participantSearch = new DropDownSearch("Legg til deltager", appointment, personsInSystem, false);
     	layout.putConstraint(SpringLayout.WEST, participantSearch, 0, SpringLayout.WEST, participantTablePane);
     	layout.putConstraint(SpringLayout.NORTH, participantSearch, 20, SpringLayout.SOUTH, participantTablePane);
 		add(participantSearch);
@@ -183,9 +193,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     	add(removeSelectedParticipants);
     	
     	appointment.addPropertyChangeListener(participantSearch);
-    	
-    	initializeTestPersons();
-    	
+
     	// MeetingRoomPanel begins here
     	place = new JLabel("Sted: ");
     	layout.putConstraint(SpringLayout.WEST, place, 5, SpringLayout.WEST, this);
@@ -222,9 +230,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     	layout.putConstraint(SpringLayout.NORTH, minCapacity, 0, SpringLayout.NORTH, minCapacityPC);
     	add(minCapacity);
     	
-    	initializeTestRooms();
-    	
-    	meetingRoomSearch = new DropDownSearch("Velg møterom", appointment, testRooms,false);
+    	meetingRoomSearch = new DropDownSearch("Velg møterom", appointment, meetingRooms, false);
     	meetingRoomSearch.setEnabled(false);
     	layout.putConstraint(SpringLayout.WEST, meetingRoomSearch, 0, SpringLayout.WEST, chooseFromList);
     	layout.putConstraint(SpringLayout.NORTH, meetingRoomSearch, 20, SpringLayout.SOUTH, chooseFromList);
@@ -265,21 +271,6 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 		removeSelectedParticipants.setEnabled(false);
 		remove(saveButton);
 	}
-
-    public void initializeTestPersons() {
-    	testPersons.add(new Person("Torfinn", "email", 123));
-    	testPersons.add(new Person("Kristian", "annen email", 321));
-    	testPersons.add(new Person("Thomas", "stuff", 0));
-    	testPersons.add(new Group("Gruppe 20", "facebook"));
-    }
-    
-    public void initializeTestRooms() {
-    	testRooms.add(new MeetingRoom("P15", 50));
-    	testRooms.add(new MeetingRoom("R97", 20));
-    	testRooms.add(new MeetingRoom("R34", 12));
-    	testRooms.add(new MeetingRoom("Bøttekott", 4));
-    	testRooms.add(new MeetingRoom("Billig motellrom", 2));
-    }
     
 
 	class UpdateNameAction implements KeyListener {
