@@ -22,7 +22,7 @@ import objects.Person;
 import serverConnection.Client;
 
 public class LoginView extends JFrame{
-
+	
 	private MainFrame mainFrame;
 	private JButton loginButton;
 	private JButton nyBrukerButton;
@@ -32,6 +32,7 @@ public class LoginView extends JFrame{
 	private CustomJTextField passordField;
 
 	public LoginView(MainFrame mainFrame){
+		super("CalTwenty - Logg inn");
 		thisFrame = this;
 		loginPanel = new JPanel();
 		this.mainFrame = mainFrame;

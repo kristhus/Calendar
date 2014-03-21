@@ -370,7 +370,7 @@ public class MainFrame extends JPanel {
 			case "New Appointment":
 				System.out.println("NEW APPOINTMENT CHOSEN");
 				AppointmentView appointmentView = new AppointmentView(currentUser);
-				JFrame appointmentFrame = new JFrame();
+				JFrame appointmentFrame = new JFrame("CalTwenty - Avtalevisning");
 				appointmentFrame.setPreferredSize(new Dimension(800,600));
 				appointmentFrame.add(appointmentView);
 				appointmentFrame.pack();
