@@ -53,7 +53,7 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 	private ArrayList<Participant>markedUsers;
 	private DropDownSearch thisView;
 
-	public DropDownSearch(String buttonText, Appointment appointment, ArrayList<? extends Searchable> searchObjects,Boolean isMainFrameView) {
+	public DropDownSearch(String buttonText, Appointment appointment, ArrayList<? extends Searchable> searchObjects, Boolean isMainFrameView) {
 		markedUsers = new ArrayList<Participant>();
 		calledFromMainFrame = isMainFrameView;
 		this.appointment = appointment;
@@ -104,16 +104,10 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 	}
 
 	public void propertyChange(PropertyChangeEvent e) {
-		System.out.println("I'm listening");
 		searchListener.keyReleased(null);
 	}
 
-
-
 	private class SearchListener implements ActionListener, KeyListener, PropertyChangeListener {
-
-
-
 		public void keyPressed(KeyEvent arg0) {
 			// nothing happens
 		}
