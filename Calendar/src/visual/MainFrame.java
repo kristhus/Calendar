@@ -16,6 +16,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
 
+import calculations.Alarm;
 import calculations.NorCalendar;
 import objects.Appointment;
 import objects.MeetingRoom;
@@ -73,6 +74,8 @@ public class MainFrame extends JPanel {
 	private static ArrayList<Participant> personsInSystem = new ArrayList<Participant>();
 
 	protected JFrame splashScreen;
+
+	private ArrayList alarmList;
 
 	private static Client client;
 
@@ -347,9 +350,32 @@ public class MainFrame extends JPanel {
 		}
 		return header;
 	}
+	
+	public void createAlarms(){
+		alarmList.clear();
+		Object[] msg = {"fetch", "kalender", MainFrame.getCurrentUser().getEmail()};
+		ArrayList<Appointment> userCal = (ArrayList<Appointment>) MainFrame.getClient().sendMsg(msg);
+		
+		Appointment app2 = new Appointment(currentUser);
+		///////////TEST TEST TEST////////////START
+		app2.setStartTime(new Date(2014, 03, 21, 19, 42, 00));
+		app2.setEndTime(new Date(2014,11,16,18,00));
+		app2.setName("TacoKveld med pepsiMax");
+		MeetingRoom torehus = new MeetingRoom("Huset til Tore", 5);
+		app2.setMeetingRoom(torehus);
+		int warningMinutesBefore = 1;
+		
+		//Alarm alarm1 = new Alarm(warningMinutesBefore, app2);
+		
+		for (Appointment avtale:userCal){
+			alarmList.add (new Alarm(warningMinutesBefore, avtale));
+		}
+	}
 
 	public void logInAndSetUser(Person user) {
 		this.currentUser=user;
+		alarmList = new ArrayList();
+		createAlarms();
 		mainFrame.setVisible(true);
 		Object[] toSend = {"fetch", "alle", };
 		//Object[] userList = (Object[]) client.sendMsg(toSend);
