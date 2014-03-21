@@ -71,9 +71,6 @@ public class CalendarView extends JLayeredPane {
 	}
 
 	public CalendarView() {
-
-		
-		
 		dayWidth = 800;
 		dayHeight = 900;
 		
@@ -87,7 +84,6 @@ public class CalendarView extends JLayeredPane {
 		
 		createHeader();
 		createWeek();
-		
 	}
 
 	private void createHeader() {
