@@ -79,7 +79,7 @@ public class MainFrame extends JPanel {
 
 	protected JFrame splashScreen;
 
-	private Client client;
+	private static Client client;
 
 	public static void main(String[] args) {
 
@@ -118,7 +118,7 @@ public class MainFrame extends JPanel {
 	}
 
 	public MainFrame() {
-		// client = new Client();
+		client = new Client();
 		initSplashScreen();
 		initLoginViewAndFrame();
 		setPreferredSize(new Dimension(800, 600));
@@ -403,9 +403,9 @@ public class MainFrame extends JPanel {
 	public void logInAndSetUser(Person user) {
 		this.currentUser=user;
 		mainFrame.setVisible(true);
-		//Object[] toSend = {"fetch", "alle", null};
-		//System.out.println("yoooooooooo " + client.sendMsg(toSend));
-		//System.out.println("current user is: " + currentUser.getNavn());
+		Object[] toSend = {"fetch", "alle", null};
+		System.out.println("yoooooooooo " + client.sendMsg(toSend));
+		System.out.println("current user is: " + currentUser.getName());
 	}
 
 	public void createNewUserFromRegistrationView(Person user,String password){
@@ -671,6 +671,16 @@ public class MainFrame extends JPanel {
 	public void showAppointmentView(Appointment appointment) {
 		// TODO Auto-generated method stub
 
+	}
+
+
+	public static Client getClient() {
+		return client;
+	}
+	
+	public static void setClient(Client client2) {
+		client = client2;
+		
 	}
 
 
