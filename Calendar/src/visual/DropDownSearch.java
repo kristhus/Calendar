@@ -88,24 +88,9 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
     	searchScrollPane.setPreferredSize(new Dimension(210,200));
     	searchScrollPane.setVisible(false);
     	searchScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        searchLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
     	add(searchScrollPane);
     	
-        searchLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
-        /*
-        checkPanel = new JPanel();
-        checkPanel.setPreferredSize(new Dimension(220, 400));
-        checkPanel.setLayout(new FlowLayout());
-        checkPanel.setBackground(Color.lightGray);
-        checkPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
-        checkPanel.setVisible(true);
-        add(checkPanel);
-        
-    	checkScrollPane = new JScrollPane(checkPanel);
-    	// checkScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
-    	checkScrollPane.setVisible(false);
-    	checkScrollPane.setPreferredSize(new Dimension(230,200));
-    	add(checkScrollPane);
-    	*/
     	setPreferredSize(new Dimension(240, 600));
     	setVisible(true);
     }

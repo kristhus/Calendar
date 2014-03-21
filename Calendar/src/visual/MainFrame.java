@@ -65,6 +65,10 @@ public class MainFrame extends JPanel {
 	private static Person currentUser;
 	private Appointment otherCalendars; // gir ikke mening logisk at dette er en appointment, men det funker, så derfor
 	private DropDownSearch personSearch;
+	private JCheckBox cb1;
+	private JLabel cb1Description;
+	private JPanel checkPanel;
+	private JScrollPane checkScrollPane;
 	
 	private ArrayList<Participant> personsInSystem = new ArrayList<Participant>();
 
@@ -182,21 +186,37 @@ public class MainFrame extends JPanel {
         otherCalendars = new Appointment(currentUser);
     	personSearch = new DropDownSearch("Søk etter bruker", otherCalendars, personsInSystem);
     	personSearch.setBackground(Color.white);
-    	springLayout.putConstraint(SpringLayout.NORTH, personSearch, 100, SpringLayout.SOUTH, miniCalendar);
+    	springLayout.putConstraint(SpringLayout.NORTH, personSearch, 40, SpringLayout.SOUTH, miniCalendar);
     	springLayout.putConstraint(SpringLayout.WEST, personSearch, 10, SpringLayout.WEST, leftPanel);
     	leftPanel.add(personSearch);
     	
-        JLabel cb1Description = new JLabel();
-        cb1Description.setText("Andre kalendere");
+        cb1Description = new JLabel();
+        cb1Description.setText("Vis andres kalendere");
         springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 10, SpringLayout.SOUTH, miniCalendar);
         springLayout.putConstraint(SpringLayout.WEST, cb1Description, 10, SpringLayout.WEST, leftPanel);
         leftPanel.add(cb1Description);
-    	JCheckBox cb1 = new JCheckBox();
+    	cb1 = new JCheckBox();
     	cb1.addActionListener(listener);
-    	cb1.setActionCommand("Show other ");
+    	cb1.setActionCommand("Toggle show other calendars");
         springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
         springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
     	leftPanel.add(cb1);
+    	
+        checkPanel = new JPanel();
+        checkPanel.setPreferredSize(new Dimension(220, 400));
+        checkPanel.setLayout(new FlowLayout());
+        checkPanel.setBackground(Color.lightGray);
+        checkPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        springLayout.putConstraint(SpringLayout.NORTH, checkPanel, 70, SpringLayout.SOUTH, miniCalendar);
+        springLayout.putConstraint(SpringLayout.WEST, checkPanel, 10, SpringLayout.WEST, leftPanel);
+        checkPanel.setVisible(true);
+        leftPanel.add(checkPanel);
+        
+    	checkScrollPane = new JScrollPane(checkPanel);
+    	// checkScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+    	checkScrollPane.setVisible(false);
+    	checkScrollPane.setPreferredSize(new Dimension(230,200));
+    	leftPanel.add(checkScrollPane);
     	
         leftPanel.setPreferredSize(new Dimension(240, 800));
     	leftPanel.setVisible(true);
@@ -378,6 +398,9 @@ public class MainFrame extends JPanel {
 				break;
 			case "Something":
 				System.out.println("Chose something");
+				break;
+			case "Toggle show other calendars":
+				personSearch.setEnabled(cb1.isSelected());
 				break;
 			}
 		}
