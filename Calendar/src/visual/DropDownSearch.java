@@ -69,7 +69,6 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 		searchField.setPreferredSize(new Dimension(180, 30));
 		// participantListView.add(searchField);
 
-
 		ImageIcon caret = new ImageIcon(this.getClass().getResource("/caret.png"));
 		searchDropDown = new JButton(buttonText);
 		searchDropDown.setActionCommand("Search button");

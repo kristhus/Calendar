@@ -32,7 +32,6 @@ import objects.Appointment;
 import objects.Group;
 import objects.MeetingRoom;
 import objects.Participant;
-import objects.ParticipantList;
 import objects.Person;
 
 public class AppointmentView extends JPanel implements PropertyChangeListener {
@@ -76,15 +75,21 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 		appointment.addPropertyChangeListener(this);
 		
 		initializeAppointmentView(user);
+		
+		Date presentTime = Calendar.getInstance().getTime();
+		
+		appointment.setStartTime(presentTime);
+		appointment.setEndTime(presentTime);
 	}
 	
 	public AppointmentView(Person user, Date startTime, Date endTime) {
 		appointment = new Appointment(user);
-		appointment.setStartTime(startTime);
-		appointment.setEndTime(endTime);
 		appointment.addPropertyChangeListener(this);
 		
 		initializeAppointmentView(user);
+		
+		appointment.setStartTime(startTime);
+		appointment.setEndTime(endTime);
 	}
 	
 	public AppointmentView(Person user, Appointment appointment) {
@@ -160,7 +165,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 		layout.putConstraint(SpringLayout.WEST, endDatePC, 0, SpringLayout.WEST, startDatePC);
 		layout.putConstraint(SpringLayout.NORTH, endDatePC, 0, SpringLayout.NORTH, endDate);
 		add(endDatePC);
-
+		
 		description = new JLabel("Beskrivelse: ");
 		layout.putConstraint(SpringLayout.WEST, description, 5, SpringLayout.WEST, this);
 		layout.putConstraint(SpringLayout.NORTH, description, 20, SpringLayout.SOUTH, endDate);
@@ -401,14 +406,17 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 			String validityStatus = appointment.validityStatus();
 			
 			if (! validityStatus.equals("valid")) {
+				// feilmelding
 				JOptionPane.showMessageDialog(saveButton, validityStatus, "Feil oppstod", JOptionPane.ERROR_MESSAGE);
 			}
-			
-			// rekkefølge: startTid, sluttTid, beskrivelse, sted, avtaleeier
-			
-			Object[] felter = {new Timestamp(appointment.getStartTime().getTime()), new Timestamp(appointment.getEndTime().getTime()), appointment.getDescription(), appointment.getLocation(), appointment.getAppointmentOwner().getEmail()};
-			Object[] msg = {"store", "appointment", felter};
-			MainFrame.getClient().sendMsg(msg);
+			else {
+				// lagre avtalen i databasen
+				// rekkefølge: startTid, sluttTid, beskrivelse, sted, avtaleeier
+				
+				Object[] felter = {new Timestamp(appointment.getStartTime().getTime()), new Timestamp(appointment.getEndTime().getTime()), appointment.getDescription(), appointment.getLocation(), appointment.getAppointmentOwner().getEmail()};
+				Object[] msg = {"store", "appointment", felter};
+				MainFrame.getClient().sendMsg(msg);
+			}
 		}
 	}
 

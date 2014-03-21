@@ -194,11 +194,10 @@ public class MainFrame extends JPanel {
     	cb1 = new JCheckBox();
     	cb1.addActionListener(listener);
     	cb1.setActionCommand("Toggle show other calendars");
-    	cb1.setSelected(true);
         springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
         springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
     	leftPanel.add(cb1);
-    	
+        
         checkPanel = new JPanel();
         checkPanel.setPreferredSize(new Dimension(220, 400));
         checkPanel.setLayout(new FlowLayout());
@@ -416,9 +415,6 @@ public class MainFrame extends JPanel {
 				appointmentFrame.setVisible(true);
 				appointmentFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				break;
-			case "Something":
-				System.out.println("Chose something");
-				break;
 			case "Toggle show other calendars":
 				personSearch.setEnabled(cb1.isSelected());
 				break;
@@ -426,7 +422,6 @@ public class MainFrame extends JPanel {
 		}
 
 		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
 			if (e.getSource() instanceof JLabel) {
 				if( ((JLabel) e.getSource()).getText() == "<") {
 					miniNorCalendar.monthBack();
@@ -539,12 +534,6 @@ public class MainFrame extends JPanel {
 
 	public static void setMiniCalendarDays(Container cont) {
 		miniCalendarDays = cont;
-	}
-
-
-	public void showAppointmentView(Appointment appointment) {
-		// TODO Auto-generated method stub
-
 	}
 
 
