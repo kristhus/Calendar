@@ -19,6 +19,7 @@ import javax.swing.WindowConstants;
 import calculations.NorCalendar;
 import objects.Appointment;
 import objects.MeetingRoom;
+import objects.Participant;
 import objects.Person;
 import serverConnection.Client;
 
@@ -65,11 +66,9 @@ public class MainFrame extends JPanel {
 	private Appointment otherCalendarsHack; // gir ikke mening logisk at dette er en appointment, men det funker, så derfor
 	private DropDownSearch personSearch;
 	
-	private ArrayList<Person> personsInSystem = new ArrayList<Person>();
+	private ArrayList<Participant> personsInSystem = new ArrayList<Participant>();
 
 	protected JFrame splashScreen;
-
-	private ArrayList<Person> personArray;
 
 	private static Client client;
 
@@ -110,7 +109,6 @@ public class MainFrame extends JPanel {
 	}
 
 	public MainFrame() {
-		personArray = new ArrayList<Person>();
 		client = new Client();
 		initSplashScreen();
 		initLoginViewAndFrame();
@@ -136,13 +134,13 @@ public class MainFrame extends JPanel {
 	private void initSplashScreen() {
 
 		splashScreen = new JFrame();
-		ImageIcon splashImage = new ImageIcon(this.getClass().getResource("/caltwenty.png"));
+		ImageIcon splashImage = new ImageIcon(this.getClass().getResource("/calTwentyNewNew.png"));
 		splashScreen.getContentPane().add(new JLabel(splashImage));
 		splashScreen.setUndecorated(true);
 		splashScreen.pack();
 		splashScreen.setLocationRelativeTo(null);
 		splashScreen.setVisible(true);
-		Timer timer = new Timer(1000, new ActionListener() {
+		Timer timer = new Timer(1750, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				splashScreen.setVisible(false);
 				splashScreen.dispose();
@@ -353,7 +351,7 @@ public class MainFrame extends JPanel {
 			String navn = (String) tempUser.get(0);
 			String mail = (String) tempUser.get(1);
 			
-			personArray.add(new Person(navn, mail));
+			personsInSystem.add(new Person(navn, mail));
 			
 		}
 		calendarView.getUserCalFromServer();
