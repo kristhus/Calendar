@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+
 import objects.Appointment;
 
 public class NotificationView extends JFrame{
@@ -90,7 +91,15 @@ public class NotificationView extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == seAvtaleButton){
-				mainFrame.showAppointmentView(appointment);
+				AppointmentView appointmentView = new AppointmentView(MainFrame.getCurrentUser(), appointment);
+				JFrame appointmentFrame = new JFrame("CalTwenty - Avtalevisning");
+				appointmentFrame.setPreferredSize(new Dimension(800,600));
+				appointmentFrame.add(appointmentView);
+				appointmentFrame.pack();
+				appointmentFrame.setLocationRelativeTo(null);
+				appointmentFrame.setAlwaysOnTop(true);
+				appointmentFrame.setVisible(true);
+				appointmentFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				//nåverende bruker , appointment
 				
 				//TODO: skriv noe kode her for å vise avtale.
