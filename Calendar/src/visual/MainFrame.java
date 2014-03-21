@@ -200,6 +200,7 @@ public class MainFrame extends JPanel {
         springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
         springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
     	leftPanel.add(cb1);
+    	cb1.setSelected(true);
         
         checkPanel = new JPanel();
         checkPanel.setPreferredSize(new Dimension(220, 400));
