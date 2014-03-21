@@ -16,6 +16,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
 
+import calculations.Alarm;
 import calculations.NorCalendar;
 import objects.Appointment;
 import objects.MeetingRoom;
@@ -69,10 +70,12 @@ public class MainFrame extends JPanel {
 	private JLabel cb1Description;
 	private JPanel checkPanel;
 	private JScrollPane checkScrollPane;
-	
+
 	private ArrayList<Participant> personsInSystem = new ArrayList<Participant>();
 
 	protected JFrame splashScreen;
+
+	private ArrayList alarmList;
 
 	private static Client client;
 
@@ -126,7 +129,7 @@ public class MainFrame extends JPanel {
 		calendarView = new CalendarView();
 		Appointment app = new Appointment(currentUser);
 		///////////TEST TEST TEST////////////START
-		app.setStartTime(new Date(2014,11,16,16,30));
+		app.setStartTime(new Date(2014,03,21,17,30));
 		app.setEndTime(new Date(2014,11,16,18,00));
 		app.setName("TacoKveld med pepsiMax");
 		MeetingRoom torehus = new MeetingRoom("Huset til Tore", 5);
@@ -157,8 +160,7 @@ public class MainFrame extends JPanel {
 			}
 		});
 		timer.setRepeats(false);
-	    timer.start();
-		// TODO Auto-generated method stub
+		timer.start();
 
 	}
 
@@ -167,61 +169,61 @@ public class MainFrame extends JPanel {
 
 	public JPanel createLeftWindow() {
 		listener = new Listener();
-		
-    	leftPanel = new JPanel();
-    	leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
-    	SpringLayout springLayout = new SpringLayout();
-    	leftPanel.setLayout(springLayout);
-    	leftPanel.setBackground(Color.white);
-    	
-        newAppointmentButton = new JButton("Ny avtale");
-        newAppointmentButton.setActionCommand("New Appointment");
-        newAppointmentButton.setPreferredSize(new Dimension(235, 40));
-        newAppointmentButton.addActionListener(listener);
-        leftPanel.add(newAppointmentButton);
-        
-        createMiniCalendar();
-        leftPanel.add(miniCalendar);
-        springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, newAppointmentButton);
-        springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
-        
-        otherCalendars = new Appointment(currentUser);
-    	personSearch = new DropDownSearch("Søk etter bruker", otherCalendars, personsInSystem,true);
-    	personSearch.setBackground(Color.white);
-    	springLayout.putConstraint(SpringLayout.NORTH, personSearch, 40, SpringLayout.SOUTH, miniCalendar);
-    	springLayout.putConstraint(SpringLayout.WEST, personSearch, 10, SpringLayout.WEST, leftPanel);
-    	leftPanel.add(personSearch);
-    	
-        cb1Description = new JLabel();
-        cb1Description.setText("Vis andres kalendere");
-        springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 10, SpringLayout.SOUTH, miniCalendar);
-        springLayout.putConstraint(SpringLayout.WEST, cb1Description, 10, SpringLayout.WEST, leftPanel);
-        leftPanel.add(cb1Description);
-    	cb1 = new JCheckBox();
-    	cb1.addActionListener(listener);
-    	cb1.setActionCommand("Toggle show other calendars");
-        springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
-        springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
-    	leftPanel.add(cb1);
-    	
-        checkPanel = new JPanel();
-        checkPanel.setPreferredSize(new Dimension(220, 400));
-        checkPanel.setLayout(new FlowLayout());
-        checkPanel.setBackground(Color.lightGray);
-        checkPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
-        springLayout.putConstraint(SpringLayout.NORTH, checkPanel, 70, SpringLayout.SOUTH, miniCalendar);
-        springLayout.putConstraint(SpringLayout.WEST, checkPanel, 10, SpringLayout.WEST, leftPanel);
-        checkPanel.setVisible(true);
-        leftPanel.add(checkPanel);
-        
-    	checkScrollPane = new JScrollPane(checkPanel);
-    	// checkScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
-    	checkScrollPane.setVisible(false);
-    	checkScrollPane.setPreferredSize(new Dimension(230,200));
-    	leftPanel.add(checkScrollPane);
-    	
-        leftPanel.setPreferredSize(new Dimension(240, 800));
-    	leftPanel.setVisible(true);
+
+		leftPanel = new JPanel();
+		leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
+		SpringLayout springLayout = new SpringLayout();
+		leftPanel.setLayout(springLayout);
+		leftPanel.setBackground(Color.white);
+
+		newAppointmentButton = new JButton("Ny avtale");
+		newAppointmentButton.setActionCommand("New Appointment");
+		newAppointmentButton.setPreferredSize(new Dimension(235, 40));
+		newAppointmentButton.addActionListener(listener);
+		leftPanel.add(newAppointmentButton);
+
+		createMiniCalendar();
+		leftPanel.add(miniCalendar);
+		springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, newAppointmentButton);
+		springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
+
+		otherCalendars = new Appointment(currentUser);
+		personSearch = new DropDownSearch("Søk etter bruker", otherCalendars, personsInSystem,true);
+		personSearch.setBackground(Color.white);
+		springLayout.putConstraint(SpringLayout.NORTH, personSearch, 40, SpringLayout.SOUTH, miniCalendar);
+		springLayout.putConstraint(SpringLayout.WEST, personSearch, 10, SpringLayout.WEST, leftPanel);
+		leftPanel.add(personSearch);
+
+		cb1Description = new JLabel();
+		cb1Description.setText("Vis andres kalendere");
+		springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 10, SpringLayout.SOUTH, miniCalendar);
+		springLayout.putConstraint(SpringLayout.WEST, cb1Description, 10, SpringLayout.WEST, leftPanel);
+		leftPanel.add(cb1Description);
+		cb1 = new JCheckBox();
+		cb1.addActionListener(listener);
+		cb1.setActionCommand("Toggle show other calendars");
+		springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
+		springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
+		leftPanel.add(cb1);
+
+		checkPanel = new JPanel();
+		checkPanel.setPreferredSize(new Dimension(220, 400));
+		checkPanel.setLayout(new FlowLayout());
+		checkPanel.setBackground(Color.lightGray);
+		checkPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+		springLayout.putConstraint(SpringLayout.NORTH, checkPanel, 70, SpringLayout.SOUTH, miniCalendar);
+		springLayout.putConstraint(SpringLayout.WEST, checkPanel, 10, SpringLayout.WEST, leftPanel);
+		checkPanel.setVisible(true);
+		leftPanel.add(checkPanel);
+
+		checkScrollPane = new JScrollPane(checkPanel);
+		// checkScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+		checkScrollPane.setVisible(false);
+		checkScrollPane.setPreferredSize(new Dimension(230,200));
+		leftPanel.add(checkScrollPane);
+
+		leftPanel.setPreferredSize(new Dimension(240, 800));
+		leftPanel.setVisible(true);
 
 		return leftPanel;
 	}
@@ -358,20 +360,22 @@ public class MainFrame extends JPanel {
 
 	public void logInAndSetUser(Person user) {
 		this.currentUser=user;
+		alarmList = new ArrayList<>();
+		createAlarms();
 		mainFrame.setVisible(true);
 		Object[] toSend = {"fetch", "alle", };
 		//Object[] userList = (Object[]) client.sendMsg(toSend);
 		ArrayList userList = (ArrayList) client.sendMsg(toSend);
-		
+
 		System.out.println(userList.toString());
 		System.out.println("current user is: " + currentUser.getName());
 		for (int i = 0; i < userList.size(); i++) {
 			ArrayList tempUser = (ArrayList) userList.get(i);
 			String navn = (String) tempUser.get(0);
 			String mail = (String) tempUser.get(1);
-			
+
 			personsInSystem.add(new Person(navn, mail));
-			
+
 		}
 		calendarView.getUserCalFromServer();
 	}
@@ -380,6 +384,28 @@ public class MainFrame extends JPanel {
 		this.currentUser=user;
 		mainFrame.setVisible(true);
 	}
+
+	public void createAlarms(){
+		alarmList.clear();
+		Object[] msg = {"fetch", "kalender", MainFrame.getCurrentUser().getEmail()};
+		ArrayList<Appointment> userCal = (ArrayList<Appointment>) MainFrame.getClient().sendMsg(msg);
+		
+		Appointment app2 = new Appointment(currentUser);
+		///////////TEST TEST TEST////////////START
+		app2.setStartTime(new Date(2014, 03, 21, 19, 42, 00));
+		app2.setEndTime(new Date(2014,11,16,18,00));
+		app2.setName("TacoKveld med pepsiMax");
+		MeetingRoom torehus = new MeetingRoom("Huset til Tore", 5);
+		app2.setMeetingRoom(torehus);
+		int warningMinutesBefore = 1;
+		
+		Alarm alarm1 = new Alarm(warningMinutesBefore, app2);
+		
+		for (Appointment avtale:userCal){
+			alarmList.add (new Alarm(warningMinutesBefore, avtale));
+		}
+	}
+
 
 	public class Listener implements ActionListener, MouseListener {
 
@@ -533,12 +559,12 @@ public class MainFrame extends JPanel {
 	public static Client getClient() {
 		return client;
 	}
-	
+
 	public static void setClient(Client client2) {
 		client = client2;
-		
+
 	}
-	
+
 	public static Person getCurrentUser() {
 		return currentUser;
 	}
@@ -548,6 +574,6 @@ public class MainFrame extends JPanel {
 
 	public static void updateOtherCalendarsToShow(ArrayList<Participant> markedUsers) {
 		otherCalendarsToShow = markedUsers;
-		
+
 	}
 }
