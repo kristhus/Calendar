@@ -57,12 +57,16 @@ public class CalendarView extends JPanel {
 	private JLabel currentWeek;
 	private JLabel[] weekDays = {null, null, null, null, null, null, null};
 	
+	private static ArrayList userCal;
+	
 	public JLabel[] getWeekDays() {
 		return weekDays;
 	}
 
 	public CalendarView() {
 
+		
+		
 		dayWidth = 800;
 		dayHeight = 900;
 		
@@ -318,6 +322,13 @@ public class CalendarView extends JPanel {
 	
 	public NorCalendar getCalendar() {
 		return this.cal;
+	}
+	
+	public void getUserCalFromServer() {
+		Object[] msg = {"fetch", "kalender", MainFrame.getCurrentUser().getEmail()};
+		Object rec = MainFrame.getClient().sendMsg(msg);
+		System.out.println(rec);
+		
 	}
 	
 	

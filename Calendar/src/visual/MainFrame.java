@@ -356,7 +356,7 @@ public class MainFrame extends JPanel {
 			personArray.add(new Person(navn, mail));
 			
 		}
-		
+		calendarView.getUserCalFromServer();
 	}
 
 	public void createNewUserFromRegistrationView(Person user,String password){
