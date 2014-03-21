@@ -353,7 +353,7 @@ public class MainFrame extends JPanel {
 	public void createAlarms(){
 		alarmList.clear();
 		Object[] msg = {"fetch", "kalender", MainFrame.getCurrentUser().getEmail()};
-		ArrayList<Appointment> userCal = (ArrayList<Appointment>) MainFrame.getClient().sendMsg(msg);
+		ArrayList<ArrayList> userCal = (ArrayList<ArrayList>) MainFrame.getClient().sendMsg(msg);
 		
 		Appointment app2 = new Appointment(currentUser);
 		///////////TEST TEST TEST////////////START
@@ -366,8 +366,24 @@ public class MainFrame extends JPanel {
 		
 		//Alarm alarm1 = new Alarm(warningMinutesBefore, app2);
 		
-		for (Appointment avtale:userCal){
-			alarmList.add (new Alarm(warningMinutesBefore, avtale));
+		for (ArrayList avtale:userCal){
+			Object[] msgGetPerson = {"fetch", "user", avtale.get(0)};
+			Object[] rcv = (Object[]) MainFrame.getClient().sendMsg(msgGetPerson);
+			String mottatNavn = (String) rcv[1];
+			Appointment appointment = new Appointment(new Person((String) avtale.get(0), mottatNavn));
+			appointment.setDescription((String) avtale.get(5));
+			appointment.setStartTime((Date) avtale.get(3));
+			appointment.setEndTime((Date) avtale.get(4));
+			appointment.setLocation((String) avtale.get(6));
+			try {
+				MeetingRoom selMeeting = new MeetingRoom((String) avtale.get(9), (Integer) avtale.get(10));
+				appointment.setMeetingRoom(selMeeting);
+			} catch(IndexOutOfBoundsException e) {
+				System.err.println("No meeting rooms available");
+			}
+			
+			
+			alarmList.add (new Alarm(warningMinutesBefore, appointment));
 		}
 	}
 
@@ -375,6 +391,7 @@ public class MainFrame extends JPanel {
 		this.currentUser=user;
 		alarmList = new ArrayList();
 		createAlarms();
+		
 		mainFrame.setVisible(true);
 		Object[] toSend = {"fetch", "alle", };
 		//Object[] userList = (Object[]) client.sendMsg(toSend);
