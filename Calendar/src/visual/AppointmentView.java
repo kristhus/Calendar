@@ -275,6 +275,16 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 		participantSearch.setEnabled(false);
 		removeSelectedParticipants.setEnabled(false);
 		remove(saveButton);
+		
+		/*
+		JLabel sendInvitationViaEmail = new JLabel("Send invitasjon via email: ");
+		layout.putConstraint(SpringLayout.)
+		
+		JTextField enterEmailAdress = new JTextField();
+		JButton sendEmail = new JButton("Send email");
+		JButton acceptInvitation = new JButton("Aksepter invitasjon");
+		JButton rejectInvitation = new JButton("Avslå invitasjon")
+		*/
 	}
     
 
