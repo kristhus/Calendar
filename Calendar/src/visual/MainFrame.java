@@ -200,6 +200,7 @@ public class MainFrame extends JPanel {
     	cb1 = new JCheckBox();
     	cb1.addActionListener(listener);
     	cb1.setActionCommand("Toggle show other calendars");
+    	cb1.setSelected(true);
         springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
         springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
     	leftPanel.add(cb1);
