@@ -190,6 +190,7 @@ public class MainFrame extends JPanel {
     	springLayout.putConstraint(SpringLayout.WEST, personSearch, 10, SpringLayout.WEST, leftPanel);
     	leftPanel.add(personSearch);
     	
+    	
         JLabel cb1Description = new JLabel();
         cb1Description.setText("Andre kalendere");
         springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 200, SpringLayout.SOUTH, personSearch);
