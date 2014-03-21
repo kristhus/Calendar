@@ -32,81 +32,87 @@ import objects.Participant;
 import objects.Searchable;
 
 public class DropDownSearch extends JPanel implements PropertyChangeListener {
-    private ArrayList<Searchable> searchObjects;
-    
-    private Appointment appointment;
+	private ArrayList<Searchable> searchObjects;
 
-    private JTextField searchField;
-    private JButton searchDropDown;
-    private JPanel checkPanel;
-    private JScrollPane checkScrollPane;
-    private JPanel searchPanel;
-    private JScrollPane searchScrollPane;
-    
-    private SpringLayout searchLayout;
-    
-    private GridBagConstraints searchRC;
-    private final GridBagLayout searchResultGrid = new GridBagLayout();
-    
-    private SearchListener searchListener;
-    
-    
-    public DropDownSearch(String buttonText, Appointment appointment, ArrayList<? extends Searchable> searchObjects) {
-    	this.appointment = appointment;
-    	this.searchObjects = (ArrayList<Searchable>) searchObjects;
-    	searchListener = new SearchListener();
-    	
+	private Appointment appointment;
+
+	private JTextField searchField;
+	private JButton searchDropDown;
+	private JPanel checkPanel;
+	private JScrollPane checkScrollPane;
+	private JPanel searchPanel;
+	private JScrollPane searchScrollPane;
+
+	private SpringLayout searchLayout;
+
+	private GridBagConstraints searchRC;
+	private final GridBagLayout searchResultGrid = new GridBagLayout();
+
+	private SearchListener searchListener;
+	private boolean calledFromMainFrame;
+	private ArrayList<Participant>markedUsers;
+	private DropDownSearch thisView;
+
+	public DropDownSearch(String buttonText, Appointment appointment, ArrayList<? extends Searchable> searchObjects,Boolean isMainFrameView) {
+		markedUsers = new ArrayList<Participant>();
+		calledFromMainFrame = isMainFrameView;
+		this.appointment = appointment;
+		this.searchObjects = (ArrayList<Searchable>) searchObjects;
+		searchListener = new SearchListener();
+
 		searchLayout = new SpringLayout();
 		setLayout(searchLayout);
 
-    	searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
-    	searchField.addKeyListener(searchListener);
-    	searchField.setActionCommand("search typer");
-    	searchField.setPreferredSize(new Dimension(180, 30));
-    	// participantListView.add(searchField);
-    	
-    	
-        ImageIcon caret = new ImageIcon(this.getClass().getResource("/caret.png"));
-        searchDropDown = new JButton(buttonText);
-        searchDropDown.setActionCommand("Search button");
-        searchDropDown.setPreferredSize(new Dimension(180, 30));
-        searchDropDown.addActionListener(searchListener);
-        searchDropDown.setIcon(caret);
-        searchDropDown.setHorizontalTextPosition(SwingConstants.LEFT);
-        add(searchDropDown);
-        
-    	searchPanel = new JPanel();
-    	searchPanel.setBackground(Color.white);
-    	searchPanel.setVisible(true);
-        searchPanel.setLayout(searchLayout);
-        searchPanel.add(searchField);
-    	add(searchPanel);
-    	
-    	searchScrollPane = new JScrollPane(searchPanel);
-    	searchScrollPane.setBackground(Color.white);
-    	searchScrollPane.setBorder(BorderFactory.createStrokeBorder(new BasicStroke()));
-    	searchScrollPane.setPreferredSize(new Dimension(210,200));
-    	searchScrollPane.setVisible(false);
-    	searchScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        searchLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
-    	add(searchScrollPane);
-    	
-    	setPreferredSize(new Dimension(240, 600));
-    	setVisible(true);
-    }
-    
-    public void setEnabled(boolean enabled) {
-    	searchDropDown.setEnabled(enabled);
-    }
-    
+		searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
+		searchField.addKeyListener(searchListener);
+		searchField.setActionCommand("search typer");
+		searchField.setPreferredSize(new Dimension(180, 30));
+		// participantListView.add(searchField);
+
+
+		ImageIcon caret = new ImageIcon(this.getClass().getResource("/caret.png"));
+		searchDropDown = new JButton(buttonText);
+		searchDropDown.setActionCommand("Search button");
+		searchDropDown.setPreferredSize(new Dimension(180, 30));
+		searchDropDown.addActionListener(searchListener);
+		searchDropDown.setIcon(caret);
+		searchDropDown.setHorizontalTextPosition(SwingConstants.LEFT);
+		add(searchDropDown);
+
+		searchPanel = new JPanel();
+		searchPanel.setBackground(Color.white);
+		searchPanel.setVisible(true);
+		searchPanel.setLayout(searchLayout);
+		searchPanel.add(searchField);
+		add(searchPanel);
+
+		searchScrollPane = new JScrollPane(searchPanel);
+		searchScrollPane.setBackground(Color.white);
+		searchScrollPane.setBorder(BorderFactory.createStrokeBorder(new BasicStroke()));
+		searchScrollPane.setPreferredSize(new Dimension(210,200));
+		searchScrollPane.setVisible(false);
+		searchScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		searchLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
+		add(searchScrollPane);
+
+		setPreferredSize(new Dimension(240, 600));
+		setVisible(true);
+	}
+
+	public void setEnabled(boolean enabled) {
+		searchDropDown.setEnabled(enabled);
+	}
+
 	public void propertyChange(PropertyChangeEvent e) {
 		System.out.println("I'm listening");
 		searchListener.keyReleased(null);
 	}
-    
-    
-    
+
+
+
 	private class SearchListener implements ActionListener, KeyListener, PropertyChangeListener {
+
+
 
 		public void keyPressed(KeyEvent arg0) {
 			// nothing happens
@@ -171,8 +177,8 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 			switch(e.getActionCommand()) {
 			case ("Search button"):
 				searchScrollPane.setVisible(!searchScrollPane.isVisible());
-				keyReleased(null);
-				break;
+			keyReleased(null);
+			break;
 			}
 		}
 
@@ -183,28 +189,39 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 			case "searchselection" :
 				// TODO
 				if( (Boolean) e.getNewValue()) {
-					JLabel cbDescription = new JLabel(( (JLabel) e.getSource()).getText());
-					JCheckBox cb = new JCheckBox();
-					// checkPanel.add(cbDescription);
-					// checkPanel.add(cb);
-					// checkPanel.revalidate();
 					searchPanel.revalidate();
+					if (calledFromMainFrame){
+						HoverLabel label = (HoverLabel) e.getSource();
+						if (label.getObject() instanceof Participant) {
+							markedUsers.add((Participant) label.getObject());
+							MainFrame.updateOtherCalendarsToShow(markedUsers);
+						}
 
-					HoverLabel label = (HoverLabel) e.getSource();
-					if (label.getObject() instanceof Participant) {
-						appointment.addParticipant((Participant) label.getObject());
-					}
-					else if (label.getObject() instanceof MeetingRoom) {
-						appointment.setMeetingRoom((MeetingRoom) label.getObject());
+					}else{
+						HoverLabel label = (HoverLabel) e.getSource();
+						if (label.getObject() instanceof Participant) {
+							appointment.addParticipant((Participant) label.getObject());
+						}
+						else if (label.getObject() instanceof MeetingRoom) {
+							appointment.setMeetingRoom((MeetingRoom) label.getObject());
+						}
 					}
 				}
 				else {
-					HoverLabel label = (HoverLabel) e.getSource();
-					if (label.getObject() instanceof Participant) {
-						appointment.removeParticipant((Participant) label.getObject());
-					}
-					else if (label.getObject() instanceof MeetingRoom) {
-						appointment.setMeetingRoom(null);
+					if (calledFromMainFrame){
+						HoverLabel label = (HoverLabel) e.getSource();
+						if (label.getObject() instanceof Participant) {
+							markedUsers.remove((Participant) label.getObject());
+							MainFrame.updateOtherCalendarsToShow(markedUsers);
+						}
+					}else{
+						HoverLabel label = (HoverLabel) e.getSource();
+						if (label.getObject() instanceof Participant) {
+							appointment.removeParticipant((Participant) label.getObject());
+						}
+						else if (label.getObject() instanceof MeetingRoom) {
+							appointment.setMeetingRoom(null);
+						}
 					}
 				}
 				break;

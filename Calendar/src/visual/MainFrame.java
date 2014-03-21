@@ -76,6 +76,8 @@ public class MainFrame extends JPanel {
 
 	private static Client client;
 
+	private static ArrayList<Participant> otherCalendarsToShow;
+
 	public static void main(String[] args) {
 
 		try {
@@ -184,7 +186,7 @@ public class MainFrame extends JPanel {
         springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
         
         otherCalendars = new Appointment(currentUser);
-    	personSearch = new DropDownSearch("Søk etter bruker", otherCalendars, personsInSystem);
+    	personSearch = new DropDownSearch("Søk etter bruker", otherCalendars, personsInSystem,true);
     	personSearch.setBackground(Color.white);
     	springLayout.putConstraint(SpringLayout.NORTH, personSearch, 40, SpringLayout.SOUTH, miniCalendar);
     	springLayout.putConstraint(SpringLayout.WEST, personSearch, 10, SpringLayout.WEST, leftPanel);
@@ -539,5 +541,13 @@ public class MainFrame extends JPanel {
 	
 	public static Person getCurrentUser() {
 		return currentUser;
+	}
+
+
+
+
+	public static void updateOtherCalendarsToShow(ArrayList<Participant> markedUsers) {
+		otherCalendarsToShow = markedUsers;
+		
 	}
 }
