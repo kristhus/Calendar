@@ -426,6 +426,8 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 				Object[] felter = {new Timestamp(appointment.getStartTime().getTime()), new Timestamp(appointment.getEndTime().getTime()), appointment.getDescription(), appointment.getLocation(), appointment.getAppointmentOwner().getEmail()};
 				Object[] msg = {"store", "appointment", felter};
 				MainFrame.getClient().sendMsg(msg);
+				
+				MainFrame.getCalendarView().getUserCalFromServer();
 			}
 		}
 	}

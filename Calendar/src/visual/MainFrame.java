@@ -80,6 +80,8 @@ public class MainFrame extends JPanel {
 	private static Client client;
 
 	private static ArrayList<Participant> otherCalendarsToShow;
+	
+	private static ArrayList<ArrayList> otherCalendarsSelected;
 
 	public static void main(String[] args) {
 
@@ -118,6 +120,7 @@ public class MainFrame extends JPanel {
 	}
 
 	public MainFrame() {
+		otherCalendarsToShow = new ArrayList<>();
 		client = new Client();
 		initSplashScreen();
 		initLoginViewAndFrame();
@@ -415,7 +418,7 @@ public class MainFrame extends JPanel {
 		mainFrame.setVisible(true);
 	}
 
-	public class Listener implements ActionListener, MouseListener {
+	public class Listener implements ActionListener, MouseListener, PropertyChangeListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) { // pre requisite that the events comes accomodated with an action command!
@@ -476,7 +479,7 @@ public class MainFrame extends JPanel {
 				//					calendarView.updateWeekDates();
 				//				}
 				calendarView.getCurrentWeek().setText("Uke " + calendarView.getCalendar().get(Calendar.WEEK_OF_YEAR));
-
+				calendarView.getUserCalFromServer();
 			}
 
 		}
@@ -529,6 +532,12 @@ public class MainFrame extends JPanel {
 			if (e.getSource() instanceof JLabel) {
 				((JLabel) e.getSource()).setBorder(BorderFactory.createRaisedBevelBorder());
 			}
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 

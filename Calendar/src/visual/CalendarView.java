@@ -56,7 +56,7 @@ public class CalendarView extends JLayeredPane {
 	private Color orgColor;
 	
 	private Container header;
-	private JPanel daySuperPanel;
+	private ArrayList<TransparentPanel> appointmentPanels;
 	private SpringLayout dayLayout;
 	
 	private SpringLayout calendarLayout;
@@ -77,7 +77,6 @@ public class CalendarView extends JLayeredPane {
 
 	public CalendarView() {
 
-		
 		
 		dayWidth = 800;
 		dayHeight = 700;
@@ -162,9 +161,9 @@ public class CalendarView extends JLayeredPane {
 	
 	private void createWeek() {
 		
-		daySuperPanel = new JPanel();
+		appointmentPanels = new ArrayList();
+		
 		dayLayout = new SpringLayout();
-		daySuperPanel.setLayout(dayLayout);
 		
 		
 		dayContainer = new Container();
@@ -273,7 +272,27 @@ public class CalendarView extends JLayeredPane {
 
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			System.out.println(arg0.getX() + " , " + arg0.getY());
+			for (int i = 0; i < dayContainer.getComponentCount(); i++) {
+				for(int j = 0; j < ((Container) dayContainer.getComponent(i)).getComponentCount(); j++) {
+					if ((((JPanel) dayContainer.getComponent(i)).getComponent(j)).equals(arg0.getSource())) {
+						cal.set(Calendar.HOUR_OF_DAY, j);
+						cal.set(Calendar.DAY_OF_WEEK, i);
+						Date curDate = cal.getTime();
+						System.out.println(curDate.getHours());
+						AppointmentView appointmentView = new AppointmentView(MainFrame.getCurrentUser());
+						JFrame appointmentFrame = new JFrame("CalTwenty - Avtalevisning");
+						appointmentFrame.setPreferredSize(new Dimension(800,600));
+						appointmentFrame.add(appointmentView);
+						appointmentFrame.pack();
+						appointmentFrame.setLocationRelativeTo(null);
+						appointmentFrame.setAlwaysOnTop(true);
+						appointmentFrame.setVisible(true);
+						appointmentFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+						j = ((Container) dayContainer.getComponent(i)).getComponentCount();
+						i = dayContainer.getComponentCount();
+					}
+				}
+			}
 			
 		}
 
@@ -312,11 +331,13 @@ public class CalendarView extends JLayeredPane {
 				cal.lastWeek();
 				currentWeek.setText("Uke " + cal.get(Calendar.WEEK_OF_YEAR));
 				updateWeekDates();
+				getUserCalFromServer();
 			}
 			else if (evt.getPropertyName() == "FORWARD") {
 				cal.nextWeek();
 				currentWeek.setText("Uke " + cal.get(Calendar.WEEK_OF_YEAR));
 				updateWeekDates();
+				getUserCalFromServer();
 			}
 		}
 		
@@ -347,6 +368,13 @@ public class CalendarView extends JLayeredPane {
 	}
 	
 	public void repaintCalendar(ArrayList toPaint) {
+		for ( int j = 0; j < appointmentPanels.size(); j++) {
+			try{
+			remove(appointmentPanels.get(j));
+			}
+			catch(Exception e) {/* IGNORE */}
+		}
+		appointmentPanels = new ArrayList<TransparentPanel>();
 		ArrayList<ArrayList> currentWeek = new ArrayList();
 		for ( int i = 0; i < toPaint.size(); i++) {
 			if ( ((Date) ((ArrayList)toPaint.get(i)).get(3)).after(cal.getTheFirstDayOfWeek()) && ((Date) ((ArrayList)toPaint.get(i)).get(3)).before(cal.getTheLastDayOfWeek())) {
@@ -360,10 +388,17 @@ public class CalendarView extends JLayeredPane {
 		for ( int j = 0; j < currentWeek.size(); j++) {
 			int dayOfWeek = cal.getDayOfWeek((Date) currentWeek.get(j).get(3));
 			int startTime = ((Date) currentWeek.get(j).get(3)).getHours();
-			add(new TransparentPanel(currentWeek.get(j), dayOfWeek, startTime), new Integer(1));
+//			add(new TransparentPanel(currentWeek.get(j), dayOfWeek, startTime), new Integer(1));
+			appointmentPanels.add(new TransparentPanel(currentWeek.get(j), dayOfWeek, startTime));
 			
 		}
-//		System.out.println(currentWeek);
+
+		for(TransparentPanel panel:appointmentPanels) {
+			add(panel, new Integer(1));
+		}
+		revalidate();
+		repaint();
+		
 	}
 	
 	public void getUserCalFromServer() {
@@ -446,7 +481,7 @@ public class CalendarView extends JLayeredPane {
 			try {
 				MeetingRoom selMeeting = new MeetingRoom((String) stuff.get(9), (Integer) stuff.get(10));
 				appointment.setMeetingRoom(selMeeting);
-			} catch(IndexOutOfBoundsException e) {
+			} catch(Exception e) {
 				System.err.println("No meeting rooms available");
 			}
 //			appointment.addParticipants(stuff.get(7));
