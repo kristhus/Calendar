@@ -60,7 +60,10 @@ public class MainFrame extends JPanel {
 	private static Container miniCalendarDays;
 
 	private static JPanel leftPanel;
+	private JButton newAppointmentButton;
 	private Person currentUser;
+	private Appointment otherCalendarsHack; // gir ikke mening logisk at dette er en appointment, men det funker, så derfor
+	private DropDownSearch personSearch;
 	
 	private ArrayList<Person> personsInSystem = new ArrayList<Person>();
 
@@ -160,73 +163,47 @@ public class MainFrame extends JPanel {
 
 	public JPanel createLeftWindow() {
 		listener = new Listener();
-
-		leftPanel = new JPanel();
-		leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
-		SpringLayout springLayout = new SpringLayout();
-		leftPanel.setLayout(springLayout);
-		leftPanel.setBackground(Color.white);
-
-		searchField = new visual.CustomJTextField(new JTextField(), "/SEARCH.png", "Search..");
-		searchField.addKeyListener(listener);
-		searchField.setActionCommand("search typer");
-		searchField.setPreferredSize(new Dimension(180, 30));
-
-		Container container = new Container();
-		container.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0; c.gridy = 0; c.ipadx = 20;
-
-		JCheckBox cb1 = new JCheckBox();
-		cb1.addActionListener(listener);
-		cb1.setActionCommand("Andre kalendere");
-		JLabel cb1Description = new JLabel();
-		cb1Description.setText("Andre kalendere");
-
-		JButton nyAvtaleBtn = new JButton("Ny avtale");
-		nyAvtaleBtn.setActionCommand("New Appointment");
-		nyAvtaleBtn.setPreferredSize(new Dimension(235, 40));
-		nyAvtaleBtn.addActionListener(listener);
-
-		ImageIcon caret = new ImageIcon(this.getClass().getResource("/caret.png"));
-		JButton searchDropDown = new JButton("Søk etter bruker");
-		searchDropDown.setActionCommand("Search button");
-		searchDropDown.setPreferredSize(new Dimension(180, 30));
-		searchDropDown.addActionListener(listener);
-		searchDropDown.setIcon(caret);
-		searchDropDown.setHorizontalTextPosition(SwingConstants.LEFT);
-		leftPanel.add(searchDropDown);
-
-
-		createMiniCalendar();
-		leftPanel.add(miniCalendar);
-		springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, nyAvtaleBtn);
-		springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 20, SpringLayout.WEST, leftPanel);
-
-		createUserSearch();
-
-		springLayout.putConstraint(SpringLayout.NORTH, searchDropDown, 40, SpringLayout.SOUTH, miniCalendar); // OK
-		springLayout.putConstraint(SpringLayout.NORTH, searchScrollPane, 0, SpringLayout.SOUTH, searchDropDown);
-		springLayout.putConstraint(SpringLayout.NORTH, container, 30, SpringLayout.SOUTH, searchDropDown); // OK
-
-		container.add(cb1Description, c);
-		c.gridx = 1;
-		container.add(cb1, c);
-
-		leftPanel.add(nyAvtaleBtn);
-		leftPanel.add(searchScrollPane);
-		leftPanel.add(container, SpringLayout.EAST);
-
-		searchLayout = new SpringLayout();
-		searchPanel.setLayout(searchLayout);
-		searchPanel.add(searchField);
-		searchLayout.putConstraint(SpringLayout.NORTH, searchField, 10, SpringLayout.NORTH, searchPanel);
-
-		createPersonCheckPanel();
-		springLayout.putConstraint(SpringLayout.NORTH, checkScrollPane, 50, SpringLayout.SOUTH, container);        
-		leftPanel.add(checkScrollPane);
-		leftPanel.setPreferredSize(new Dimension(240, 800));
-		leftPanel.setVisible(true);
+		
+    	leftPanel = new JPanel();
+    	leftPanel.setBorder(BorderFactory.createRaisedBevelBorder());
+    	SpringLayout springLayout = new SpringLayout();
+    	leftPanel.setLayout(springLayout);
+    	leftPanel.setBackground(Color.white);
+    	
+        newAppointmentButton = new JButton("Ny avtale");
+        newAppointmentButton.setActionCommand("New Appointment");
+        newAppointmentButton.setPreferredSize(new Dimension(235, 40));
+        newAppointmentButton.addActionListener(listener);
+        leftPanel.add(newAppointmentButton);
+        
+        createMiniCalendar();
+        leftPanel.add(miniCalendar);
+        springLayout.putConstraint(SpringLayout.NORTH, miniCalendar, 30, SpringLayout.SOUTH, newAppointmentButton);
+        springLayout.putConstraint(SpringLayout.WEST, miniCalendar, 25, SpringLayout.WEST, leftPanel);
+        
+        otherCalendarsHack = new Appointment(currentUser);
+        otherCalendarsHack.addParticipant(new Person("Knut", "stuff", 123));
+        // otherCalendarsHack.addPropertyChangeListener(new UpdateOtherCalendarsList());
+    	personSearch = new DropDownSearch("Søk etter bruker", otherCalendarsHack, personsInSystem);
+    	personSearch.setBackground(Color.white);
+    	springLayout.putConstraint(SpringLayout.NORTH, personSearch, 20, SpringLayout.SOUTH, miniCalendar);
+    	springLayout.putConstraint(SpringLayout.WEST, personSearch, 10, SpringLayout.WEST, leftPanel);
+    	leftPanel.add(personSearch);
+    	
+        JLabel cb1Description = new JLabel();
+        cb1Description.setText("Andre kalendere");
+        springLayout.putConstraint(SpringLayout.NORTH, cb1Description, 200, SpringLayout.SOUTH, personSearch);
+        springLayout.putConstraint(SpringLayout.WEST, cb1Description, 10, SpringLayout.WEST, leftPanel);
+        leftPanel.add(cb1Description);
+    	JCheckBox cb1 = new JCheckBox();
+    	cb1.addActionListener(listener);
+    	cb1.setActionCommand("Andre kalendere");
+        springLayout.putConstraint(SpringLayout.NORTH, cb1, 0, SpringLayout.NORTH, cb1Description);
+        springLayout.putConstraint(SpringLayout.WEST, cb1, 10, SpringLayout.EAST, cb1Description);
+    	leftPanel.add(cb1);
+    	
+        leftPanel.setPreferredSize(new Dimension(240, 800));
+    	leftPanel.setVisible(true);
 
 		return leftPanel;
 	}
@@ -361,35 +338,6 @@ public class MainFrame extends JPanel {
 		return header;
 	}
 
-	public void createPersonCheckPanel() {
-		andreKalendere = new ArrayList<Person>();
-		checkPanel = new JPanel();
-		checkPanel.setPreferredSize(new Dimension(220, 400));
-		checkPanel.setLayout(new FlowLayout());
-		checkPanel.setBackground(Color.lightGray);
-		checkPanel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
-		checkPanel.setVisible(true);
-
-		checkScrollPane = new JScrollPane(checkPanel);
-		//    	checkScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
-		checkScrollPane.setVisible(false);
-		checkScrollPane.setPreferredSize(new Dimension(230,200));
-	}
-
-
-	public void createUserSearch() {
-		searchPanel = new JPanel();
-		searchPanel.setBackground(Color.white);
-		searchPanel.setVisible(true);
-
-		searchScrollPane = new JScrollPane(searchPanel);
-		searchScrollPane.setBackground(Color.white);
-		searchScrollPane.setBorder(BorderFactory.createStrokeBorder(new BasicStroke()));
-		searchScrollPane.setPreferredSize(new Dimension(210,300));
-		searchScrollPane.setVisible(false);
-		searchScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	}
-
 	public void logInAndSetUser(Person user) {
 		this.currentUser=user;
 		mainFrame.setVisible(true);
@@ -415,15 +363,11 @@ public class MainFrame extends JPanel {
 		mainFrame.setVisible(true);
 	}
 
-	public class Listener implements ActionListener, KeyListener, MouseListener, PropertyChangeListener {
+	public class Listener implements ActionListener, MouseListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) { // pre requisite that the events comes accomodated with an action command!
 			switch(e.getActionCommand()) {
-			case "Search button":
-				searchScrollPane.setVisible(!searchScrollPane.isVisible());
-				mainFrame.repaint();
-				break;
 			case "New Appointment":
 				System.out.println("NEW APPOINTMENT CHOSEN");
 				AppointmentView appointmentView = new AppointmentView(currentUser);
@@ -439,89 +383,9 @@ public class MainFrame extends JPanel {
 			case "Something":
 				System.out.println("Chose something");
 				break;
-			case "Andre kalendere":
-				checkScrollPane.setVisible(!checkScrollPane.isVisible());
-				break;
-			case "searchselection":
-				if( ((JCheckBox)e.getSource()).isSelected()) {
-					String dscrp = ((JLabel) ((Container) e.getSource()).getComponent(0)).getText();
-					if(!andreKalendere.contains(dscrp)){
-						JLabel cbDescription = new JLabel();
-						JCheckBox cb = new JCheckBox();
-						checkPanel.add(cbDescription);
-						checkPanel.add(cb);
-						andreKalendere.add((Person) e.getSource());
-					}
-					System.out.println(andreKalendere);
-				}
-				else {
-					// TODO FIND AND REMOVE THE SELECTED PERSON
-				}
-				break;
 			}
 		}
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {
-			/*
-			// Can not press and hold. This avoids stressing the server unnecessarily
-			for(int p = 1; p<searchPanel.getComponentCount(); p++) {
-				searchPanel.remove(p);
-			}
-			if(searchField.isFocusOwner() && !searchField.getText().equals("")) {
-				String typed = searchField.getText();
-				searchRC = new GridBagConstraints();
-				searchRC.gridx = 0; searchRC.gridy = 0; 
-
-				Container ct = new Container();
-				ct.setLayout(searchResultGrid);
-				for(int i = 0; i < personsInSystem.size(); i++) {
-					boolean found = true;
-					for(int j = 0; j < typed.length(); j++) {
-						if(j > personsInSystem.get(i).getName().length()-1 || !(Character.toLowerCase(typed.charAt(j)) == Character.toLowerCase(personsInSystem.get(i).getName().charAt(j)))) {
-							found = false;
-							j=typed.length();
-						}
-					}
-					if(found) {
-						JLabel lab = new HoverLabel(personsInSystem.get(i), new Color(0,148,214), Color.white, Color.white, "/check.png");
-						HoverLabel hLab = (HoverLabel) lab;
-						hLab.addPropertyChangeListener(new Listener());
-						hLab.setActionCommand("searchselection");
-						System.out.println(searchPanel.getWidth());
-						hLab.setPreferredSize(new Dimension(50, 16));
-						searchRC.ipadx = searchPanel.getWidth()-50; 
-						ct.add(hLab, searchRC);
-						searchRC.gridy++;
-						if(andreKalendere.contains(personsInSystem[i])) {
-							System.out.println("INNEHOLDER");
-							hLab.setSelected(true);
-						}
-					}
-				}
-				searchLayout.putConstraint(SpringLayout.NORTH, ct, 20, SpringLayout.SOUTH, searchPanel.getComponent(searchPanel.getComponentCount()-1));
-				searchPanel.add(ct);
-			}
-			searchPanel.revalidate();
-			searchPanel.repaint();
-			searchScrollPane.revalidate();
-			*/
-		}
-
-
-
-
-		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			if (e.getSource() instanceof JLabel) {
@@ -603,10 +467,6 @@ public class MainFrame extends JPanel {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-			if(!searchScrollPane.isFocusOwner() && searchScrollPane.isVisible()) {
-				searchScrollPane.setVisible(false);
-			}
 			if (e.getSource() instanceof JLabel) {
 				((JLabel) e.getSource()).setBorder(BorderFactory.createLoweredBevelBorder());
 			}
@@ -619,30 +479,6 @@ public class MainFrame extends JPanel {
 				((JLabel) e.getSource()).setBorder(BorderFactory.createRaisedBevelBorder());
 			}
 		}
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			// TODO Auto-generated method stub
-			switch (evt.getPropertyName()) {
-			case "searchselection" :
-				// TODO
-				if( (Boolean) evt.getNewValue()) {
-					JLabel cbDescription = new JLabel(( (JLabel) evt.getSource()).getText());
-					JCheckBox cb = new JCheckBox();
-					checkPanel.add(cbDescription);
-					checkPanel.add(cb);
-					checkPanel.revalidate();
-					searchPanel.revalidate();
-				}
-				else {
-					String selectionName = ((JLabel) evt.getSource()).getText();
-				}
-				break;
-			}
-
-		}
-
-
 	}
 
 	public static JFrame getMainFrame() {
@@ -680,5 +516,9 @@ public class MainFrame extends JPanel {
 	public static void setClient(Client client2) {
 		client = client2;
 		
+	}
+	
+	public Person getCurrentUser() {
+		return currentUser;
 	}
 }
