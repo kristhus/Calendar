@@ -105,6 +105,7 @@ public class LoginView extends JFrame{
 
 				}
 				catch (Exception x){
+					x.printStackTrace();
 					createWarningFrame();
 				}
 			}
