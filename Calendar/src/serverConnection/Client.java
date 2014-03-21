@@ -2,6 +2,8 @@ package serverConnection;
 
 import java.io.*;
 import java.net.*;
+
+import visual.MainFrame;
  
 public class Client {
 	
@@ -10,15 +12,26 @@ public class Client {
 	private static int portNumber = 8997;
 	private static Socket clientSocket;
 	
-        
+    private PrintWriter out;
+    private ObjectOutputStream oos;
+    ObjectInputStream ois;
+	
+	
     public Client() {    
+    	MainFrame.setClient(this);
+    }
+    
+    public void connect() {
+    	System.out.println("connect");
         try {
         	clientSocket = new Socket(hostName, portNumber);
+    		out = new PrintWriter(clientSocket.getOutputStream(), true);
+			oos = new ObjectOutputStream(clientSocket.getOutputStream());
+			ois = new ObjectInputStream(clientSocket.getInputStream());  // HER E DET NÅKKE SOM SKJÆR SEJ
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
         } catch (IOException e) {
-        	e.printStackTrace();
             System.err.println("Couldn't get I/O for the connection to " +
                 hostName);
             System.exit(1);
@@ -29,10 +42,9 @@ public class Client {
     }
     
     public Object sendMsg(Object[] obj) {
+    	
     	try {
-    		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-			ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-			ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+    		connect();
 			out.println(obj[0]);
 			oos.writeObject(obj);
 			System.out.println("sendMsg");
@@ -43,11 +55,14 @@ public class Client {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+			closeConnection();
 			return toReturn;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	finally { }
+    	finally {
+    	}
+    	closeConnection();
     	Object[] toReturn = {};
     	return toReturn;
     }
