@@ -12,18 +12,22 @@ public class Client {
 	private static int portNumber = 8997;
 	private static Socket clientSocket;
 	
-        
+    private PrintWriter out;
+    private ObjectOutputStream oos;
+    ObjectInputStream ois;
 	
 	
     public Client() {    
     	MainFrame.setClient(this);
-    	connect();
     }
     
     public void connect() {
     	System.out.println("connect");
         try {
         	clientSocket = new Socket(hostName, portNumber);
+    		out = new PrintWriter(clientSocket.getOutputStream(), true);
+			oos = new ObjectOutputStream(clientSocket.getOutputStream());
+			ois = new ObjectInputStream(clientSocket.getInputStream());  // HER E DET NÅKKE SOM SKJÆR SEJ
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
@@ -38,11 +42,9 @@ public class Client {
     }
     
     public Object sendMsg(Object[] obj) {
-    	connect();
+    	
     	try {
-    		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-			ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-			ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+    		connect();
 			out.println(obj[0]);
 			oos.writeObject(obj);
 			System.out.println("sendMsg");
