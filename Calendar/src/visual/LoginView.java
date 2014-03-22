@@ -8,9 +8,13 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -30,13 +34,19 @@ public class LoginView extends JFrame{
 	private LoginView thisFrame;
 	private CustomJTextField brukernavnField;
 	private CustomJTextField passordField;
+	
+	private CustomJTextField ipField;
+	private CustomJTextField portField;
+	
+	private JFrame config;
 
 	public LoginView(MainFrame mainFrame){
 		super("CalTwenty - Logg inn");
 		thisFrame = this;
 		loginPanel = new JPanel();
 		this.mainFrame = mainFrame;
-		setLocation(mainFrame.splashScreen.getX()+50, mainFrame.splashScreen.getY()+50);
+//		setLocation(mainFrame.splashScreen.getX()+50, mainFrame.splashScreen.getY()+50);
+		setLocationRelativeTo(null);  // bytta ut ta der ^
 		setVisible(true);
 		setAlwaysOnTop(true);
 		mainFrame.splashScreen.setAlwaysOnTop(true);
@@ -44,7 +54,7 @@ public class LoginView extends JFrame{
 		loginPanel.setVisible(true);
 		loginPanel.setLayout(new GridBagLayout());
 		add(loginPanel);
-		setPreferredSize(new Dimension(550, 200));
+		setPreferredSize(new Dimension(550, 230));
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		GridBagConstraints c = new GridBagConstraints();
@@ -84,8 +94,63 @@ public class LoginView extends JFrame{
 		emptySpaceMakingLabel.setPreferredSize(new Dimension(60,30));
 		loginPanel.add(emptySpaceMakingLabel,c); 
 
+		setJMenuBar(createMenuBar());
+		
 		pack();
 		setLocationRelativeTo(null);
+	}
+	
+	private JMenuBar createMenuBar() {
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("Connection");
+		JMenuItem serverName = new JMenuItem("Change connection settings");
+		serverName.addActionListener(actionListener);
+		serverName.setActionCommand("ClientConfig");
+		menu.add(serverName);
+		menuBar.add(menu);
+		return menuBar;
+	}
+	private void createConnectionFrame() {
+		config = new JFrame();
+		config.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		config.setPreferredSize(new Dimension(300, 200));
+		JPanel confPanel = new JPanel();
+		confPanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		JLabel serverIP = new JLabel("Server IP ");
+		JLabel serverPort = new JLabel("Server Port ");
+		
+		ipField = new CustomJTextField(new JTextField(), null, "IP-adresse..");
+		portField = new CustomJTextField(new JTextField(), null, "Server port-number..");
+		ipField.setText("129.241.127.115");
+		portField.setText("8997");
+		
+		JButton apply = new JButton("Apply");
+		apply.addActionListener(actionListener);
+		JButton cancel = new JButton("Cancel");
+		cancel.addActionListener(actionListener);
+		
+		c.gridx = 0; c.gridy = 0;
+		
+		confPanel.add(serverIP, c);
+		c.gridx++; 
+		confPanel.add(ipField, c);
+		c.gridy ++; c.gridx = 0;
+		confPanel.add(serverPort, c);
+		c.gridx++;
+		confPanel.add(portField, c);
+		
+		c.gridy ++; c.gridx = 0;
+		confPanel.add(apply, c);
+		c.gridx++;
+		confPanel.add(cancel, c);
+		
+		config.add(confPanel);
+		
+		config.setVisible(true);
+		config.setAlwaysOnTop(true);
+		config.pack();
+		config.setLocationRelativeTo(null);
 	}
 
 	private ActionListener actionListener = new ActionListener() {
@@ -109,7 +174,32 @@ public class LoginView extends JFrame{
 					createWarningFrame();
 				}
 			}
-
+			if (e.getActionCommand().equals("ClientConfig")) {
+				if (config == null) {
+					createConnectionFrame();
+				}
+			}
+			else if (e.getSource() instanceof JButton) {
+				JButton srcBtn = (JButton)e.getSource();
+				switch(srcBtn.getActionCommand()) {
+				case"Apply":
+					try {
+						int port = Integer.parseInt(portField.getText());
+						MainFrame.getClient().setPort(port);
+					} catch (Exception ex) {
+						
+					}
+					MainFrame.getClient().setHostName(ipField.getText());
+					config.dispose();
+					config = null;
+					break;
+				case"Cancel":
+					config.dispose();
+					config = null;
+					break;
+					
+				}
+			}
 			else if (e.getSource() == nyBrukerButton){
 				RegistrationView registrationView = new RegistrationView(mainFrame,thisFrame);
 				setVisible(false);

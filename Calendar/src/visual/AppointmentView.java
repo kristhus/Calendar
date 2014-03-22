@@ -94,6 +94,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
 	
 	public AppointmentView(Person user, Appointment appointment) {
 		this.appointment = appointment;
+		System.out.println(this.appointment.getStartTime() + " - Inne i appView");
 		appointment.addPropertyChangeListener(this);
 		
 		initializeAppointmentView(user);
@@ -257,7 +258,7 @@ public class AppointmentView extends JPanel implements PropertyChangeListener {
     		appointment.setMeetingRoom(meetingRoom);
     	}
     	
-		propertyChange(null);
+//		propertyChange(null);
 		
 		if (! user.equals(appointment.getAppointmentOwner())) {
 			disableEditing();

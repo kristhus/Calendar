@@ -405,14 +405,17 @@ public class CalendarView extends JLayeredPane {
 		Object[] msg = {"fetch", "kalender", MainFrame.getCurrentUser().getEmail()};
 		Object rec = MainFrame.getClient().sendMsg(msg);
 		userCal = (ArrayList<Object>) rec;
-		System.out.println(userCal + " HER E MOTTAT KALENDER");
-		
 		repaintCalendar(userCal);
 	}
 	
 	public class TransparentPanel extends JPanel implements MouseListener{
 		private final Color dRed = new Color(255, 80, 80, 200);
 		private final Color hRed = new Color(200, 100,100, 170);
+		private final Color dOwnerGreen = new Color(153,229,31, 200);
+		private final Color hOwnerGreen = new Color(153,220,60, 170);
+		
+		private Color defaultColor;
+		private Color hoverColor;
 		
 		private ArrayList<Object> avtale;
 		
@@ -421,9 +424,19 @@ public class CalendarView extends JLayeredPane {
 		private int locationEndX;
 		private int locationEndY;
 		
+		
 		private int AVTALEID;
 		
 		public TransparentPanel(ArrayList<Object> avtale, int day, int time) {
+			
+			if(avtale.get(0).equals(MainFrame.getCurrentUser().getEmail())) {
+				defaultColor = dOwnerGreen;
+				hoverColor = hOwnerGreen;
+			} else {
+				defaultColor = dRed;
+				hoverColor = hRed;
+			}
+			
 			int timeWidth = 35;
 			int height = dayHeight/24;
 			this.avtale = avtale;
@@ -435,7 +448,7 @@ public class CalendarView extends JLayeredPane {
 			int startY = (int) dayContainer.getLocation().getY();
 			locationStartY = startY + (time) * height;
 			this.avtale = avtale;
-	    	setBackground(dRed);
+	    	setBackground(dOwnerGreen);
 	        setOpaque(false);
 	        addMouseListener(this);
 	        Date startDate = (Date) avtale.get(3);
@@ -468,13 +481,12 @@ public class CalendarView extends JLayeredPane {
 			System.out.println(avtale.get(7));
 			Object[] msg = {"fetch", "specificappointment", Integer.parseInt((String) avtale.get(7))};
 			ArrayList<Object> stuff = (ArrayList<Object>) MainFrame.getClient().sendMsg(msg);
-			System.out.println("SJÅ HER____" + stuff);
-			System.out.println(stuff.get(0)+ " MEJ E HER I DAG");
 			Object[] msgGetPerson = {"fetch", "user", stuff.get(0)};
 			Object[] rcv = (Object[]) MainFrame.getClient().sendMsg(msgGetPerson);
 			String mottatNavn = (String) rcv[1];
 			Appointment appointment = new Appointment(new Person((String) stuff.get(0), mottatNavn));
 			appointment.setDescription((String) stuff.get(5));
+			System.out.println("HER E AKTUELL STARTTIME: " + (Date) stuff.get(3));
 			appointment.setStartTime((Date) stuff.get(3));
 			appointment.setEndTime((Date) stuff.get(4));
 			appointment.setLocation((String) stuff.get(6));
@@ -484,12 +496,14 @@ public class CalendarView extends JLayeredPane {
 			} catch(Exception e) {
 				System.err.println("No meeting rooms available");
 			}
+			
+			System.out.println("Her e den relevante appointment: " + appointment.getStartTime());
+			
 //			appointment.addParticipants(stuff.get(7));
 			AppointmentView chosenApp = new AppointmentView(MainFrame.getCurrentUser(), appointment);
-			AppointmentView appointmentView = new AppointmentView(MainFrame.getCurrentUser());
 			JFrame appointmentFrame = new JFrame("CalTwenty - Avtalevisning");
 			appointmentFrame.setPreferredSize(new Dimension(800,600));
-			appointmentFrame.add(appointmentView);
+			appointmentFrame.add(chosenApp);
 			appointmentFrame.pack();
 			appointmentFrame.setLocationRelativeTo(null);
 			appointmentFrame.setAlwaysOnTop(true);
@@ -500,14 +514,14 @@ public class CalendarView extends JLayeredPane {
 		}
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
-			setBackground(hRed);
+			setBackground(hOwnerGreen);
 			repaint();
 			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			
 		}
 		@Override
 		public void mouseExited(MouseEvent arg0) {
-			setBackground(dRed);
+			setBackground(dOwnerGreen);
 			repaint();
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
