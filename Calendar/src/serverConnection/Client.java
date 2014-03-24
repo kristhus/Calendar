@@ -7,8 +7,8 @@ import visual.MainFrame;
  
 public class Client {
 	
-//	private static String hostName = "78.91.39.136";
-	private static String hostName = "129.241.127.115";
+	private static String hostName = "78.91.50.74";
+	//private static String hostName = "129.241.127.115";
 	private static int portNumber = 8997;
 	private static Socket clientSocket;
 	
