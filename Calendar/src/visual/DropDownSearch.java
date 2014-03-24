@@ -170,6 +170,11 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 			switch(e.getActionCommand()) {
 			case ("Search button"):
 				searchScrollPane.setVisible(!searchScrollPane.isVisible());
+				for (Searchable person : searchObjects){
+					if (markedUsers.contains(person)){
+						appointment.addParticipant((Participant) person);
+					}
+				}
 			keyReleased(null);
 			break;
 			}
@@ -206,6 +211,7 @@ public class DropDownSearch extends JPanel implements PropertyChangeListener {
 						if (label.getObject() instanceof Participant) {
 							markedUsers.remove((Participant) label.getObject());
 							MainFrame.updateOtherCalendarsToShow(markedUsers);
+							appointment.removeParticipant((Participant) label.getObject());
 						}
 					}else{
 						HoverLabel label = (HoverLabel) e.getSource();
